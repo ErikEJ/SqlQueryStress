@@ -11,7 +11,7 @@
     <RootNamespace>SQLQueryStress</RootNamespace>
     <AssemblyName>SQLQueryStress</AssemblyName>
     <SignManifests>false</SignManifests>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>sqlQueryStress.snk</AssemblyOriginatorKeyFile>
     <TargetZone>Internet</TargetZone>
     <GenerateManifests>false</GenerateManifests>
