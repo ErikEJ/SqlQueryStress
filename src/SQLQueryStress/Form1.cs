@@ -194,7 +194,7 @@ namespace SQLQueryStress
                 if (this.settings.collectTimeStats)
                 {
 #if DEBUG
-                    this.exceptions.Add(output.e.Message + " !Source: " + output.e.Source + " !TargetSite: " + output.e.TargetSite.ToString() + " !Exception Type: " + output.e.GetType().ToString());
+                    this.exceptions.Add(output.e.Message + " !Source: " + output.e.Source + " !TargetSite: " + output.e.TargetSite.ToString() + " !Exception Type: " + output.e.GetType().ToString(),1);
 #else
                     int matchPos = output.e.Message.IndexOf("SQL Server parse and compile time:");
 
