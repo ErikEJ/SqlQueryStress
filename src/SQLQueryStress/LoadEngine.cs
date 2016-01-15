@@ -52,6 +52,19 @@ namespace SQLQueryStress
             _forceDataRetrieval = forceDataRetrieval;
         }
 
+        public static bool ExecuteCommand(string connectionString, string sql)
+        {
+            using (var conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                using (var cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.ExecuteNonQuery();
+                    return true;
+                }
+            }
+        }
+
         public void StartLoad(BackgroundWorker worker)
         {
             var useParams = false;

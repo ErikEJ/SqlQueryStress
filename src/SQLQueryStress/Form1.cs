@@ -515,5 +515,19 @@ namespace SQLQueryStress
                 ConnectionTimeout = ConnectionTimeout == 0 ? 15 : ConnectionTimeout;
             }
         }
+
+        private void btnCleanBuffer_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(LoadEngine.ExecuteCommand(_settings.MainDbConnectionInfo.ConnectionString, "DBCC DROPCLEANBUFFERS")
+                ? "Buffers cleared"
+                : "Errors encountered");
+        }
+
+        private void btnFreeCache_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(LoadEngine.ExecuteCommand(_settings.MainDbConnectionInfo.ConnectionString, "DBCC FREEPROCCACHE")
+                ? "Cache freed"
+                : "Errors encountered");
+        }
     }
 }

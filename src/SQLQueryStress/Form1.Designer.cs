@@ -92,14 +92,18 @@ namespace SQLQueryStress
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.param_button = new System.Windows.Forms.Button();
+            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.btnFreeCache = new System.Windows.Forms.Button();
+            this.btnCleanBuffer = new System.Windows.Forms.Button();
+            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.iterations_numericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.threads_numericUpDown)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
+            this.tableLayoutPanel4.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -561,6 +565,7 @@ namespace SQLQueryStress
             this.tableLayoutPanel1.Controls.Add(this.elapsedTime_textBox, 1, 4);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.param_button, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel4, 0, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(326, 3);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 14;
@@ -606,6 +611,58 @@ namespace SQLQueryStress
             this.tableLayoutPanel2.Size = new System.Drawing.Size(196, 46);
             this.tableLayoutPanel2.TabIndex = 32;
             // 
+            // param_button
+            // 
+            this.param_button.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.param_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.param_button.Location = new System.Drawing.Point(3, 119);
+            this.param_button.Name = "param_button";
+            this.param_button.Size = new System.Drawing.Size(196, 30);
+            this.param_button.TabIndex = 21;
+            this.param_button.Text = "Parameter Substitution";
+            this.param_button.UseVisualStyleBackColor = true;
+            this.param_button.Click += new System.EventHandler(this.param_button_Click);
+            // 
+            // tableLayoutPanel4
+            // 
+            this.tableLayoutPanel4.ColumnCount = 2;
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel4.Controls.Add(this.btnFreeCache, 1, 0);
+            this.tableLayoutPanel4.Controls.Add(this.btnCleanBuffer, 0, 0);
+            this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanel4.Name = "tableLayoutPanel4";
+            this.tableLayoutPanel4.RowCount = 2;
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(196, 46);
+            this.tableLayoutPanel4.TabIndex = 33;
+            // 
+            // btnFreeCache
+            // 
+            this.btnFreeCache.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnFreeCache.Location = new System.Drawing.Point(99, 1);
+            this.btnFreeCache.Margin = new System.Windows.Forms.Padding(1);
+            this.btnFreeCache.Name = "btnFreeCache";
+            this.btnFreeCache.Size = new System.Drawing.Size(96, 21);
+            this.btnFreeCache.TabIndex = 1;
+            this.btnFreeCache.Text = "Free Cache";
+            this.btnFreeCache.UseVisualStyleBackColor = true;
+            this.btnFreeCache.Click += new System.EventHandler(this.btnFreeCache_Click);
+            // 
+            // btnCleanBuffer
+            // 
+            this.btnCleanBuffer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnCleanBuffer.Location = new System.Drawing.Point(1, 1);
+            this.btnCleanBuffer.Margin = new System.Windows.Forms.Padding(1);
+            this.btnCleanBuffer.Name = "btnCleanBuffer";
+            this.btnCleanBuffer.Size = new System.Drawing.Size(96, 21);
+            this.btnCleanBuffer.TabIndex = 0;
+            this.btnCleanBuffer.Text = "Clean Buffers";
+            this.btnCleanBuffer.UseVisualStyleBackColor = true;
+            this.btnCleanBuffer.Click += new System.EventHandler(this.btnCleanBuffer_Click);
+            // 
             // tableLayoutPanel3
             // 
             this.tableLayoutPanel3.ColumnCount = 2;
@@ -620,18 +677,6 @@ namespace SQLQueryStress
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel3.Size = new System.Drawing.Size(733, 360);
             this.tableLayoutPanel3.TabIndex = 33;
-            // 
-            // param_button
-            // 
-            this.param_button.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.param_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.param_button.Location = new System.Drawing.Point(3, 119);
-            this.param_button.Name = "param_button";
-            this.param_button.Size = new System.Drawing.Size(196, 30);
-            this.param_button.TabIndex = 21;
-            this.param_button.Text = "Parameter Substitution";
-            this.param_button.UseVisualStyleBackColor = true;
-            this.param_button.Click += new System.EventHandler(this.param_button_Click);
             // 
             // Form1
             // 
@@ -657,6 +702,7 @@ namespace SQLQueryStress
             this.tableLayoutPanel1.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel4.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -711,6 +757,9 @@ namespace SQLQueryStress
         private TableLayoutPanel tableLayoutPanel2;
         private Button param_button;
         private TableLayoutPanel tableLayoutPanel3;
+        private TableLayoutPanel tableLayoutPanel4;
+        private Button btnFreeCache;
+        private Button btnCleanBuffer;
     }
 }
 
