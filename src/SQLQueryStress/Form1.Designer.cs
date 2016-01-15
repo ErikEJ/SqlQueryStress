@@ -1,3 +1,5 @@
+using System.Windows.Forms;
+
 namespace SQLQueryStress
 {
     partial class Form1
@@ -46,7 +48,7 @@ namespace SQLQueryStress
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.query_textBox = new System.Windows.Forms.TextBox();
+            this.query_textBox = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -95,13 +97,13 @@ namespace SQLQueryStress
             // 
             // query_textBox
             // 
-            this.query_textBox.AcceptsReturn = true;
+            //this.query_textBox.AcceptsReturn = true;
             this.query_textBox.AcceptsTab = true;
             this.query_textBox.AllowDrop = true;
             this.query_textBox.Location = new System.Drawing.Point(12, 48);
             this.query_textBox.Multiline = true;
             this.query_textBox.Name = "query_textBox";
-            this.query_textBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.query_textBox.ScrollBars = RichTextBoxScrollBars.Both;
             this.query_textBox.Size = new System.Drawing.Size(398, 193);
             this.query_textBox.TabIndex = 0;
             // 
@@ -566,7 +568,7 @@ namespace SQLQueryStress
 
         #endregion
 
-        private System.Windows.Forms.TextBox query_textBox;
+        private System.Windows.Forms.RichTextBox query_textBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.Button go_button;

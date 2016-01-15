@@ -1,238 +1,213 @@
+#region
+
 using System;
 using System.Collections.Generic;
-using System.Collections;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
-using System.ComponentModel;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
+using System.Threading;
+
+#endregion
 
 namespace SQLQueryStress
 {
-    class LoadEngine
+    internal class LoadEngine
     {
-        private static Queue<queryOutput> queryOutInfo = new Queue<queryOutput>();
+        private static readonly Queue<QueryOutput> QueryOutInfo = new Queue<QueryOutput>();
+        private readonly bool _collectIoStats;
+        private readonly bool _collectTimeStats;
+        private readonly List<SqlCommand> _commandPool = new List<SqlCommand>();
+        private readonly int _commandTimeout;
 
-        private readonly string connectionString;
-        private readonly string query;
-        private readonly int threads;
-        private readonly int iterations;
-        private readonly List<Thread> threadPool = new List<Thread>();
-        private readonly List<SqlCommand> commandPool = new List<SqlCommand>();
+        private readonly string _connectionString;
+        private readonly bool _forceDataRetrieval;
+        private readonly int _iterations;
+        private readonly string _paramConnectionString;
+        private readonly Dictionary<string, string> _paramMappings;
         //private readonly List<Queue<queryOutput>> queryOutInfoPool = new List<Queue<queryOutput>>();        
-        private readonly string paramQuery;
-        private readonly Dictionary<string, string> paramMappings;
-        private readonly string paramConnectionString;
-        private readonly int commandTimeout;
-        private readonly bool collectIOStats;
-        private readonly bool collectTimeStats;
-        private readonly bool forceDataRetrieval;
+        private readonly string _paramQuery;
+        private readonly string _query;
+        private readonly List<Thread> _threadPool = new List<Thread>();
+        private readonly int _threads;
 
-        public LoadEngine(  string connectionString, 
-                            string query, 
-                            int threads, 
-                            int iterations,
-                            string paramQuery,
-                            Dictionary<string, string> paramMappings,
-                            string paramConnectionString,
-                            int commandTimeout,
-                            bool collectIOStats,
-                            bool collectTimeStats,
-                            bool forceDataRetrieval)
+        public LoadEngine(string connectionString, string query, int threads, int iterations, string paramQuery, Dictionary<string, string> paramMappings,
+            string paramConnectionString, int commandTimeout, bool collectIoStats, bool collectTimeStats, bool forceDataRetrieval)
         {
             //Set the min pool size so that the pool does not have
             //to get allocated in real-time
-            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
-            builder.MinPoolSize = threads;
+            var builder = new SqlConnectionStringBuilder(connectionString) {MinPoolSize = threads};
 
-            this.connectionString = builder.ConnectionString;
-            this.query = query;
-            this.threads = threads;
-            this.iterations = iterations;
-            this.paramQuery = paramQuery;
-            this.paramMappings = paramMappings;
-            this.paramConnectionString = paramConnectionString;
-            this.commandTimeout = commandTimeout;
-            this.collectIOStats = collectIOStats;
-            this.collectTimeStats = collectTimeStats;
-            this.forceDataRetrieval = forceDataRetrieval;
+            _connectionString = builder.ConnectionString;
+            _query = query;
+            _threads = threads;
+            _iterations = iterations;
+            _paramQuery = paramQuery;
+            _paramMappings = paramMappings;
+            _paramConnectionString = paramConnectionString;
+            _commandTimeout = commandTimeout;
+            _collectIoStats = collectIoStats;
+            _collectTimeStats = collectTimeStats;
+            _forceDataRetrieval = forceDataRetrieval;
         }
 
         public void StartLoad(BackgroundWorker worker)
         {
-            bool useParams = false;
+            var useParams = false;
 
-            List<string> badParams = new List<string>();
-            foreach (string theKey in paramMappings.Keys)
+            var badParams = new List<string>();
+            foreach (var theKey in _paramMappings.Keys)
             {
-                if ((paramMappings[theKey] == null) ||
-                    (paramMappings[theKey].Length == 0))
+                if ((_paramMappings[theKey] == null) || (_paramMappings[theKey].Length == 0))
                 {
                     badParams.Add(theKey);
                 }
             }
 
-            foreach (string theKey in badParams)
+            foreach (var theKey in badParams)
             {
-                paramMappings.Remove(theKey);
+                _paramMappings.Remove(theKey);
             }
 
             //Need some parameters?
-            if (paramMappings.Count > 0)
+            if (_paramMappings.Count > 0)
             {
-                ParamServer.Initialize(paramQuery, paramConnectionString, paramMappings);
+                ParamServer.Initialize(_paramQuery, _paramConnectionString, _paramMappings);
                 useParams = true;
             }
 
             //Initialize the connection pool            
-            SqlConnection conn = new SqlConnection(this.connectionString);
+            var conn = new SqlConnection(_connectionString);
             //TODO: use this or not??
             SqlConnection.ClearPool(conn);
             conn.Open();
             conn.Dispose();
 
             //make sure the run cancelled flag is not set
-            queryInput.RunCancelled = false;
+            QueryInput.RunCancelled = false;
 
             //Spin up the load threads
-            for (int i = 0; i < threads; i++)
+            for (var i = 0; i < _threads; i++)
             {
-                conn = new SqlConnection(this.connectionString);
+                conn = new SqlConnection(_connectionString);
 
                 //TODO: Figure out how to make this option work (maybe)
                 //conn.FireInfoMessageEventOnUserErrors = true;
 
-                SqlCommand stats_comm = null;
+                SqlCommand statsComm = null;
 
-                SqlCommand query_comm = new SqlCommand();
-                query_comm.CommandTimeout = this.commandTimeout;
-                query_comm.Connection = conn;
-                query_comm.CommandText = this.query;
+                var queryComm = new SqlCommand {CommandTimeout = _commandTimeout, Connection = conn, CommandText = _query};
 
                 if (useParams)
                 {
-                    query_comm.Parameters.AddRange(ParamServer.GetParams());
+                    queryComm.Parameters.AddRange(ParamServer.GetParams());
                 }
 
-                string setStatistics =
-                    ((collectIOStats) ? (@"SET STATISTICS IO ON;") : ("")) +
-                    ((collectTimeStats) ? (@"SET STATISTICS TIME ON;") : (""));
+                var setStatistics = (_collectIoStats ? @"SET STATISTICS IO ON;" : "") + (_collectTimeStats ? @"SET STATISTICS TIME ON;" : "");
 
                 if (setStatistics.Length > 0)
                 {
-                    stats_comm = new SqlCommand();
-                    stats_comm.CommandTimeout = this.commandTimeout;
-                    stats_comm.Connection = conn;
-                    stats_comm.CommandText = setStatistics;
+                    statsComm = new SqlCommand {CommandTimeout = _commandTimeout, Connection = conn, CommandText = setStatistics};
                 }
 
                 //Queue<queryOutput> queryOutInfo = new Queue<queryOutput>();
 
-                queryInput input = new queryInput(
-                    stats_comm,
-                    query_comm,
+                var input = new QueryInput(statsComm, queryComm,
 //                    this.queryOutInfo,
-                    this.iterations, 
-                    this.forceDataRetrieval);
+                    _iterations, _forceDataRetrieval);
 
-                Thread theThread = new Thread(new ThreadStart(input.startLoadThread));
-                theThread.Priority = ThreadPriority.BelowNormal;
+                var theThread = new Thread(input.StartLoadThread) {Priority = ThreadPriority.BelowNormal};
 
-                threadPool.Add(theThread);
-                commandPool.Add(query_comm);
+                _threadPool.Add(theThread);
+                _commandPool.Add(queryComm);
                 //queryOutInfoPool.Add(queryOutInfo);
             }
 
             //Start the load threads
-            for (int i = 0; i < threads; i++)
+            for (var i = 0; i < _threads; i++)
             {
-                threadPool[i].Start();
+                _threadPool[i].Start();
             }
 
             //Start reading the queue...
-            int finishedThreads = 0;
-            bool cancelled = false;
+            var finishedThreads = 0;
+            var cancelled = false;
 
-            while (finishedThreads < threads)
+            while (finishedThreads < _threads)
             {
 //                for (int i = 0; i < threads; i++)
 //                {
-                   // try
-                   // {
-                        queryOutput theOut = null;
-                        //lock (queryOutInfoPool[i])
-                        lock(queryOutInfo)
-                        {
-                            //if (queryOutInfoPool[i].Count > 0)
-                                //theOut = (queryOutput)queryOutInfoPool[i].Dequeue();
-                            if (queryOutInfo.Count > 0)
-                                theOut = queryOutInfo.Dequeue();
-                            else
-                                Monitor.Wait(queryOutInfo);
-                        }
+                // try
+                // {
+                QueryOutput theOut = null;
+                //lock (queryOutInfoPool[i])
+                lock (QueryOutInfo)
+                {
+                    //if (queryOutInfoPool[i].Count > 0)
+                    //theOut = (queryOutput)queryOutInfoPool[i].Dequeue();
+                    if (QueryOutInfo.Count > 0)
+                        theOut = QueryOutInfo.Dequeue();
+                    else
+                        Monitor.Wait(QueryOutInfo);
+                }
 
-                        if (theOut != null)
-                        {
-                            //Report output to the UI
-                            worker.ReportProgress((int)(((decimal)finishedThreads / (decimal)threads) * 100), theOut);
+                if (theOut != null)
+                {
+                    //Report output to the UI
+                    worker.ReportProgress((int) (finishedThreads / (decimal) _threads * 100), theOut);
 
-                            //TODO: Make this actually remove the queue from the pool so that it's not checked again -- maintain this with a bitmap, perhaps?
-                            if (theOut.finished)
-                                finishedThreads++;
-                        }
-                   /* }
+                    //TODO: Make this actually remove the queue from the pool so that it's not checked again -- maintain this with a bitmap, perhaps?
+                    if (theOut.Finished)
+                        finishedThreads++;
+                }
+                /* }
                     catch (InvalidOperationException e)
                     {
                     }
                     */
 
-                    /*
+                /*
                         if (theOut != null)
                             Thread.Sleep(200);
                         else
                             Thread.Sleep(10);
                      */
- //               }
+                //               }
 
                 //TODO: Remove this ?
                 GC.Collect();
 
-                if (worker.CancellationPending && (!cancelled))
+                if (worker.CancellationPending && !cancelled)
                 {
-                    queryInput.RunCancelled = true;
+                    QueryInput.RunCancelled = true;
 
                     //First, kill connections as fast as possible
                     SqlConnection.ClearAllPools();
 
                     //for each 20 threads, create a new thread dedicated
                     //to killing them
-                    int threadNum = threadPool.Count;
+                    var threadNum = _threadPool.Count;
 
-                    List<Thread> killerThreads = new List<Thread>();
+                    var killerThreads = new List<Thread>();
                     while (threadNum > 0)
                     {
-                        int i = (threadNum <= 20) ? 0 : (threadNum - 20);
+                        var i = threadNum <= 20 ? 0 : threadNum - 20;
 
-                        Thread[] killThreads = new Thread[((threadNum-i)<1) ? threadNum : (threadNum-i)];
-                        SqlCommand[] killCommands = new SqlCommand[((threadNum - i) < 1) ? threadNum : (threadNum - i)];
+                        var killThreads = new Thread[threadNum - i < 1 ? threadNum : threadNum - i];
+                        var killCommands = new SqlCommand[threadNum - i < 1 ? threadNum : threadNum - i];
 
-                        threadPool.CopyTo(
-                            i, killThreads, 0, killThreads.Length);
-                        commandPool.CopyTo(
-                            i, killCommands, 0, killCommands.Length);
+                        _threadPool.CopyTo(i, killThreads, 0, killThreads.Length);
+                        _commandPool.CopyTo(i, killCommands, 0, killCommands.Length);
 
-                        for (int j = (threadNum-1); j >= i; j--)
+                        for (var j = threadNum - 1; j >= i; j--)
                         {
-                            threadPool.RemoveAt(j);
-                            commandPool.RemoveAt(j);
+                            _threadPool.RemoveAt(j);
+                            _commandPool.RemoveAt(j);
                         }
 
-                        ThreadKiller kill = new ThreadKiller(
-                            killThreads,
-                            killCommands);
-                        Thread killer = new Thread(new ThreadStart(kill.KillEm));
+                        var kill = new ThreadKiller(killThreads, killCommands);
+                        var killer = new Thread(kill.KillEm);
                         killer.Start();
                         Thread.Sleep(0);
 
@@ -243,7 +218,7 @@ namespace SQLQueryStress
 
                     //wait for the kill threads to return
                     //before exiting...
-                    foreach (Thread theThread in killerThreads)
+                    foreach (var theThread in killerThreads)
                     {
                         theThread.Join();
                     }
@@ -257,70 +232,153 @@ namespace SQLQueryStress
             //queryOutInfo.Clear();
         }
 
-        private class queryInput
+
+        //TODO: Monostate pattern to be investigated (class is never instantiated)
+        private class ParamServer
         {
+            private static int _currentRow;
+            private static int _numRows;
 
-            //This regex is used to find the number of logical reads
-            //in the messages collection returned in the queryOutput class
-            private static Regex findReads = new Regex(@"(?:Table \'\w{1,}\'. Scan count \d{1,}, logical reads )(\d{1,})", RegexOptions.Compiled);
+            //The actual params that will be filled
+            private static SqlParameter[] _outputParams;
+            //Map the param columns to ordinals in the data table
+            private static int[] _paramDtMappings;
+            private static DataTable _theParams;
 
-            //This regex is used to find the CPU and elapsed time
-            //in the messages collection returned in the queryOutput class
-            private static Regex findTimes = new Regex(@"(?:SQL Server Execution Times:|SQL Server parse and compile time:)(?:\s{1,}CPU time = )(\d{1,})(?: ms,\s{1,}elapsed time = )(\d{1,})", RegexOptions.Compiled);
-
-            [ThreadStatic]
-            private static queryOutput outInfo;
-
-            private readonly SqlCommand stats_comm;
-            private readonly SqlCommand query_comm;
-  //          private readonly Queue<queryOutput> queryOutInfo;
-            private readonly int iterations;
-            private readonly bool forceDataRetrieval;
-            private static bool runCancelled;
-
-            public static bool RunCancelled
+            public static void GetNextRow_Values(SqlParameterCollection newParam)
             {
-                set
+                var rowNum = Interlocked.Increment(ref _currentRow);
+                var dr = _theParams.Rows[rowNum % _numRows];
+
+                for (var i = 0; i < _outputParams.Length; i++)
                 {
-                    runCancelled = value;
+                    newParam[i].Value = dr[_paramDtMappings[i]];
                 }
             }
 
+            public static SqlParameter[] GetParams()
+            {
+                var newParam = new SqlParameter[_outputParams.Length];
+
+                for (var i = 0; i < _outputParams.Length; i++)
+                {
+                    newParam[i] = (SqlParameter) ((ICloneable) _outputParams[i]).Clone();
+                }
+
+                return newParam;
+            }
+
+            public static void Initialize(string paramQuery, string connString, Dictionary<string, string> paramMappings)
+            {
+                var a = new SqlDataAdapter(paramQuery, connString);
+                _theParams = new DataTable();
+                a.Fill(_theParams);
+
+                _numRows = _theParams.Rows.Count;
+
+                _outputParams = new SqlParameter[paramMappings.Keys.Count];
+                _paramDtMappings = new int[paramMappings.Keys.Count];
+
+                //Populate the array of parameters that will be cloned and filled
+                //on each request
+                var i = 0;
+                foreach (var parameterName in paramMappings.Keys)
+                {
+                    _outputParams[i] = new SqlParameter {ParameterName = parameterName};
+                    var paramColumn = paramMappings[parameterName];
+
+                    //if there is a param mapped to this column
+                    if (paramColumn != null)
+                        _paramDtMappings[i] = _theParams.Columns[paramColumn].Ordinal;
+
+                    i++;
+                }
+            }
+        }
+
+        private class QueryInput
+        {
+            [ThreadStatic] private static QueryOutput _outInfo;
+
+            private static bool _runCancelled;
+            //This regex is used to find the number of logical reads
+            //in the messages collection returned in the queryOutput class
+            private static readonly Regex FindReads = new Regex(@"(?:Table \'\w{1,}\'. Scan count \d{1,}, logical reads )(\d{1,})", RegexOptions.Compiled);
+
+            //This regex is used to find the CPU and elapsed time
+            //in the messages collection returned in the queryOutput class
+            private static readonly Regex FindTimes =
+                new Regex(
+                    @"(?:SQL Server Execution Times:|SQL Server parse and compile time:)(?:\s{1,}CPU time = )(\d{1,})(?: ms,\s{1,}elapsed time = )(\d{1,})",
+                    RegexOptions.Compiled);
+
+            private readonly SqlCommand _queryComm;
+
+            private readonly SqlCommand _statsComm;
+
             //private static Dictionary<int, List<string>> theInfoMessages = new Dictionary<int, List<string>>();
 
-            private Stopwatch sw = new Stopwatch();
+            private readonly Stopwatch _sw = new Stopwatch();
+            private readonly bool _forceDataRetrieval;
+            //          private readonly Queue<queryOutput> queryOutInfo;
+            private readonly int _iterations;
 
-            public queryInput(
-                SqlCommand stats_comm, 
-                SqlCommand query_comm,
+            public QueryInput(SqlCommand statsComm, SqlCommand queryComm,
 //                Queue<queryOutput> queryOutInfo,
-                int iterations, 
-                bool forceDataRetrieval)
+                int iterations, bool forceDataRetrieval)
             {
-                this.stats_comm = stats_comm;
-                this.query_comm = query_comm;
+                _statsComm = statsComm;
+                _queryComm = queryComm;
 //                this.queryOutInfo = queryOutInfo;
-                this.iterations = iterations;
-                this.forceDataRetrieval = forceDataRetrieval;
+                _iterations = iterations;
+                _forceDataRetrieval = forceDataRetrieval;
 
                 //Prepare the infoMessages collection, if we are collecting statistics
                 //if (stats_comm != null)
                 //    theInfoMessages.Add(stats_comm.Connection.GetHashCode(), new List<string>());
             }
 
-            public void startLoadThread()
+            public static bool RunCancelled
+            {
+                set { _runCancelled = value; }
+            }
+
+            private static void GetInfoMessages(object sender, SqlInfoMessageEventArgs args)
+            {
+                foreach (SqlError err in args.Errors)
+                {
+                    var matches = FindReads.Split(err.Message);
+
+                    //we have a read
+                    if (matches.Length > 1)
+                    {
+                        _outInfo.LogicalReads += Convert.ToInt32(matches[1]);
+                        continue;
+                    }
+
+                    matches = FindTimes.Split(err.Message);
+
+                    //we have times
+                    if (matches.Length > 1)
+                    {
+                        _outInfo.CpuTime += Convert.ToInt32(matches[1]);
+                        _outInfo.ElapsedTime += Convert.ToInt32(matches[2]);
+                    }
+                }
+            }
+
+            public void StartLoadThread()
             {
                 try
                 {
                     //do the work
-                    using (SqlConnection conn = query_comm.Connection)
+                    using (var conn = _queryComm.Connection)
                     {
-                        int connectionHashCode = conn.GetHashCode();
-                        SqlInfoMessageEventHandler handler = new SqlInfoMessageEventHandler(queryInput.GetInfoMessages);
+                        SqlInfoMessageEventHandler handler = GetInfoMessages;
 
-                        for (int i = 0; i < iterations; i++)
+                        for (var i = 0; i < _iterations; i++)
                         {
-                            if (runCancelled)
+                            if (_runCancelled)
                                 throw new Exception();
 
                             Exception outException = null;
@@ -328,29 +386,30 @@ namespace SQLQueryStress
                             try
                             {
                                 //initialize the outInfo structure
-                                queryInput.outInfo = new queryOutput();
+                                _outInfo = new QueryOutput();
 
                                 conn.Open();
 
                                 //set up the statistics gathering
-                                if (stats_comm != null)
+                                if (_statsComm != null)
                                 {
-                                    stats_comm.ExecuteNonQuery();
+                                    _statsComm.ExecuteNonQuery();
                                     Thread.Sleep(0);
                                     conn.InfoMessage += handler;
                                 }
-                                
+
                                 //Params are assigned only once -- after that, their values are dynamically retrieved
-                                if (query_comm.Parameters.Count > 0)
+                                if (_queryComm.Parameters.Count > 0)
                                 {
-                                    ParamServer.GetNextRow_Values(query_comm.Parameters);
+                                    ParamServer.GetNextRow_Values(_queryComm.Parameters);
                                 }
 
-                                sw.Start();
+                                _sw.Start();
 
-                                if (forceDataRetrieval)
+                                //TODO: This could be made better
+                                if (_forceDataRetrieval)
                                 {
-                                    SqlDataReader reader = query_comm.ExecuteReader();
+                                    var reader = _queryComm.ExecuteReader();
                                     Thread.Sleep(0);
 
                                     do
@@ -360,43 +419,41 @@ namespace SQLQueryStress
                                         while (reader.Read())
                                         {
                                             //grab the first column to force the row down the pipe
-                                            object x = reader[0];
+                                            var x = reader[0];
                                             Thread.Sleep(0);
                                         }
-
                                     } while (reader.NextResult());
-
                                 }
                                 else
                                 {
-                                    query_comm.ExecuteNonQuery();
+                                    _queryComm.ExecuteNonQuery();
                                     Thread.Sleep(0);
                                 }
 
-                                sw.Stop();
+                                _sw.Stop();
                             }
                             catch (Exception e)
                             {
-                                if (runCancelled)
+                                if (_runCancelled)
                                     throw;
                                 else
                                     outException = e;
 
-                                if (sw.IsRunning)
+                                if (_sw.IsRunning)
                                 {
-                                    sw.Stop();
+                                    _sw.Stop();
                                 }
-                            } 
+                            }
                             finally
                             {
                                 //Clean up the connection
-                                if (stats_comm != null)
+                                if (_statsComm != null)
                                     conn.InfoMessage -= handler;
 
                                 conn.Close();
                             }
 
-                            bool finished = (i == (iterations - 1)) ? true : false;
+                            var finished = i == _iterations - 1;
 
                             //List<string> infoMessages = null;
 
@@ -410,141 +467,51 @@ namespace SQLQueryStress
                                 (infoMessages == null || infoMessages.Count == 0) ? null : infoMessages.ToArray());
                              */
 
-                            outInfo.e = outException;
-                            outInfo.time = sw.Elapsed;
-                            outInfo.finished = finished;
+                            _outInfo.E = outException;
+                            _outInfo.Time = _sw.Elapsed;
+                            _outInfo.Finished = finished;
 
-                            lock (LoadEngine.queryOutInfo)
+                            lock (QueryOutInfo)
                             {
-                                LoadEngine.queryOutInfo.Enqueue(outInfo);
-                                Monitor.Pulse(LoadEngine.queryOutInfo);
+                                QueryOutInfo.Enqueue(_outInfo);
+                                Monitor.Pulse(QueryOutInfo);
                             }
 
                             //Prep the collection for the next round
                             //if (infoMessages != null && infoMessages.Count > 0)
                             //    infoMessages.Clear();
 
-                            sw.Reset();
+                            _sw.Reset();
                         }
                     }
                 }
-                catch                    
+                catch
                 {
-                    if (runCancelled)
+                    if (_runCancelled)
                     {
                         //queryOutput theout = new queryOutput(null, new TimeSpan(0), true, null);
-                        outInfo.time = new TimeSpan(0);
-                        outInfo.finished = true;
+                        _outInfo.Time = new TimeSpan(0);
+                        _outInfo.Finished = true;
 
-                        lock (LoadEngine.queryOutInfo)
+                        lock (QueryOutInfo)
                         {
-                            LoadEngine.queryOutInfo.Enqueue(outInfo);
+                            QueryOutInfo.Enqueue(_outInfo);
                         }
                     }
                     else
                         throw;
                 }
             }
-
-            private static void GetInfoMessages(
-                object sender,
-                SqlInfoMessageEventArgs args)
-            {
-                foreach (SqlError err in args.Errors)
-                {
-                    string[] matches = findReads.Split(err.Message);
-
-                    //we have a read
-                    if (matches.Length > 1)
-                    {
-                        queryInput.outInfo.LogicalReads += Convert.ToInt32(matches[1]);
-                        continue;
-                    }
-
-                    matches = findTimes.Split(err.Message);
-
-                    //we have times
-                    if (matches.Length > 1)
-                    {
-                        queryInput.outInfo.CPUTime += Convert.ToInt32(matches[1]);
-                        queryInput.outInfo.ElapsedTime += Convert.ToInt32(matches[2]);
-                    }                    
-                }
-            }
         }
 
-        private class ParamServer
+        public class QueryOutput
         {
-            private static DataTable theParams;
-
-            //The actual params that will be filled
-            private static SqlParameter[] outputParams;
-            //Map the param columns to ordinals in the data table
-            private static int[] paramDTMappings;
-            
-            private static int currentRow;
-            private static int numRows;
-
-            public static SqlParameter[] GetParams()
-            {
-                SqlParameter[] newParam = new SqlParameter[outputParams.Length];
-
-                for (int i = 0; i < outputParams.Length; i++)
-                {
-                    newParam[i] = (SqlParameter)((ICloneable)outputParams[i]).Clone();
-                }
-
-                return(newParam);
-            }
-
-            public static void GetNextRow_Values(SqlParameterCollection newParam)
-            {
-                int rowNum = (int)Interlocked.Increment(ref currentRow);
-                DataRow dr = theParams.Rows[rowNum % numRows];
-
-                for (int i = 0; i < outputParams.Length; i++)
-                {
-                    newParam[i].Value = dr[paramDTMappings[i]];
-                }
-            }
-
-            public static void Initialize(string paramQuery, string connString, Dictionary<string, string> paramMappings)
-            {
-                SqlDataAdapter a = new SqlDataAdapter(paramQuery, connString);
-                theParams = new DataTable();
-                a.Fill(theParams);
-
-                numRows = theParams.Rows.Count;
-
-                outputParams = new SqlParameter[paramMappings.Keys.Count];
-                paramDTMappings = new int[paramMappings.Keys.Count];
-
-                //Populate the array of parameters that will be cloned and filled
-                //on each request
-                int i = 0;
-                foreach (string parameterName in paramMappings.Keys)
-                {
-                    outputParams[i] = new SqlParameter();
-                    outputParams[i].ParameterName = parameterName;
-                    string paramColumn = paramMappings[parameterName];
-    
-                    //if there is a param mapped to this column
-                    if (paramColumn != null)
-                        paramDTMappings[i] = theParams.Columns[paramColumn].Ordinal;
-
-                    i++;
-                }
-            }
-        }
-
-        public class queryOutput
-        {
-            public Exception e;
-            public TimeSpan time;
-            public bool finished;
-            public int LogicalReads;
-            public int CPUTime;
+            public int CpuTime;
+            public Exception E;
             public int ElapsedTime;
+            public bool Finished;
+            public int LogicalReads;
+            public TimeSpan Time;
 
             /*
             public queryOutput(
@@ -563,20 +530,18 @@ namespace SQLQueryStress
 
         private class ThreadKiller
         {
-            private Thread[] theThreads;
-            private SqlCommand[] theCommands;
+            private readonly SqlCommand[] _theCommands;
+            private readonly Thread[] _theThreads;
 
-            public ThreadKiller(
-                Thread[] TheThreads,
-                SqlCommand[] TheCommands)
+            public ThreadKiller(Thread[] theThreads, SqlCommand[] theCommands)
             {
-                this.theThreads = TheThreads;
-                this.theCommands = TheCommands;
+                _theThreads = theThreads;
+                _theCommands = theCommands;
             }
 
             public void KillEm()
             {
-                foreach (SqlCommand comm in theCommands)
+                foreach (var comm in _theCommands)
                 {
                     comm.Cancel();
                     comm.Connection.Dispose();
@@ -584,14 +549,14 @@ namespace SQLQueryStress
                     comm.Dispose();
                     Thread.Sleep(0);
                 }
-                
-                bool keepKilling = true;
+
+                var keepKilling = true;
 
                 while (keepKilling)
                 {
                     keepKilling = false;
 
-                    foreach (Thread theThread in theThreads)
+                    foreach (var theThread in _theThreads)
                     {
                         if (theThread.IsAlive)
                         {

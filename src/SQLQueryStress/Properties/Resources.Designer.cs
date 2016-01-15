@@ -61,6 +61,78 @@ namespace SQLQueryStress.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Connection Failed.
+        /// </summary>
+        internal static string ConnFail {
+            get {
+                return ResourceManager.GetString("ConnFail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connection Succeeded.
+        /// </summary>
+        internal static string ConnSucc {
+            get {
+                return ResourceManager.GetString("ConnSucc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error loading settings..
+        /// </summary>
+        internal static string ErrLoadingSettings {
+            get {
+                return ResourceManager.GetString("ErrLoadingSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error saving settings..
+        /// </summary>
+        internal static string ErrorSavingSettings {
+            get {
+                return ResourceManager.GetString("ErrorSavingSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exceptions.
+        /// </summary>
+        internal static string Exceptions {
+            get {
+                return ResourceManager.GetString("Exceptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must set valid database connection information. Click the Database button to configure the settings..
+        /// </summary>
+        internal static string MustSetValidDatabaseConn {
+            get {
+                return ResourceManager.GetString("MustSetValidDatabaseConn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You must set valid database connection information. Click the Database button to configure the settings..
+        /// </summary>
+        internal static string MustSetValidDbConnInfo {
+            get {
+                return ResourceManager.GetString("MustSetValidDbConnInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No variables were identified in the main query. Variables must be used there before parameter substitution can be used..
+        /// </summary>
+        internal static string NoVarsWereIdentified {
+            get {
+                return ResourceManager.GetString("NoVarsWereIdentified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon QueryStressIcon {

@@ -1,46 +1,45 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
+
+#endregion
 
 namespace SQLQueryStress
 {
     public partial class Options : Form
     {
-        private Form1.QueryStressSettings settings;
+        private readonly Form1.QueryStressSettings _settings;
 
         public Options(Form1.QueryStressSettings settings)
         {
-            this.settings = settings;
+            _settings = settings;
 
             InitializeComponent();
 
-            connectionTimeout_numericUpDown.Value = settings.connectionTimeout;
-            commandTimeout_numericUpDown.Value = settings.commandTimeout;
-            connectionPooling_checkBox.Checked = settings.enableConnectionPooling;
-            IOStatistics_checkBox.Checked = settings.collectIOStats;
-            timeStatistics_checkBox.Checked = settings.collectTimeStats;
-            clientDataRetrieval_checkBox.Checked = settings.forceDataRetrieval;
-        }
-
-        private void ok_button_Click(object sender, EventArgs e)
-        {
-            this.settings.connectionTimeout = (int)connectionTimeout_numericUpDown.Value;
-            this.settings.commandTimeout = (int)commandTimeout_numericUpDown.Value;
-            this.settings.enableConnectionPooling = connectionPooling_checkBox.Checked;
-            this.settings.collectIOStats = IOStatistics_checkBox.Checked;
-            this.settings.collectTimeStats = timeStatistics_checkBox.Checked;
-            this.settings.forceDataRetrieval = clientDataRetrieval_checkBox.Checked;
-
-            this.Dispose();
+            connectionTimeout_numericUpDown.Value = settings.ConnectionTimeout;
+            commandTimeout_numericUpDown.Value = settings.CommandTimeout;
+            connectionPooling_checkBox.Checked = settings.EnableConnectionPooling;
+            IOStatistics_checkBox.Checked = settings.CollectIoStats;
+            timeStatistics_checkBox.Checked = settings.CollectTimeStats;
+            clientDataRetrieval_checkBox.Checked = settings.ForceDataRetrieval;
         }
 
         private void cancel_button_Click(object sender, EventArgs e)
         {
-            this.Dispose();
+            Dispose();
+        }
+
+        private void ok_button_Click(object sender, EventArgs e)
+        {
+            _settings.ConnectionTimeout = (int) connectionTimeout_numericUpDown.Value;
+            _settings.CommandTimeout = (int) commandTimeout_numericUpDown.Value;
+            _settings.EnableConnectionPooling = connectionPooling_checkBox.Checked;
+            _settings.CollectIoStats = IOStatistics_checkBox.Checked;
+            _settings.CollectTimeStats = timeStatistics_checkBox.Checked;
+            _settings.ForceDataRetrieval = clientDataRetrieval_checkBox.Checked;
+
+            Dispose();
         }
     }
 }

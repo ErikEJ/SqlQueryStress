@@ -1,40 +1,27 @@
+#region
+
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
+
+#endregion
 
 namespace SQLQueryStress
 {
     public partial class DataViewer : Form
     {
-        private DataTable dataView;
-
-        public DataTable DataView
-        {
-            get
-            {
-                return(this.dataView);
-            }
-
-            set
-            {
-                this.dataView = value;
-            }
-        }
-
         public DataViewer()
         {
             InitializeComponent();
         }
 
-        private void Form2_Load(object sender, EventArgs e)
-        {          
-            dataGridView1.DataSource = this.dataView;
+        public DataTable DataView { get; set; }
 
-            int columnWidth = (dataGridView1.Width-41) / (this.dataView.Columns.Count);
+        private void Form2_Load(object sender, EventArgs e)
+        {
+            dataGridView1.DataSource = DataView;
+
+            var columnWidth = (dataGridView1.Width - 41) / DataView.Columns.Count;
 
             foreach (DataGridViewColumn col in dataGridView1.Columns)
                 col.Width = columnWidth;
