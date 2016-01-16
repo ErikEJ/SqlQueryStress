@@ -117,6 +117,7 @@ namespace SQLQueryStress
             this.query_textBox.Size = new System.Drawing.Size(317, 354);
             this.query_textBox.TabIndex = 0;
             this.query_textBox.Text = "";
+            this.query_textBox.WordWrap = false;
             // 
             // label1
             // 
