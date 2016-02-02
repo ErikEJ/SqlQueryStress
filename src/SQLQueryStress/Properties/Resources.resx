@@ -121,4 +121,28 @@
   <data name="QueryStressIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\QueryStressIcon.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="MustSetValidDbConnInfo" xml:space="preserve">
+    <value>You must set valid database connection information. Click the Database button to configure the settings.</value>
+  </data>
+  <data name="ErrLoadingSettings" xml:space="preserve">
+    <value>Error loading settings.</value>
+  </data>
+  <data name="ErrorSavingSettings" xml:space="preserve">
+    <value>Error saving settings.</value>
+  </data>
+  <data name="Exceptions" xml:space="preserve">
+    <value>Exceptions</value>
+  </data>
+  <data name="MustSetValidDatabaseConn" xml:space="preserve">
+    <value>You must set valid database connection information. Click the Database button to configure the settings.</value>
+  </data>
+  <data name="NoVarsWereIdentified" xml:space="preserve">
+    <value>No variables were identified in the main query. Variables must be used there before parameter substitution can be used.</value>
+  </data>
+  <data name="ConnSucc" xml:space="preserve">
+    <value>Connection Succeeded</value>
+  </data>
+  <data name="ConnFail" xml:space="preserve">
+    <value>Connection Failed</value>
+  </data>
 </root>

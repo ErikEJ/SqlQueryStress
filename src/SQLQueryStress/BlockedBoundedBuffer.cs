@@ -1,38 +1,34 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+#region
+
 using System.Threading;
+
+#endregion
 
 namespace SQLQueryStress
 {
     public class BlockedBoundedBuffer<T>
     {
-        private readonly T[] buffer;
+        private readonly T[] _buffer;
+        private int _count;
 
-        private int readNumber;
-        private int writeNumber;
-        private int count;
+        private int _readNumber;
+        private int _writeNumber;
 
-        private BlockedBoundedBuffer()
+        public BlockedBoundedBuffer(int bufferSize)
         {
-            //
-        }
-
-        public BlockedBoundedBuffer(int BufferSize)
-        {
-            this.buffer = new T[BufferSize];
-            this.readNumber = -1;
-            this.writeNumber = -1;
-            this.count = 0;
+            _buffer = new T[bufferSize];
+            _readNumber = -1;
+            _writeNumber = -1;
+            _count = 0;
         }
 
         public T Dequeue()
         {
-            while (count == 0)
+            while (_count == 0)
             {
-                lock (this.buffer)
+                lock (_buffer)
                 {
-                    Monitor.Wait(this.buffer);
+                    Monitor.Wait(_buffer);
                 }
             }
 
@@ -40,29 +36,27 @@ namespace SQLQueryStress
 
             do
             {
-                read = Interlocked.Increment(ref readNumber);
+                read = Interlocked.Increment(ref _readNumber);
 
-                if (read >= buffer.Length)
+                if (read >= _buffer.Length)
                 {
-                    lock (this.buffer)
+                    lock (_buffer)
                     {
-                        if (read >= buffer.Length)
+                        if (read >= _buffer.Length)
                         {
-                            Interlocked.Exchange(ref readNumber, 0);
-                            Interlocked.Exchange(ref writeNumber, -1);
-                            read = 0;
-                            Monitor.PulseAll(this.buffer);
+                            Interlocked.Exchange(ref _readNumber, 0);
+                            Interlocked.Exchange(ref _writeNumber, -1);
+                            Monitor.PulseAll(_buffer);
                         }
                     }
                 }
                 else
                     break;
-
             } while (true);
 
-            Interlocked.Decrement(ref count);
+            Interlocked.Decrement(ref _count);
 
-            return (buffer[read]);
+            return _buffer[read];
         }
 
         public void Enqueue(T input)
@@ -71,26 +65,25 @@ namespace SQLQueryStress
 
             do
             {
-                write = Interlocked.Increment(ref writeNumber);
-                if (write >= buffer.Length)
+                write = Interlocked.Increment(ref _writeNumber);
+                if (write >= _buffer.Length)
                 {
-                    lock (this.buffer)
+                    lock (_buffer)
                     {
-                        Monitor.Wait(this.buffer);
+                        Monitor.Wait(_buffer);
                     }
                 }
                 else
                     break;
-            }
-            while (true);
+            } while (true);
 
-            buffer[write] = input;
+            _buffer[write] = input;
 
-            if (Interlocked.Increment(ref count) == 1)
+            if (Interlocked.Increment(ref _count) == 1)
             {
-                lock (this.buffer)
+                lock (_buffer)
                 {
-                    Monitor.PulseAll(this.buffer);
+                    Monitor.PulseAll(_buffer);
                 }
             }
         }

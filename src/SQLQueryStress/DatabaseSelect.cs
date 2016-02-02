@@ -1,94 +1,94 @@
+#region
+
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
+using SQLQueryStress.Properties;
+
+#endregion
 
 namespace SQLQueryStress
 {
     public partial class DatabaseSelect : Form
     {
-        private Form1.QueryStressSettings settings;
-        private ConnectionInfo localMainConnectionInfo;
-        private ConnectionInfo localParamConnectionInfo;
+        private readonly ConnectionInfo _localMainConnectionInfo;
+        private readonly Form1.QueryStressSettings _settings;
+        private ConnectionInfo _localParamConnectionInfo;
 
         public DatabaseSelect(Form1.QueryStressSettings settings)
         {
-            this.settings = settings;
-            this.localMainConnectionInfo = (ConnectionInfo)settings.mainDBConnectionInfo.Clone();
+            _settings = settings;
+            _localMainConnectionInfo = (ConnectionInfo) settings.MainDbConnectionInfo.Clone();
 
-            if (settings.shareDBSettings)
+            if (settings.ShareDbSettings)
             {
-                this.localParamConnectionInfo = (ConnectionInfo)settings.mainDBConnectionInfo.Clone();
+                _localParamConnectionInfo = (ConnectionInfo) settings.MainDbConnectionInfo.Clone();
             }
             else
             {
-                this.localParamConnectionInfo = (ConnectionInfo)settings.paramDBConnectionInfo.Clone();
+                _localParamConnectionInfo = (ConnectionInfo) settings.ParamDbConnectionInfo.Clone();
             }
 
             InitializeComponent();
 
-            this.server_textBox.Text = localMainConnectionInfo.Server;
-            
-            if (localMainConnectionInfo.IntegratedAuth)
+            server_textBox.Text = _localMainConnectionInfo.Server;
+
+            if (_localMainConnectionInfo.IntegratedAuth)
             {
-                this.authentication_comboBox.SelectedIndex = 0;
-                this.login_textBox.Enabled = false;
-                this.password_textBox.Enabled = false;
+                authentication_comboBox.SelectedIndex = 0;
+                login_textBox.Enabled = false;
+                password_textBox.Enabled = false;
             }
             else
             {
-                this.authentication_comboBox.SelectedIndex = 1;
-                this.login_textBox.Text = localMainConnectionInfo.Login;
-                this.password_textBox.Text = localMainConnectionInfo.Password;
+                authentication_comboBox.SelectedIndex = 1;
+                login_textBox.Text = _localMainConnectionInfo.Login;
+                password_textBox.Text = _localMainConnectionInfo.Password;
             }
 
-            if (localMainConnectionInfo.Database.Length > 0)
+            if (_localMainConnectionInfo.Database.Length > 0)
             {
-                this.db_comboBox.Items.Add(localMainConnectionInfo.Database);
-                this.db_comboBox.SelectedIndex = 0;
+                db_comboBox.Items.Add(_localMainConnectionInfo.Database);
+                db_comboBox.SelectedIndex = 0;
             }
 
-            if (!settings.shareDBSettings)
+            if (!settings.ShareDbSettings)
             {
-                this.pm_server_textBox.Text = localParamConnectionInfo.Server;
+                pm_server_textBox.Text = _localParamConnectionInfo.Server;
 
-                if (localParamConnectionInfo.IntegratedAuth)
+                if (_localParamConnectionInfo.IntegratedAuth)
                 {
-                    this.pm_authentication_comboBox.SelectedIndex = 0;
-                    this.pm_login_textBox.Enabled = false;
-                    this.pm_password_textBox.Enabled = false;
+                    pm_authentication_comboBox.SelectedIndex = 0;
+                    pm_login_textBox.Enabled = false;
+                    pm_password_textBox.Enabled = false;
                 }
                 else
                 {
-                    this.pm_authentication_comboBox.SelectedIndex = 1;
-                    this.pm_login_textBox.Text = localParamConnectionInfo.Login;
-                    this.pm_password_textBox.Text = localParamConnectionInfo.Password;
+                    pm_authentication_comboBox.SelectedIndex = 1;
+                    pm_login_textBox.Text = _localParamConnectionInfo.Login;
+                    pm_password_textBox.Text = _localParamConnectionInfo.Password;
                 }
 
-                if (localParamConnectionInfo.Database.Length > 0)
+                if (_localParamConnectionInfo.Database.Length > 0)
                 {
-                    this.pm_db_comboBox.Items.Add(localParamConnectionInfo.Database);
-                    this.pm_db_comboBox.SelectedIndex = 0;
+                    pm_db_comboBox.Items.Add(_localParamConnectionInfo.Database);
+                    pm_db_comboBox.SelectedIndex = 0;
                 }
             }
             else
-                this.pm_authentication_comboBox.SelectedIndex = 0;
+                pm_authentication_comboBox.SelectedIndex = 0;
 
-            this.shareSettings_checkBox.Checked = settings.shareDBSettings;
+            shareSettings_checkBox.Checked = settings.ShareDbSettings;
 
-            this.authentication_comboBox.SelectedIndexChanged += new EventHandler(authentication_comboBox_SelectedIndexChanged);
-            this.pm_authentication_comboBox.SelectedIndexChanged += new EventHandler(pm_authentication_comboBox_SelectedIndexChanged);
+            authentication_comboBox.SelectedIndexChanged += authentication_comboBox_SelectedIndexChanged;
+            pm_authentication_comboBox.SelectedIndexChanged += pm_authentication_comboBox_SelectedIndexChanged;
 
-            this.db_comboBox.Click += new EventHandler(db_comboBox_Click);
-            this.pm_db_comboBox.Click += new EventHandler(pm_db_comboBox_Click);
+            db_comboBox.Click += db_comboBox_Click;
+            pm_db_comboBox.Click += pm_db_comboBox_Click;
         }
 
-        private void authentication_comboBox_SelectedIndexChanged(object sender,
-            System.EventArgs e)
+        private void authentication_comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (authentication_comboBox.SelectedIndex == 0)
             {
@@ -102,8 +102,70 @@ namespace SQLQueryStress
             }
         }
 
-        private void pm_authentication_comboBox_SelectedIndexChanged(object sender,
-            System.EventArgs e)
+        private void cancel_button_Click(object sender, EventArgs e)
+        {
+            Dispose();
+        }
+
+        private void db_comboBox_Click(object sender, EventArgs e)
+        {
+            SaveLocalSettings();
+
+            var selectedItem = (string) db_comboBox.SelectedItem;
+
+            var sql = "" + "SELECT name " + "FROM master..sysdatabases " + "ORDER BY name";
+
+            using (var conn = new SqlConnection(_localMainConnectionInfo.ConnectionString))
+            {
+                var comm = new SqlCommand(sql, conn);
+
+                var databases = new List<string>();
+
+                try
+                {
+                    conn.Open();
+
+                    var reader = comm.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        databases.Add((string) reader[0]);
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    if (ex.Number != 4060)
+                        MessageBox.Show(Resources.ConnFail);
+                    else
+                    {
+                        //Clear the db, try again
+                        db_comboBox.Items.Clear();
+                        db_comboBox_Click(null, null);
+                        return;
+                    }
+                }
+
+                db_comboBox.DataSource = databases.ToArray();
+
+                if (selectedItem != null)
+                    if (db_comboBox.Items.Contains(selectedItem))
+                        db_comboBox.SelectedItem = selectedItem;
+            }
+        }
+
+        private void ok_button_Click(object sender, EventArgs e)
+        {
+            SaveLocalSettings();
+            pm_saveLocalSettings();
+
+            _localMainConnectionInfo.CopyTo(_settings.MainDbConnectionInfo);
+            _localParamConnectionInfo.CopyTo(_settings.ParamDbConnectionInfo);
+            _settings.ShareDbSettings = shareSettings_checkBox.Checked;
+
+            Dispose();
+        }
+
+        private void pm_authentication_comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (pm_authentication_comboBox.SelectedIndex == 0)
             {
@@ -117,90 +179,38 @@ namespace SQLQueryStress
             }
         }
 
-        private void db_comboBox_Click(object sender, System.EventArgs e)
-        {
-            saveLocalSettings();
-
-            string selectedItem = (string)db_comboBox.SelectedItem;
-
-            string sql = "" +
-                "SELECT name " +
-                "FROM master..sysdatabases " +
-                "ORDER BY name";
-
-            using (SqlConnection conn = new SqlConnection(this.localMainConnectionInfo.ConnectionString))
-            {
-                SqlCommand comm = new SqlCommand(sql, conn);
-
-                List<string> databases = new List<string>();
-
-                try
-                {
-                    conn.Open();
-
-                    SqlDataReader reader = comm.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        databases.Add((string)reader[0]); 
-                    }
-                }
-                catch (SqlException ex)
-                {
-                    if (ex.Number != 4060)
-                        MessageBox.Show("Connection Failed");
-                    else
-                    {
-                        //Clear the db, try again
-                        this.db_comboBox.Items.Clear();
-                        this.db_comboBox_Click(null, null);
-                        return;
-                    }
-                }
-
-                db_comboBox.DataSource = databases.ToArray();
-
-                if (selectedItem != null)
-                    if (db_comboBox.Items.Contains(selectedItem))
-                        db_comboBox.SelectedItem = selectedItem;
-            }
-        }
-
-        private void pm_db_comboBox_Click(object sender, System.EventArgs e)
+        private void pm_db_comboBox_Click(object sender, EventArgs e)
         {
             pm_saveLocalSettings();
 
-            string selectedItem = (string)pm_db_comboBox.SelectedItem;
+            var selectedItem = (string) pm_db_comboBox.SelectedItem;
 
-            string sql = "" +
-                "SELECT name " +
-                "FROM master..sysdatabases " +
-                "ORDER BY name";
+            var sql = "" + "SELECT name " + "FROM master..sysdatabases " + "ORDER BY name";
 
-            using (SqlConnection conn = new SqlConnection(this.localParamConnectionInfo.ConnectionString))
+            using (var conn = new SqlConnection(_localParamConnectionInfo.ConnectionString))
             {
-                SqlCommand comm = new SqlCommand(sql, conn);
+                var comm = new SqlCommand(sql, conn);
 
-                List<string> databases = new List<string>();
+                var databases = new List<string>();
 
                 try
                 {
                     conn.Open();
 
-                    SqlDataReader reader = comm.ExecuteReader();
+                    var reader = comm.ExecuteReader();
 
                     while (reader.Read())
-                        databases.Add((string)reader[0]);
+                        databases.Add((string) reader[0]);
                 }
                 catch (SqlException ex)
                 {
                     if (ex.Number != 4060)
-                        MessageBox.Show("Connection Failed");
+                        MessageBox.Show(Resources.ConnFail);
                     else
                     {
                         //Clear the db, try again
-                        this.pm_db_comboBox.Items.Clear();
-                        this.pm_db_comboBox_Click(null, null);
+                        pm_db_comboBox.Items.Clear();
+                        pm_db_comboBox_Click(null, null);
                         return;
                     }
                 }
@@ -213,197 +223,54 @@ namespace SQLQueryStress
             }
         }
 
-        [Serializable]
-        public class ConnectionInfo : ICloneable
-        {
-            public ConnectionInfo()
-            {
-                Server = "";
-                IntegratedAuth = true;
-                Login = "";
-                Password = "";
-                Database = "";
-            }
-
-            public ConnectionInfo(Form1.QueryStressSettings settings)
-            {
-                Server = "";
-                IntegratedAuth = true;
-                Login = "";
-                Password = "";
-                Database = "";
-                this.settings = settings;
-            }
-
-            public string Server;
-            public bool IntegratedAuth;
-            public string Login;
-            public string Password;
-            public string Database;
-            public Form1.QueryStressSettings settings;
-
-            public string ConnectionString
-            {
-                get
-                {
-                    SqlConnectionStringBuilder build = new SqlConnectionStringBuilder();
-                    build.DataSource = this.Server;
-                    build.IntegratedSecurity = this.IntegratedAuth;
-                    if (!this.IntegratedAuth)
-                    {
-                        build.UserID = this.Login;
-                        build.Password = this.Password;
-                    }
-
-                    if (this.Database.Length > 0)
-                        build.InitialCatalog = this.Database;
-
-                    if (this.settings != null)
-                    {
-                        build.ConnectTimeout = this.settings.connectionTimeout;
-                        build.Pooling = this.settings.enableConnectionPooling;
-                        build.MaxPoolSize = this.settings.numThreads * 2;
-                    }
-
-                    return(build.ConnectionString);
-                }
-            }
-
-            public bool TestConnection()
-            {
-                if ((this.Server == "") ||
-                    ((this.IntegratedAuth == false) && ((this.Login == "" || this.Password == ""))))
-                    return (false);
-
-                using (SqlConnection conn = new SqlConnection(this.ConnectionString))
-                {
-                    try
-                    {
-                        conn.Open();
-                    }
-                    catch
-                    {
-                        return (false);
-                    }
-                }
-
-                return (true);
-            }
-
-            public void CopyTo(ConnectionInfo to)
-            {
-                to.Server = this.Server;
-                to.IntegratedAuth = this.IntegratedAuth;
-                to.Login = this.Login;
-                to.Password = this.Password;
-                to.Database = this.Database;
-            }
-
-            #region ICloneable Members
-
-            public object Clone()
-            {
-                ConnectionInfo newConnInfo = new ConnectionInfo();
-                this.CopyTo(newConnInfo);
- 
-                return (newConnInfo);
-            }
-
-            #endregion
-        }
-
-        private void saveLocalSettings()
-        {
-            localMainConnectionInfo.Server = server_textBox.Text;
-            localMainConnectionInfo.IntegratedAuth = (authentication_comboBox.SelectedIndex == 0) ? true : false;
-
-            if (localMainConnectionInfo.IntegratedAuth)
-            {
-                localMainConnectionInfo.Login = "";
-                localMainConnectionInfo.Password = "";
-            }
-            else
-            {
-                localMainConnectionInfo.Login = login_textBox.Text;
-                localMainConnectionInfo.Password = password_textBox.Text;
-            }
-
-            if (db_comboBox.SelectedItem != null)
-                localMainConnectionInfo.Database = db_comboBox.SelectedItem.ToString();
-            else
-                localMainConnectionInfo.Database = "";
-        }
-
         private void pm_saveLocalSettings()
         {
             if (!shareSettings_checkBox.Checked)
             {
-                localParamConnectionInfo.Server = pm_server_textBox.Text;
-                localParamConnectionInfo.IntegratedAuth = (pm_authentication_comboBox.SelectedIndex == 0) ? true : false;
+                _localParamConnectionInfo.Server = pm_server_textBox.Text;
+                _localParamConnectionInfo.IntegratedAuth = pm_authentication_comboBox.SelectedIndex == 0;
 
-                if (localParamConnectionInfo.IntegratedAuth)
+                if (_localParamConnectionInfo.IntegratedAuth)
                 {
-                    localParamConnectionInfo.Login = "";
-                    localParamConnectionInfo.Password = "";
+                    _localParamConnectionInfo.Login = "";
+                    _localParamConnectionInfo.Password = "";
                 }
                 else
                 {
-                    localParamConnectionInfo.Login = pm_login_textBox.Text;
-                    localParamConnectionInfo.Password = pm_password_textBox.Text;
+                    _localParamConnectionInfo.Login = pm_login_textBox.Text;
+                    _localParamConnectionInfo.Password = pm_password_textBox.Text;
                 }
 
-                if (pm_db_comboBox.SelectedItem != null)
-                    localParamConnectionInfo.Database = pm_db_comboBox.SelectedItem.ToString();
-                else
-                    localParamConnectionInfo.Database = "";
+                _localParamConnectionInfo.Database = pm_db_comboBox.SelectedItem != null ? pm_db_comboBox.SelectedItem.ToString() : "";
             }
             else
-                localParamConnectionInfo = new ConnectionInfo();
-        }
-
-        private void test_button_Click(object sender, EventArgs e)
-        {
-            saveLocalSettings();
-
-            if (localMainConnectionInfo.TestConnection())
-            {
-                MessageBox.Show("Connection Succeeded");
-            }
-            else
-            {
-                MessageBox.Show("Connection Failed");
-            }
+                _localParamConnectionInfo = new ConnectionInfo();
         }
 
         private void pm_test_button_Click(object sender, EventArgs e)
         {
             pm_saveLocalSettings();
 
-            if (localParamConnectionInfo.TestConnection())
+            MessageBox.Show(_localParamConnectionInfo.TestConnection() ? Resources.ConnSucc : Resources.ConnFail);
+        }
+
+        private void SaveLocalSettings()
+        {
+            _localMainConnectionInfo.Server = server_textBox.Text;
+            _localMainConnectionInfo.IntegratedAuth = authentication_comboBox.SelectedIndex == 0;
+
+            if (_localMainConnectionInfo.IntegratedAuth)
             {
-                MessageBox.Show("Connection Succeeded");
+                _localMainConnectionInfo.Login = "";
+                _localMainConnectionInfo.Password = "";
             }
             else
             {
-                MessageBox.Show("Connection Failed");
+                _localMainConnectionInfo.Login = login_textBox.Text;
+                _localMainConnectionInfo.Password = password_textBox.Text;
             }
-        }
 
-        private void cancel_button_Click(object sender, EventArgs e)
-        {
-            this.Dispose();
-        }
-
-        private void ok_button_Click(object sender, EventArgs e)
-        {
-            saveLocalSettings();
-            pm_saveLocalSettings();
-
-            localMainConnectionInfo.CopyTo(settings.mainDBConnectionInfo);
-            localParamConnectionInfo.CopyTo(settings.paramDBConnectionInfo);
-            settings.shareDBSettings = shareSettings_checkBox.Checked;
-
-            this.Dispose();            
+            _localMainConnectionInfo.Database = db_comboBox.SelectedItem != null ? db_comboBox.SelectedItem.ToString() : "";
         }
 
         private void shareSettings_checkBox_CheckedChanged(object sender, EventArgs e)
@@ -429,6 +296,110 @@ namespace SQLQueryStress
                 }
                 pm_db_comboBox.Enabled = true;
                 pm_test_button.Enabled = true;
+            }
+        }
+
+        private void test_button_Click(object sender, EventArgs e)
+        {
+            SaveLocalSettings();
+
+            MessageBox.Show(_localMainConnectionInfo.TestConnection() ? Resources.ConnSucc : Resources.ConnFail);
+        }
+
+        [Serializable]
+        public class ConnectionInfo : ICloneable
+        {
+            public string Database;
+            public bool IntegratedAuth;
+            public string Login;
+            public string Password;
+
+            public string Server;
+            public Form1.QueryStressSettings Settings;
+
+            public ConnectionInfo()
+            {
+                Server = "";
+                IntegratedAuth = true;
+                Login = "";
+                Password = "";
+                Database = "";
+            }
+
+            public ConnectionInfo(Form1.QueryStressSettings settings)
+            {
+                Server = "";
+                IntegratedAuth = true;
+                Login = "";
+                Password = "";
+                Database = "";
+                Settings = settings;
+            }
+
+            public string ConnectionString
+            {
+                get
+                {
+                    var build = new SqlConnectionStringBuilder {DataSource = Server, IntegratedSecurity = IntegratedAuth};
+                    if (!IntegratedAuth)
+                    {
+                        build.UserID = Login;
+                        build.Password = Password;
+                    }
+
+                    if (Database.Length > 0)
+                        build.InitialCatalog = Database;
+
+                    if (Settings != null)
+                    {
+                        build.ConnectTimeout = Settings.ConnectionTimeout;
+                        build.Pooling = Settings.EnableConnectionPooling;
+                        build.MaxPoolSize = Settings.NumThreads * 2;
+                    }
+
+                    return build.ConnectionString;
+                }
+            }
+
+            #region ICloneable Members
+
+            public object Clone()
+            {
+                var newConnInfo = new ConnectionInfo();
+                CopyTo(newConnInfo);
+
+                return newConnInfo;
+            }
+
+            #endregion
+
+            public void CopyTo(ConnectionInfo to)
+            {
+                to.Server = Server;
+                to.IntegratedAuth = IntegratedAuth;
+                to.Login = Login;
+                to.Password = Password;
+                to.Database = Database;
+            }
+
+            public bool TestConnection()
+            {
+                if ((Server == "") || ((IntegratedAuth == false) && (Login == "" || Password == "")))
+                    return false;
+
+                using (var conn = new SqlConnection(ConnectionString))
+                {
+                    try
+                    {
+                        conn.Open();
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
             }
         }
     }
