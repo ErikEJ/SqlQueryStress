@@ -510,7 +510,7 @@ namespace SQLQueryStress
             }
 
             [OnDeserialized]
-            internal void FixSettings(StreamingContext context)
+            private void FixSettings(StreamingContext context)
             {
                 ConnectionTimeout = ConnectionTimeout == 0 ? 15 : ConnectionTimeout;
             }
