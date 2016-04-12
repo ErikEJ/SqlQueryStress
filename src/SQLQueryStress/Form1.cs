@@ -303,7 +303,11 @@ namespace SQLQueryStress
                     fs.Dispose();
             }
 
-            query_textBox.Text = _settings.MainQuery;
+            var sqlControl = elementHost1.Child as SqlControl;
+            if (sqlControl != null)
+            {
+                sqlControl.Text = _settings.MainQuery;
+            }
             threads_numericUpDown.Value = _settings.NumThreads;
             iterations_numericUpDown.Value = _settings.NumIterations;
         }
@@ -321,8 +325,12 @@ namespace SQLQueryStress
 
         private void param_button_Click(object sender, EventArgs e)
         {
-            var p = new ParamWindow(_settings, query_textBox.Text) {StartPosition = FormStartPosition.CenterParent};
-            p.ShowDialog();
+            var sqlControl = elementHost1.Child as SqlControl;
+            if (sqlControl != null)
+            {
+                var p = new ParamWindow(_settings, sqlControl.Text) {StartPosition = FormStartPosition.CenterParent};
+                p.ShowDialog();
+            }
         }
 
         private void saveFileDialog1_FileOk(object sender, EventArgs e)
@@ -349,7 +357,8 @@ namespace SQLQueryStress
 
         private void SaveSettingsFromForm1()
         {
-            _settings.MainQuery = query_textBox.Text;
+            var sqlControl = elementHost1.Child as SqlControl;
+            if (sqlControl != null) _settings.MainQuery =  sqlControl.Text;
             _settings.NumThreads = (int) threads_numericUpDown.Value;
             _settings.NumIterations = (int) iterations_numericUpDown.Value;
         }
