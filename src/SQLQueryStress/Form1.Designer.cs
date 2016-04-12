@@ -48,7 +48,6 @@ namespace SQLQueryStress
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.query_textBox = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -97,6 +96,8 @@ namespace SQLQueryStress
             this.btnFreeCache = new System.Windows.Forms.Button();
             this.btnCleanBuffer = new System.Windows.Forms.Button();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.sqlControl1 = new SQLQueryStress.SqlControl();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.iterations_numericUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.threads_numericUpDown)).BeginInit();
@@ -106,18 +107,6 @@ namespace SQLQueryStress
             this.tableLayoutPanel4.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // query_textBox
-            // 
-            this.query_textBox.AcceptsTab = true;
-            this.query_textBox.AllowDrop = true;
-            this.query_textBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.query_textBox.Location = new System.Drawing.Point(3, 3);
-            this.query_textBox.Name = "query_textBox";
-            this.query_textBox.Size = new System.Drawing.Size(317, 354);
-            this.query_textBox.TabIndex = 0;
-            this.query_textBox.Text = "";
-            this.query_textBox.WordWrap = false;
             // 
             // label1
             // 
@@ -669,8 +658,8 @@ namespace SQLQueryStress
             this.tableLayoutPanel3.ColumnCount = 2;
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel3.Controls.Add(this.query_textBox, 0, 0);
             this.tableLayoutPanel3.Controls.Add(this.tableLayoutPanel1, 1, 0);
+            this.tableLayoutPanel3.Controls.Add(this.elementHost1, 0, 0);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel3.Location = new System.Drawing.Point(0, 24);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
@@ -678,6 +667,16 @@ namespace SQLQueryStress
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel3.Size = new System.Drawing.Size(733, 360);
             this.tableLayoutPanel3.TabIndex = 33;
+            // 
+            // elementHost1
+            // 
+            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.elementHost1.Location = new System.Drawing.Point(3, 3);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(317, 354);
+            this.elementHost1.TabIndex = 33;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = this.sqlControl1;
             // 
             // Form1
             // 
@@ -711,8 +710,6 @@ namespace SQLQueryStress
         }
 
         #endregion
-
-        private System.Windows.Forms.RichTextBox query_textBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.Button go_button;
@@ -761,6 +758,8 @@ namespace SQLQueryStress
         private TableLayoutPanel tableLayoutPanel4;
         private Button btnFreeCache;
         private Button btnCleanBuffer;
+        private System.Windows.Forms.Integration.ElementHost elementHost1;
+        private SqlControl sqlControl1;
     }
 }
 
