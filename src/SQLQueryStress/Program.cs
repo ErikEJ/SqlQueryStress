@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -24,13 +25,19 @@ namespace SQLQueryStress
 
         private static Assembly OnResolveAssembly(object sender, ResolveEventArgs args)
         {
-            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("SQLQueryStress.Resources.ICSharpCode.AvalonEdit.dll"))
+            var dllName = new AssemblyName(args.Name).Name + ".dll";
+            var assem = Assembly.GetExecutingAssembly();
+            var resourceName = assem.GetManifestResourceNames().FirstOrDefault(rn => rn.EndsWith(dllName));
+            if (resourceName == null) return null; // Not found, maybe another handler will find it
+            using (var stream = assem.GetManifestResourceStream(resourceName))
             {
                 if (stream == null)
+                {
                     return null;
-                var assemblyRawBytes = new byte[stream.Length];
-                stream.Read(assemblyRawBytes, 0, assemblyRawBytes.Length);
-                return Assembly.Load(assemblyRawBytes);
+                }
+                var assemblyData = new byte[stream.Length];
+                stream.Read(assemblyData, 0, assemblyData.Length);
+                return Assembly.Load(assemblyData);
             }
         }
     }
