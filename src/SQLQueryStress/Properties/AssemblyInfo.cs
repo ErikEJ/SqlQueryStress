@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("SQLQueryStress")]
 [assembly: AssemblyDescription("SQL Server Load Test Tool")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("amachanic@gmail.com")]
+[assembly: AssemblyCompany("ejlskov@hotmail.com")]
 [assembly: AssemblyProduct("SQLQueryStress")]
 [assembly: AssemblyCopyright("Copyright ©  2006, 2007 Adam Machanic")]
 [assembly: AssemblyTrademark("")]

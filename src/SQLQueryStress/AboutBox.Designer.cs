@@ -140,8 +140,8 @@ namespace SQLQueryStress
             this.textBoxDescription.Size = new System.Drawing.Size(271, 126);
             this.textBoxDescription.TabIndex = 23;
             this.textBoxDescription.TabStop = false;
-            this.textBoxDescription.Text = "Please visit http://www.datamanipulation.net/SQLQueryStress for documentation and" +
-                " updates!";
+            this.textBoxDescription.Text = "Please visit https://github.com/ErikEJ/SqlQueryStress for documentation and updat" +
+    "es!";
             this.textBoxDescription.Click += new System.EventHandler(this.textBoxDescription_Click);
             // 
             // okButton
