@@ -80,6 +80,7 @@ namespace SQLQueryStress
             dbSelect.ShowDialog();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         private void getColumnsButton_Click(object sender, EventArgs e)
         {
             _queryVariables = GetParams();

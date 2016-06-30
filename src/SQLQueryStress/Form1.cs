@@ -105,7 +105,7 @@ namespace SQLQueryStress
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            int tmp = 0;
+            int tmp;
             ((LoadEngine) e.Argument).StartLoad(backgroundWorker1, (Int32.TryParse(queryDelay_textBox.Text, out tmp) ? tmp : 0));
         }
 
@@ -243,8 +243,8 @@ namespace SQLQueryStress
             _totalReadMessages = 0;
             _totalExceptions = 0;
 
-            iterationsSecond_textBox.Text = "0";
-            avgSeconds_textBox.Text = "0.0";
+            iterationsSecond_textBox.Text = @"0";
+            avgSeconds_textBox.Text = @"0.0";
             actualSeconds_textBox.Text = Dashes;
             cpuTime_textBox.Text = Dashes;
             logicalReads_textBox.Text = Dashes;
@@ -260,7 +260,7 @@ namespace SQLQueryStress
             _totalExpectedIterations = _settings.NumThreads * _settings.NumIterations;
 
             var paramConnectionInfo = _settings.ShareDbSettings ? _settings.MainDbConnectionInfo : _settings.ParamDbConnectionInfo;
-            db_label.Text = "" + "Server: " + paramConnectionInfo.Server +
+            db_label.Text = "" + @"Server: " + paramConnectionInfo.Server +
                             (paramConnectionInfo.Database.Length > 0 ? "  //  Database: " + paramConnectionInfo.Database : "");
 
             var engine = new LoadEngine(_settings.MainDbConnectionInfo.ConnectionString, _settings.MainQuery, _settings.NumThreads, _settings.NumIterations,
@@ -424,7 +424,7 @@ namespace SQLQueryStress
             if (theTime.Length > 8)
                 elapsedTime_textBox.Text = theTime.Substring(0, 13);
             else
-                elapsedTime_textBox.Text = theTime + ".0000";
+                elapsedTime_textBox.Text = theTime + @".0000";
         }
 
         [Serializable]

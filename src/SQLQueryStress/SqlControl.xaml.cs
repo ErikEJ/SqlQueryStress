@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 
 namespace SQLQueryStress
 {
@@ -20,15 +21,24 @@ namespace SQLQueryStress
 
         private void SqlControl_OnLoaded(object sender, RoutedEventArgs e)
         {
-            using (var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("SQLQueryStress.Resources.SQL.xshd"))
+            Stream stream = null;
+            try
             {
+                stream =
+                    System.Reflection.Assembly.GetExecutingAssembly()
+                        .GetManifestResourceStream("SQLQueryStress.Resources.SQL.xshd");
                 if (stream == null) return;
                 using (var reader = new System.Xml.XmlTextReader(stream))
                 {
+                    stream = null;
                     AvalonEdit.SyntaxHighlighting =
                         ICSharpCode.AvalonEdit.Highlighting.Xshd.HighlightingLoader.Load(reader,
                             ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance);
                 }
+            }
+            finally
+            {
+                stream?.Dispose();
             }
         }
     }
