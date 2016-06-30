@@ -31,7 +31,7 @@ namespace SQLQueryStress
         private readonly string _query;
         private readonly List<Thread> _threadPool = new List<Thread>();
         private readonly int _threads;
-        private int _queryDelay = 0;
+        private int _queryDelay;
 
         public LoadEngine(string connectionString, string query, int threads, int iterations, string paramQuery, Dictionary<string, string> paramMappings,
             string paramConnectionString, int commandTimeout, bool collectIoStats, bool collectTimeStats, bool forceDataRetrieval)
@@ -53,6 +53,7 @@ namespace SQLQueryStress
             _forceDataRetrieval = forceDataRetrieval;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public static bool ExecuteCommand(string connectionString, string sql)
         {
             using (var conn = new SqlConnection(connectionString))
@@ -73,6 +74,7 @@ namespace SQLQueryStress
             StartLoad(worker);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         private void StartLoad(BackgroundWorker worker)
         {
             var useParams = false;
@@ -289,6 +291,7 @@ namespace SQLQueryStress
                 return newParam;
             }
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
             public static void Initialize(string paramQuery, string connString, Dictionary<string, string> paramMappings)
             {
                 var a = new SqlDataAdapter(paramQuery, connString);
@@ -343,7 +346,7 @@ namespace SQLQueryStress
             private readonly bool _forceDataRetrieval;
             //          private readonly Queue<queryOutput> queryOutInfo;
             private readonly int _iterations;
-            private readonly int _queryDelay = 0;
+            private readonly int _queryDelay;
 
             public QueryInput(SqlCommand statsComm, SqlCommand queryComm,
 //                Queue<queryOutput> queryOutInfo,
@@ -442,6 +445,7 @@ namespace SQLQueryStress
                                         while (reader.Read())
                                         {
                                             //grab the first column to force the row down the pipe
+                                            // ReSharper disable once UnusedVariable
                                             var x = reader[0];
                                             Thread.Sleep(0);
                                         }
@@ -472,7 +476,6 @@ namespace SQLQueryStress
                                 //Clean up the connection
                                 if (_statsComm != null)
                                     conn.InfoMessage -= handler;
-                                conn.Close();
                             }
 
                             var finished = i == _iterations - 1;
