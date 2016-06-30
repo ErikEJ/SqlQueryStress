@@ -31,6 +31,7 @@ namespace SQLQueryStress
         private readonly string _query;
         private readonly List<Thread> _threadPool = new List<Thread>();
         private readonly int _threads;
+        private int _queryDelay = 0;
 
         public LoadEngine(string connectionString, string query, int threads, int iterations, string paramQuery, Dictionary<string, string> paramMappings,
             string paramConnectionString, int commandTimeout, bool collectIoStats, bool collectTimeStats, bool forceDataRetrieval)
@@ -65,7 +66,14 @@ namespace SQLQueryStress
             }
         }
 
-        public void StartLoad(BackgroundWorker worker)
+        public void StartLoad(BackgroundWorker worker, int queryDelay)
+        {
+            _queryDelay = queryDelay;
+
+            StartLoad(worker);
+        }
+
+        private void StartLoad(BackgroundWorker worker)
         {
             var useParams = false;
 
@@ -128,7 +136,7 @@ namespace SQLQueryStress
 
                 var input = new QueryInput(statsComm, queryComm,
 //                    this.queryOutInfo,
-                    _iterations, _forceDataRetrieval);
+                    _iterations, _forceDataRetrieval, _queryDelay);
 
                 var theThread = new Thread(input.StartLoadThread) {Priority = ThreadPriority.BelowNormal};
 
@@ -335,16 +343,18 @@ namespace SQLQueryStress
             private readonly bool _forceDataRetrieval;
             //          private readonly Queue<queryOutput> queryOutInfo;
             private readonly int _iterations;
+            private readonly int _queryDelay = 0;
 
             public QueryInput(SqlCommand statsComm, SqlCommand queryComm,
 //                Queue<queryOutput> queryOutInfo,
-                int iterations, bool forceDataRetrieval)
+                int iterations, bool forceDataRetrieval, int queryDelay)
             {
                 _statsComm = statsComm;
                 _queryComm = queryComm;
 //                this.queryOutInfo = queryOutInfo;
                 _iterations = iterations;
                 _forceDataRetrieval = forceDataRetrieval;
+                _queryDelay = queryDelay;
 
                 //Prepare the infoMessages collection, if we are collecting statistics
                 //if (stats_comm != null)
@@ -494,6 +504,8 @@ namespace SQLQueryStress
                             //    infoMessages.Clear();
 
                             _sw.Reset();
+
+                            Thread.Sleep(_queryDelay);
                         }
                     }
                 }
