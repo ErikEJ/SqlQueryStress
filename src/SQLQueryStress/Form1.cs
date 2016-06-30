@@ -105,7 +105,8 @@ namespace SQLQueryStress
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            ((LoadEngine) e.Argument).StartLoad(backgroundWorker1);
+            int tmp = 0;
+            ((LoadEngine) e.Argument).StartLoad(backgroundWorker1, (Int32.TryParse(queryDelay_textBox.Text, out tmp) ? tmp : 0));
         }
 
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
