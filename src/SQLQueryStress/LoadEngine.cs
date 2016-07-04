@@ -476,6 +476,8 @@ namespace SQLQueryStress
                                 //Clean up the connection
                                 if (_statsComm != null)
                                     conn.InfoMessage -= handler;
+                                //TODO Fix warning, but leave this for now!!
+                                conn.Close();
                             }
 
                             var finished = i == _iterations - 1;
