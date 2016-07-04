@@ -393,6 +393,7 @@ namespace SQLQueryStress
                 }
             }
 
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
             public void StartLoadThread()
             {
                 try
@@ -414,14 +415,17 @@ namespace SQLQueryStress
                                 //initialize the outInfo structure
                                 _outInfo = new QueryOutput();
 
-                                conn.Open();
-
-                                //set up the statistics gathering
-                                if (_statsComm != null)
+                                if (conn != null)
                                 {
-                                    _statsComm.ExecuteNonQuery();
-                                    Thread.Sleep(0);
-                                    conn.InfoMessage += handler;
+                                    conn.Open();
+
+                                    //set up the statistics gathering
+                                    if (_statsComm != null)
+                                    {
+                                        _statsComm.ExecuteNonQuery();
+                                        Thread.Sleep(0);
+                                        conn.InfoMessage += handler;
+                                    }
                                 }
 
                                 //Params are assigned only once -- after that, their values are dynamically retrieved
@@ -474,10 +478,9 @@ namespace SQLQueryStress
                             finally
                             {
                                 //Clean up the connection
-                                if (_statsComm != null)
+                                if (_statsComm != null && conn != null)
                                     conn.InfoMessage -= handler;
-                                //TODO Fix warning, but leave this for now!!
-                                conn.Close();
+                                conn?.Close();
                             }
 
                             var finished = i == _iterations - 1;
