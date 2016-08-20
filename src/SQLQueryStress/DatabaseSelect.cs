@@ -340,7 +340,7 @@ namespace SQLQueryStress
             {
                 get
                 {
-                    var build = new SqlConnectionStringBuilder {DataSource = Server, IntegratedSecurity = IntegratedAuth};
+                    var build = new SqlConnectionStringBuilder {DataSource = Server, IntegratedSecurity = IntegratedAuth, ApplicationName = "SQLQueryStress"};
                     if (!IntegratedAuth)
                     {
                         build.UserID = Login;
