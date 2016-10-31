@@ -17,8 +17,8 @@ namespace SQLQueryStress
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            var f = args.Length > 0 ? new Form1(args[0]) : new Form1();
-
+            bool autoStart = (args.Length > 1) ? Convert.ToBoolean(args[1]) : false;
+            var f = args.Length > 0 ? new Form1(args[0], autoStart) : new Form1();
             f.StartPosition = FormStartPosition.CenterScreen;
             Application.Run(f);
         }

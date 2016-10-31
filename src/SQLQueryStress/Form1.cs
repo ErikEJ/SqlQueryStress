@@ -66,6 +66,8 @@ namespace SQLQueryStress
 
         //This is the total time as reported by the client
         private double _totalTime;
+
+        private bool _autoStart;
         //Number of query requests that returned time messages
         //Note:: Average times will be computed by:
         // A) Add up all results from time messages returned by 
@@ -79,9 +81,12 @@ namespace SQLQueryStress
         //WAITFOR DELAY '00:00:05'  (1300 ms?? WTF??)
         private int _totalTimeMessages;
 
-        public Form1(string configFile) : this()
+        public Form1(string configFile, bool autoStart) : this()
         {
             OpenConfigFile(configFile);
+
+            // set the start processing after form is loaded
+            if (_autoStart = autoStart) Load += StartProcessing;
         }
 
         public Form1()
@@ -95,6 +100,11 @@ namespace SQLQueryStress
             openFileDialog1.DefaultExt = "sqlstress";
             openFileDialog1.Filter = @"SQLQueryStress Configuration Files|*.sqlstress";
             openFileDialog1.FileOk += openFileDialog1_FileOk;
+        }
+
+        private void StartProcessing(Object sender, EventArgs e)
+        {
+            go_button.PerformClick();
         }
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -185,7 +195,8 @@ namespace SQLQueryStress
 
             db_label.Text = "";
 
-            if (_exitOnComplete)
+            // if we started automatically exit when done
+            if (_exitOnComplete || _autoStart)
             {
                 Dispose();
             }
