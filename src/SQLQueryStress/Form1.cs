@@ -67,7 +67,7 @@ namespace SQLQueryStress
         //This is the total time as reported by the client
         private double _totalTime;
 
-        private bool _autoStart;
+        private bool _unattendedMode;
         //Number of query requests that returned time messages
         //Note:: Average times will be computed by:
         // A) Add up all results from time messages returned by 
@@ -81,12 +81,16 @@ namespace SQLQueryStress
         //WAITFOR DELAY '00:00:05'  (1300 ms?? WTF??)
         private int _totalTimeMessages;
 
-        public Form1(string configFile, bool autoStart) : this()
+        public Form1(string configFile, bool unattendedMode, int numThreads) : this()
         {
-            OpenConfigFile(configFile);
+            // load config file if specified
+            if (configFile.Length > 0) OpenConfigFile(configFile);
 
             // set the start processing after form is loaded
-            if (_autoStart = autoStart) Load += StartProcessing;
+            if (_unattendedMode = unattendedMode) Load += StartProcessing;
+            
+            // are we overriding the config file?
+            if (numThreads > 0) threads_numericUpDown.Value = _settings.NumThreads = numThreads;
         }
 
         public Form1()
@@ -196,7 +200,7 @@ namespace SQLQueryStress
             db_label.Text = "";
 
             // if we started automatically exit when done
-            if (_exitOnComplete || _autoStart)
+            if (_exitOnComplete || _unattendedMode)
             {
                 Dispose();
             }
