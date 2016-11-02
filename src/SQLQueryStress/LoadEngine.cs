@@ -480,7 +480,7 @@ namespace SQLQueryStress
                                 //Clean up the connection
                                 if (_statsComm != null && conn != null)
                                     conn.InfoMessage -= handler;
-                                conn.Close();
+                                conn?.Close();
                             }
 
                             var finished = i == _iterations - 1;
