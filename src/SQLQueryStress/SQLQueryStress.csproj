@@ -93,6 +93,33 @@
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
     <Compile Include="BlockedBoundedBuffer.cs" />
+    <Compile Include="CommandLineOptions.cs" />
+    <Compile Include="CommandLineParser\Attributes\BaseOptionAttribute.cs" />
+    <Compile Include="CommandLineParser\Attributes\HelpOptionAttribute.cs" />
+    <Compile Include="CommandLineParser\Attributes\OptionAttribute.cs" />
+    <Compile Include="CommandLineParser\Attributes\OptionListAttribute.cs" />
+    <Compile Include="CommandLineParser\Attributes\ValueListAttribute.cs" />
+    <Compile Include="CommandLineParser\CommandLineParser.cs" />
+    <Compile Include="CommandLineParser\Core\ArgumentParser.cs" />
+    <Compile Include="CommandLineParser\Core\CharEnumeratorEx.cs" />
+    <Compile Include="CommandLineParser\Core\IOptionMap.cs" />
+    <Compile Include="CommandLineParser\Core\IStringEnumerator.cs" />
+    <Compile Include="CommandLineParser\Core\LongOptionParser.cs" />
+    <Compile Include="CommandLineParser\Core\OptionGroupParser.cs" />
+    <Compile Include="CommandLineParser\Core\OptionInfo.cs" />
+    <Compile Include="CommandLineParser\Core\OptionMap.cs" />
+    <Compile Include="CommandLineParser\Core\PairT.cs" />
+    <Compile Include="CommandLineParser\Core\ParserState.cs" />
+    <Compile Include="CommandLineParser\Core\StringEnumeratorEx.cs" />
+    <Compile Include="CommandLineParser\Exceptions\IncompatibleTypesException.cs" />
+    <Compile Include="CommandLineParser\Exceptions\ParserException.cs" />
+    <Compile Include="CommandLineParser\ICommandLineParser.cs" />
+    <Compile Include="CommandLineParser\Parser.cs" />
+    <Compile Include="CommandLineParser\Text\CopyrightInfo.cs" />
+    <Compile Include="CommandLineParser\Text\HeadingInfo.cs" />
+    <Compile Include="CommandLineParser\Text\HelpText.cs" />
+    <Compile Include="CommandLineParser\Util\ReflectionUtil.cs" />
+    <Compile Include="CommandLineParser\Util\Validator.cs" />
     <Compile Include="DatabaseSelect.cs">
       <SubType>Form</SubType>
     </Compile>
