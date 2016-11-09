@@ -15,8 +15,6 @@ using SQLQueryStress.Properties;
 /*********************************************
 TODO, version 1.0::::
  * figure out how to capture change of selection in parameter definer
- * Bug: Dotfuscated version crashes in some cases (need to verify this)
- * Bug: Dotfuscated version can't load non-dotfuscated .sqlstress files
  * 
  * Throw a message box if param database has not been selected, or if can't connect (if parameterization is on)
  * repaint exception window when datatable is updated
@@ -67,7 +65,7 @@ namespace SQLQueryStress
         //This is the total time as reported by the client
         private double _totalTime;
 
-        private bool _unattendedMode;
+        private readonly bool _unattendedMode;
         //Number of query requests that returned time messages
         //Note:: Average times will be computed by:
         // A) Add up all results from time messages returned by 
@@ -83,11 +81,17 @@ namespace SQLQueryStress
 
         public Form1(string configFile, bool unattendedMode, int numThreads) : this()
         {
+            var fileExists = File.Exists(configFile);
             // load config file if specified
-            if (configFile.Length > 0) OpenConfigFile(configFile);
+            if (!string.IsNullOrWhiteSpace(configFile)
+                && fileExists)
+            {
+                OpenConfigFile(configFile);
+            }
 
             // set the start processing after form is loaded
-            if (_unattendedMode = unattendedMode) Load += StartProcessing;
+            _unattendedMode = unattendedMode;
+            if (unattendedMode && fileExists) Load += StartProcessing;
             
             // are we overriding the config file?
             if (numThreads > 0) threads_numericUpDown.Value = _settings.NumThreads = numThreads;
@@ -388,8 +392,6 @@ namespace SQLQueryStress
         private void totalExceptions_textBox_Click(object sender, EventArgs e)
         {
             _exceptionViewer = new DataViewer {StartPosition = FormStartPosition.CenterParent, Text = Resources.Exceptions};
-
-
 
             var dt = new DataTable();
             dt.Columns.Add("Count");
