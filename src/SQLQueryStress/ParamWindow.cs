@@ -47,7 +47,7 @@ namespace SQLQueryStress
             //TODO: Which event to handle?!?!
             columnMapGrid.CellEndEdit += columnMapGrid_CellValueChanged;
 
-            if ((outerQuery.Length > 0) && (sqlControl.Text.Length > 0))
+            if (sqlControl != null && ((outerQuery.Length > 0) && (sqlControl.Text.Length > 0)))
             {
                 getColumnsButton_Click("constructor", null);
             }
