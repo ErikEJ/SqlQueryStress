@@ -38,7 +38,11 @@ namespace SQLQueryStress
         {
             //Set the min pool size so that the pool does not have
             //to get allocated in real-time
-            var builder = new SqlConnectionStringBuilder(connectionString) {MinPoolSize = threads};
+            var builder = new SqlConnectionStringBuilder(connectionString)
+            {
+                MinPoolSize = threads,
+                CurrentLanguage = "English"
+            };
 
             _connectionString = builder.ConnectionString;
             _query = query;
