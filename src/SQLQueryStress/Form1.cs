@@ -428,7 +428,7 @@ namespace SQLQueryStress
             logicalReads_textBox.Text = _totalReadMessages == 0 ? "---" : avgReads.ToString("0.0000");
 
             totalExceptions_textBox.Text = _totalExceptions.ToString();
-            progressBar1.Value = (int) (_totalIterations / (decimal) _totalExpectedIterations * 100);
+            progressBar1.Value = Math.Min((int) (_totalIterations / (decimal) _totalExpectedIterations * 100), 100);
 
             var end = new TimeSpan(DateTime.Now.Ticks);
             end = end.Subtract(_start);
