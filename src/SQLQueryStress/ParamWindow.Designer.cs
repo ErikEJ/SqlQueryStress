@@ -32,13 +32,14 @@ namespace SQLQueryStress
             this.Column = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Datatype = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Parameter = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.paramQueryTextBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.getColumnsButton = new System.Windows.Forms.Button();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.database_button = new System.Windows.Forms.Button();
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.sqlControl1 = new SQLQueryStress.SqlControl();
             ((System.ComponentModel.ISupportInitialize)(this.columnMapGrid)).BeginInit();
             this.SuspendLayout();
             // 
@@ -74,18 +75,6 @@ namespace SQLQueryStress
             this.Parameter.HeaderText = "Column";
             this.Parameter.Name = "Parameter";
             this.Parameter.Width = 130;
-            // 
-            // paramQueryTextBox
-            // 
-            this.paramQueryTextBox.AcceptsReturn = true;
-            this.paramQueryTextBox.AcceptsTab = true;
-            this.paramQueryTextBox.AllowDrop = true;
-            this.paramQueryTextBox.Location = new System.Drawing.Point(12, 26);
-            this.paramQueryTextBox.Multiline = true;
-            this.paramQueryTextBox.Name = "paramQueryTextBox";
-            this.paramQueryTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.paramQueryTextBox.Size = new System.Drawing.Size(435, 186);
-            this.paramQueryTextBox.TabIndex = 1;
             // 
             // label1
             // 
@@ -152,6 +141,15 @@ namespace SQLQueryStress
             this.database_button.UseVisualStyleBackColor = true;
             this.database_button.Click += new System.EventHandler(this.database_button_Click);
             // 
+            // elementHost1
+            // 
+            this.elementHost1.Location = new System.Drawing.Point(15, 36);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(432, 177);
+            this.elementHost1.TabIndex = 8;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = this.sqlControl1;
+            // 
             // ParamWindow
             // 
             this.AcceptButton = this.okButton;
@@ -159,13 +157,13 @@ namespace SQLQueryStress
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(462, 500);
+            this.Controls.Add(this.elementHost1);
             this.Controls.Add(this.database_button);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.getColumnsButton);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.paramQueryTextBox);
             this.Controls.Add(this.columnMapGrid);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -181,8 +179,6 @@ namespace SQLQueryStress
         }
 
         #endregion
-
-        private System.Windows.Forms.TextBox paramQueryTextBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button getColumnsButton;
         private System.Windows.Forms.Button okButton;
@@ -193,5 +189,7 @@ namespace SQLQueryStress
         private System.Windows.Forms.DataGridViewTextBoxColumn Column;
         private System.Windows.Forms.DataGridViewTextBoxColumn Datatype;
         private System.Windows.Forms.DataGridViewTextBoxColumn Parameter;
+        private System.Windows.Forms.Integration.ElementHost elementHost1;
+        private SqlControl sqlControl1;
     }
 }

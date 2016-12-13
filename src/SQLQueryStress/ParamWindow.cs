@@ -34,7 +34,11 @@ namespace SQLQueryStress
 
             _outerQuery = outerQuery;
 
-            paramQueryTextBox.Text = (string) settings.ParamQuery.Clone();
+            var sqlControl = elementHost1.Child as SqlControl;
+            if (sqlControl != null)
+            {
+                sqlControl.Text = (string)settings.ParamQuery.Clone();
+            }
 
             columnMapGrid.Columns[0].SortMode = DataGridViewColumnSortMode.NotSortable;
             columnMapGrid.Columns[1].SortMode = DataGridViewColumnSortMode.NotSortable;
@@ -43,7 +47,7 @@ namespace SQLQueryStress
             //TODO: Which event to handle?!?!
             columnMapGrid.CellEndEdit += columnMapGrid_CellValueChanged;
 
-            if ((outerQuery.Length > 0) && (paramQueryTextBox.Text.Length > 0))
+            if ((outerQuery.Length > 0) && (sqlControl.Text.Length > 0))
             {
                 getColumnsButton_Click("constructor", null);
             }
@@ -99,9 +103,13 @@ namespace SQLQueryStress
             {
                 try
                 {
-                    var comm = new SqlCommand(paramQueryTextBox.Text, conn);
-                    conn.Open();
-                    reader = comm.ExecuteReader(CommandBehavior.SchemaOnly);
+                    var sqlControl = elementHost1.Child as SqlControl;
+                    if (sqlControl != null)
+                    {
+                        var comm = new SqlCommand(sqlControl.Text, conn);
+                        conn.Open();
+                        reader = comm.ExecuteReader(CommandBehavior.SchemaOnly);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -184,7 +192,11 @@ namespace SQLQueryStress
 
         private void okButton_Click(object sender, EventArgs e)
         {
-            _settings.ParamQuery = paramQueryTextBox.Text;
+            var sqlControl = elementHost1.Child as SqlControl;
+            if (sqlControl != null)
+            {
+                _settings.ParamQuery = sqlControl.Text;
+            }
 
             var localParamMappings = new Dictionary<string, string>();
             foreach (DataGridViewRow row in columnMapGrid.Rows)
