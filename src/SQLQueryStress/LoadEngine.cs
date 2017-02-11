@@ -482,9 +482,14 @@ namespace SQLQueryStress
                             finally
                             {
                                 //Clean up the connection
-                                if (_statsComm != null && conn != null)
-                                    conn.InfoMessage -= handler;
-                                conn?.Close();
+                                if (conn != null)
+                                {
+                                    if (_statsComm != null)
+                                    {
+                                        conn.InfoMessage -= handler;               
+                                    }
+                                    conn.Close();    
+                                }
                             }
 
                             var finished = i == _iterations - 1;

@@ -38,7 +38,8 @@ namespace SQLQueryStress
             }
             finally
             {
-                stream?.Dispose();
+                if (stream != null)
+                    stream.Dispose();    
             }
         }
     }
