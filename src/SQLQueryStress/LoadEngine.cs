@@ -331,7 +331,7 @@ namespace SQLQueryStress
             private static bool _runCancelled;
             //This regex is used to find the number of logical reads
             //in the messages collection returned in the queryOutput class
-            private static readonly Regex FindReads = new Regex(@"(?:Table \'\w{1,}\'. Scan count \d{1,}, logical reads )(\d{1,})", RegexOptions.Compiled);
+            private static readonly Regex FindReads = new Regex(@"(?:Table (\'\w{1,}\'|'#\w{1,}\'|'##\w{1,}\'). Scan count \d{1,}, logical reads )(\d{1,})", RegexOptions.Compiled);
 
             //This regex is used to find the CPU and elapsed time
             //in the messages collection returned in the queryOutput class
@@ -382,7 +382,7 @@ namespace SQLQueryStress
                     //we have a read
                     if (matches.Length > 1)
                     {
-                        _outInfo.LogicalReads += Convert.ToInt32(matches[1]);
+                        _outInfo.LogicalReads += Convert.ToInt32(matches[2]);
                         continue;
                     }
 
