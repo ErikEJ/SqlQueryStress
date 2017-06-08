@@ -84,8 +84,34 @@ namespace SQLQueryStress
             authentication_comboBox.SelectedIndexChanged += authentication_comboBox_SelectedIndexChanged;
             pm_authentication_comboBox.SelectedIndexChanged += pm_authentication_comboBox_SelectedIndexChanged;
 
-            db_comboBox.Click += db_comboBox_Click;
+            db_comboBox.Enter += Db_comboBox_Enter;
+            db_comboBox.Leave += Db_comboBox_Leave;
             pm_db_comboBox.Click += pm_db_comboBox_Click;
+            server_textBox.KeyDown += Server_textBox_KeyDown;
+        }
+
+        private void Server_textBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            db_comboBox.SelectedIndex = -1;
+        }
+
+        private void Db_comboBox_Leave(object sender, EventArgs e)
+        {
+            if ((db_comboBox.SelectedValue == null || db_comboBox.Text != db_comboBox.SelectedItem.ToString()) && db_comboBox.Items.Contains(db_comboBox.Text))
+            {
+                db_comboBox.SelectedItem = db_comboBox.Text;
+            }
+        }
+
+        private void Db_comboBox_Enter(object sender, EventArgs e)
+        {
+            string _prevSelectedValue = db_comboBox.SelectedValue != null ? db_comboBox.SelectedValue.ToString() : string.Empty;
+            ReloadDatabaseList();
+
+            if (db_comboBox.Items.Contains(_prevSelectedValue))
+            {
+                db_comboBox.SelectedItem = _prevSelectedValue;
+            }
         }
 
         private void authentication_comboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -107,7 +133,7 @@ namespace SQLQueryStress
             Dispose();
         }
 
-        private void db_comboBox_Click(object sender, EventArgs e)
+        private void ReloadDatabaseList()
         {
             SaveLocalSettings();
 
@@ -140,7 +166,7 @@ namespace SQLQueryStress
                     {
                         //Clear the db, try again
                         db_comboBox.Items.Clear();
-                        db_comboBox_Click(null, null);
+                        ReloadDatabaseList();
                         return;
                     }
                 }
