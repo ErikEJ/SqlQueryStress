@@ -40,6 +40,7 @@ namespace SQLQueryStress
             this.connectionTimeout_numericUpDown = new System.Windows.Forms.NumericUpDown();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.commandTimeout_numericUpDown = new System.Windows.Forms.NumericUpDown();
+            this.killQueriesOnCancel_checkBox = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.connectionTimeout_numericUpDown)).BeginInit();
             this.groupBox2.SuspendLayout();
@@ -113,7 +114,7 @@ namespace SQLQueryStress
             // ok_button
             // 
             this.ok_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ok_button.Location = new System.Drawing.Point(344, 145);
+            this.ok_button.Location = new System.Drawing.Point(344, 170);
             this.ok_button.Name = "ok_button";
             this.ok_button.Size = new System.Drawing.Size(75, 23);
             this.ok_button.TabIndex = 8;
@@ -125,7 +126,7 @@ namespace SQLQueryStress
             // 
             this.cancel_button.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cancel_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cancel_button.Location = new System.Drawing.Point(425, 145);
+            this.cancel_button.Location = new System.Drawing.Point(425, 170);
             this.cancel_button.Name = "cancel_button";
             this.cancel_button.Size = new System.Drawing.Size(75, 23);
             this.cancel_button.TabIndex = 9;
@@ -140,7 +141,7 @@ namespace SQLQueryStress
             this.groupBox1.Controls.Add(this.connectionPooling_checkBox);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(241, 127);
+            this.groupBox1.Size = new System.Drawing.Size(241, 150);
             this.groupBox1.TabIndex = 10;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Connection Options";
@@ -169,6 +170,7 @@ namespace SQLQueryStress
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.killQueriesOnCancel_checkBox);
             this.groupBox2.Controls.Add(this.commandTimeout_numericUpDown);
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.IOStatistics_checkBox);
@@ -176,7 +178,7 @@ namespace SQLQueryStress
             this.groupBox2.Controls.Add(this.clientDataRetrieval_checkBox);
             this.groupBox2.Location = new System.Drawing.Point(259, 12);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(241, 127);
+            this.groupBox2.Size = new System.Drawing.Size(241, 150);
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Command Options";
@@ -194,13 +196,24 @@ namespace SQLQueryStress
             this.commandTimeout_numericUpDown.TabIndex = 8;
             this.commandTimeout_numericUpDown.Tag = "";
             // 
+            // killQueriesOnCancel_checkBox
+            // 
+            this.killQueriesOnCancel_checkBox.AutoSize = true;
+            this.killQueriesOnCancel_checkBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.killQueriesOnCancel_checkBox.Location = new System.Drawing.Point(6, 127);
+            this.killQueriesOnCancel_checkBox.Name = "killQueriesOnCancel_checkBox";
+            this.killQueriesOnCancel_checkBox.Size = new System.Drawing.Size(151, 17);
+            this.killQueriesOnCancel_checkBox.TabIndex = 13;
+            this.killQueriesOnCancel_checkBox.Text = "Kill Queries on Cancel";
+            this.killQueriesOnCancel_checkBox.UseVisualStyleBackColor = true;
+            // 
             // Options
             // 
             this.AcceptButton = this.ok_button;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancel_button;
-            this.ClientSize = new System.Drawing.Size(514, 178);
+            this.ClientSize = new System.Drawing.Size(514, 202);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.cancel_button);
@@ -237,5 +250,6 @@ namespace SQLQueryStress
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.NumericUpDown connectionTimeout_numericUpDown;
         private System.Windows.Forms.NumericUpDown commandTimeout_numericUpDown;
+        private System.Windows.Forms.CheckBox killQueriesOnCancel_checkBox;
     }
 }
