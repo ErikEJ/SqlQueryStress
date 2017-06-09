@@ -284,8 +284,7 @@ namespace SQLQueryStress
 
             var engine = new LoadEngine(_settings.MainDbConnectionInfo.ConnectionString, _settings.MainQuery, _settings.NumThreads, _settings.NumIterations,
                 _settings.ParamQuery, _settings.ParamMappings, paramConnectionInfo.ConnectionString, _settings.CommandTimeout, _settings.CollectIoStats,
-                _settings.CollectTimeStats, _settings.ForceDataRetrieval, _settings.KillQueriesOnCancel);
-
+                _settings.CollectTimeStats, _settings.ForceDataRetrieval);
             backgroundWorker1.RunWorkerAsync(engine);
 
             _start = new TimeSpan(DateTime.Now.Ticks);
@@ -479,11 +478,6 @@ namespace SQLQueryStress
             public bool ForceDataRetrieval;
 
             /// <summary>
-            ///     Cancel active SqlCommands on Cancel? (do not wait for completion)
-            /// </summary>
-            public bool KillQueriesOnCancel;
-
-            /// <summary>
             ///     Connection info for the DB in which to run the test
             /// </summary>
             public DatabaseSelect.ConnectionInfo MainDbConnectionInfo;
@@ -540,7 +534,6 @@ namespace SQLQueryStress
                 CollectIoStats = true;
                 CollectTimeStats = true;
                 ForceDataRetrieval = false;
-                KillQueriesOnCancel = true;
             }
 
             [OnDeserialized]

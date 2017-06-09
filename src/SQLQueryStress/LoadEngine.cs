@@ -23,7 +23,6 @@ namespace SQLQueryStress
 
         private readonly string _connectionString;
         private readonly bool _forceDataRetrieval;
-        private readonly bool _killQueriesOnCancel;
         private readonly int _iterations;
         private readonly string _paramConnectionString;
         private readonly Dictionary<string, string> _paramMappings;
@@ -35,7 +34,7 @@ namespace SQLQueryStress
         private int _queryDelay;
 
         public LoadEngine(string connectionString, string query, int threads, int iterations, string paramQuery, Dictionary<string, string> paramMappings,
-            string paramConnectionString, int commandTimeout, bool collectIoStats, bool collectTimeStats, bool forceDataRetrieval, bool killQueriesOnCancel)
+            string paramConnectionString, int commandTimeout, bool collectIoStats, bool collectTimeStats, bool forceDataRetrieval)
         {
             //Set the min pool size so that the pool does not have
             //to get allocated in real-time
@@ -56,7 +55,6 @@ namespace SQLQueryStress
             _collectIoStats = collectIoStats;
             _collectTimeStats = collectTimeStats;
             _forceDataRetrieval = forceDataRetrieval;
-            _killQueriesOnCancel = killQueriesOnCancel;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
@@ -144,7 +142,7 @@ namespace SQLQueryStress
 
                 var input = new QueryInput(statsComm, queryComm,
 //                    this.queryOutInfo,
-                    _iterations, _forceDataRetrieval, _queryDelay, worker, _killQueriesOnCancel);
+                    _iterations, _forceDataRetrieval, _queryDelay);
 
                 var theThread = new Thread(input.StartLoadThread) {Priority = ThreadPriority.BelowNormal};
 
@@ -349,16 +347,14 @@ namespace SQLQueryStress
             //private static Dictionary<int, List<string>> theInfoMessages = new Dictionary<int, List<string>>();
 
             private readonly Stopwatch _sw = new Stopwatch();
-            private System.Timers.Timer _killTimer = new System.Timers.Timer();
             private readonly bool _forceDataRetrieval;
             //          private readonly Queue<queryOutput> queryOutInfo;
             private readonly int _iterations;
             private readonly int _queryDelay;
-            private BackgroundWorker _backgroundWorker;
 
             public QueryInput(SqlCommand statsComm, SqlCommand queryComm,
 //                Queue<queryOutput> queryOutInfo,
-                int iterations, bool forceDataRetrieval, int queryDelay, BackgroundWorker _backgroundWorker, bool killQueriesOnCancel)
+                int iterations, bool forceDataRetrieval, int queryDelay)
             {
                 _statsComm = statsComm;
                 _queryComm = queryComm;
@@ -370,24 +366,6 @@ namespace SQLQueryStress
                 //Prepare the infoMessages collection, if we are collecting statistics
                 //if (stats_comm != null)
                 //    theInfoMessages.Add(stats_comm.Connection.GetHashCode(), new List<string>());
-
-                this._backgroundWorker = _backgroundWorker;
-
-                if (killQueriesOnCancel)
-                {
-                    _killTimer.Interval = 2000;
-                    _killTimer.Elapsed += _killTimer_Elapsed;
-                    _killTimer.Enabled = true;
-                }
-            }
-
-            private void _killTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-            {
-                if (_backgroundWorker.CancellationPending)
-                {
-                    _queryComm.Cancel();
-                    _killTimer.Enabled = false;
-                }
             }
 
             public static bool RunCancelled
