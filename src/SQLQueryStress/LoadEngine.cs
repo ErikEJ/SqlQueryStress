@@ -387,7 +387,7 @@ namespace SQLQueryStress
                 {
                     _queryComm.Cancel();
                     _killTimer.Enabled = false;
-                } else if(_queryComm.Connection.State == ConnectionState.Closed)
+                } else if(_queryComm.Connection == null || _queryComm.Connection.State == ConnectionState.Closed)
                 {
                     _killTimer.Enabled = false;
                 }
