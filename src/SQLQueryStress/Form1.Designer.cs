@@ -63,7 +63,6 @@ namespace SQLQueryStress
             this.label3 = new System.Windows.Forms.Label();
             this.iterations_numericUpDown = new System.Windows.Forms.NumericUpDown();
             this.threads_numericUpDown = new System.Windows.Forms.NumericUpDown();
-            this.cancel_button = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.label5 = new System.Windows.Forms.Label();
@@ -91,6 +90,7 @@ namespace SQLQueryStress
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.actualSeconds_textBox = new System.Windows.Forms.Label();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.cancel_button = new System.Windows.Forms.Button();
             this.param_button = new System.Windows.Forms.Button();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.btnFreeCache = new System.Windows.Forms.Button();
@@ -128,7 +128,7 @@ namespace SQLQueryStress
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(733, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(741, 24);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -141,39 +141,39 @@ namespace SQLQueryStress
             this.loadSettingsToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(142, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(137, 6);
             // 
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
             this.optionsToolStripMenuItem.Text = "Options";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
             // 
             // saveSettingsToolStripMenuItem
             // 
             this.saveSettingsToolStripMenuItem.Name = "saveSettingsToolStripMenuItem";
-            this.saveSettingsToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.saveSettingsToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
             this.saveSettingsToolStripMenuItem.Text = "Save Settings";
             this.saveSettingsToolStripMenuItem.Click += new System.EventHandler(this.saveSettingsToolStripMenuItem_Click);
             // 
             // loadSettingsToolStripMenuItem
             // 
             this.loadSettingsToolStripMenuItem.Name = "loadSettingsToolStripMenuItem";
-            this.loadSettingsToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.loadSettingsToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
             this.loadSettingsToolStripMenuItem.Text = "Load Settings";
             this.loadSettingsToolStripMenuItem.Click += new System.EventHandler(this.loadSettingsToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -182,13 +182,13 @@ namespace SQLQueryStress
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
             this.helpToolStripMenuItem.Text = "Help";
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -271,19 +271,6 @@ namespace SQLQueryStress
             0,
             0,
             0});
-            // 
-            // cancel_button
-            // 
-            this.cancel_button.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cancel_button.Enabled = false;
-            this.cancel_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cancel_button.Location = new System.Drawing.Point(101, 3);
-            this.cancel_button.Name = "cancel_button";
-            this.cancel_button.Size = new System.Drawing.Size(92, 40);
-            this.cancel_button.TabIndex = 11;
-            this.cancel_button.Text = "Cancel";
-            this.cancel_button.UseVisualStyleBackColor = true;
-            this.cancel_button.Click += new System.EventHandler(this.cancel_button_Click);
             // 
             // label4
             // 
@@ -535,7 +522,7 @@ namespace SQLQueryStress
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel4, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.label11, 0, 9);
             this.tableLayoutPanel1.Controls.Add(this.queryDelay_textBox, 0, 10);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(326, 3);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(334, 3);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 15;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 52F));
@@ -553,17 +540,19 @@ namespace SQLQueryStress
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(404, 404);
             this.tableLayoutPanel1.TabIndex = 32;
             // 
             // label10
             // 
+            this.label10.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label10.AutoSize = true;
-            this.label10.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(3, 352);
+            this.label10.Location = new System.Drawing.Point(3, 353);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(196, 20);
+            this.label10.Padding = new System.Windows.Forms.Padding(0, 5, 0, 0);
+            this.label10.Size = new System.Drawing.Size(183, 18);
             this.label10.TabIndex = 28;
             this.label10.Text = "Actual Seconds/Iteration (Avg)";
             // 
@@ -596,15 +585,29 @@ namespace SQLQueryStress
             this.tableLayoutPanel2.ColumnCount = 2;
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel2.Controls.Add(this.cancel_button, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.go_button, 0, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(205, 3);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(196, 46);
             this.tableLayoutPanel2.TabIndex = 32;
+            // 
+            // cancel_button
+            // 
+            this.cancel_button.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cancel_button.Enabled = false;
+            this.cancel_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cancel_button.Location = new System.Drawing.Point(101, 3);
+            this.cancel_button.Name = "cancel_button";
+            this.cancel_button.Size = new System.Drawing.Size(92, 40);
+            this.cancel_button.TabIndex = 11;
+            this.cancel_button.Text = "Cancel";
+            this.cancel_button.UseVisualStyleBackColor = true;
+            this.cancel_button.Click += new System.EventHandler(this.cancel_button_Click);
             // 
             // param_button
             // 
@@ -690,7 +693,7 @@ namespace SQLQueryStress
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 1;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(733, 410);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(741, 410);
             this.tableLayoutPanel3.TabIndex = 33;
             // 
             // elementHost1
@@ -698,7 +701,7 @@ namespace SQLQueryStress
             this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.elementHost1.Location = new System.Drawing.Point(3, 3);
             this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(317, 404);
+            this.elementHost1.Size = new System.Drawing.Size(325, 404);
             this.elementHost1.TabIndex = 33;
             this.elementHost1.Text = "elementHost1";
             this.elementHost1.Child = this.sqlControl1;
@@ -708,14 +711,13 @@ namespace SQLQueryStress
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(733, 434);
+            this.ClientSize = new System.Drawing.Size(741, 434);
             this.Controls.Add(this.tableLayoutPanel3);
             this.Controls.Add(this.db_label);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(749, 423);
             this.Name = "Form1";
             this.Text = "SQLQueryStress";
@@ -742,7 +744,6 @@ namespace SQLQueryStress
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.NumericUpDown iterations_numericUpDown;
         private System.Windows.Forms.NumericUpDown threads_numericUpDown;
-        private System.Windows.Forms.Button cancel_button;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
@@ -779,7 +780,6 @@ namespace SQLQueryStress
         private Button param_button;
         private TableLayoutPanel tableLayoutPanel3;
         private TableLayoutPanel tableLayoutPanel4;
-        private Button btnFreeCache;
         private Button btnCleanBuffer;
         private System.Windows.Forms.Integration.ElementHost elementHost1;
         private SqlControl sqlControl1;
@@ -787,6 +787,8 @@ namespace SQLQueryStress
         private Label label10;
         private Label label11;
         private TextBox queryDelay_textBox;
+        private Button cancel_button;
+        private Button btnFreeCache;
     }
 }
 
