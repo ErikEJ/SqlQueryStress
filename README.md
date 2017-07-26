@@ -4,7 +4,7 @@ SQL query stress simulator created by Adam Machanic http://sqlblog.com/blogs/ada
 
 ## Getting started guide
 
-[Introduction to SQL Query Stresss](https://github.com/ErikEJ/SqlQueryStress/wiki)
+[Introduction to SQL Query Stress](https://github.com/ErikEJ/SqlQueryStress/wiki)
 
 ## Latest version of the application
 You can download a .zip file with the [latest build of the master branch from AppVeyor](https://ci.appveyor.com/api/projects/ErikEJ/SqlQueryStress/artifacts/SqlQueryStress.zip?branch=master)
