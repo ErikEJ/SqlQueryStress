@@ -168,6 +168,8 @@ namespace SQLQueryStress
             // 
             // db_comboBox
             // 
+            this.db_comboBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.db_comboBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.db_comboBox.FormattingEnabled = true;
             this.db_comboBox.Location = new System.Drawing.Point(9, 212);
             this.db_comboBox.Name = "db_comboBox";
@@ -253,6 +255,8 @@ namespace SQLQueryStress
             // 
             // pm_db_comboBox
             // 
+            this.pm_db_comboBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.pm_db_comboBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.pm_db_comboBox.Enabled = false;
             this.pm_db_comboBox.FormattingEnabled = true;
             this.pm_db_comboBox.Location = new System.Drawing.Point(9, 212);
