@@ -143,7 +143,7 @@ namespace SQLQueryStress
                 connectionString = _localParamConnectionInfo.ConnectionString;
             }
             
-                var sql = "SELECT name FROM master..sysdatabases ORDER BY name";
+                var sql = "SELECT databases.name FROM sys.databases WHERE databases.state = 0 ORDER BY databases.name";
 
                 using (var conn = new SqlConnection(connectionString))
                 {
