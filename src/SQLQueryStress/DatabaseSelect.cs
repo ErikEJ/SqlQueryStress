@@ -98,14 +98,7 @@ namespace SQLQueryStress
 
         private void Server_textBox_TextChanged(object sender, EventArgs e)
         {
-            if (server_textBox.Text == string.Empty)
-            {
-                ok_button.Enabled = false;
-            }
-            else
-            {
-                ok_button.Enabled = true;
-            }
+            ok_button.Enabled = !string.IsNullOrEmpty(server_textBox.Text);
         }
 
         private void Server_textBox_KeyDown(object sender, KeyEventArgs e)
@@ -115,7 +108,7 @@ namespace SQLQueryStress
 
         private void Db_comboBox_Leave(object sender, EventArgs e)
         {
-            ComboBox cbSender = ((ComboBox)sender);
+            var cbSender = ((ComboBox)sender);
             if ((cbSender.SelectedValue == null || cbSender.Text != cbSender.SelectedItem.ToString()) && cbSender.Items.Contains(cbSender.Text))
             {
                 cbSender.SelectedItem = cbSender.Text;
@@ -124,8 +117,8 @@ namespace SQLQueryStress
 
         private void Db_comboBox_Enter(object sender, EventArgs e)
         {
-            ComboBox cbSender = ((ComboBox)sender);
-            string _prevSelectedValue = cbSender.SelectedValue != null ? cbSender.SelectedValue.ToString() : string.Empty;
+            var cbSender = ((ComboBox)sender);
+            var _prevSelectedValue = cbSender.SelectedValue != null ? cbSender.SelectedValue.ToString() : string.Empty;
             ReloadDatabaseList(sender);
 
             if (cbSender.Items.Contains(_prevSelectedValue))
@@ -136,8 +129,8 @@ namespace SQLQueryStress
 
         private void ReloadDatabaseList(object objDatabaseParam)
         {
-            ComboBox dbComboboxParam = (ComboBox)objDatabaseParam;
-            string selectedComboBoxItem = (string)dbComboboxParam.SelectedItem;
+            var dbComboboxParam = (ComboBox)objDatabaseParam;
+            var selectedComboBoxItem = (string)dbComboboxParam.SelectedItem;
             string connectionString;
             if (dbComboboxParam == db_comboBox)
             {
@@ -150,7 +143,7 @@ namespace SQLQueryStress
                 connectionString = _localParamConnectionInfo.ConnectionString;
             }
             
-                var sql = "" + "SELECT name " + "FROM master..sysdatabases " + "ORDER BY name";
+                var sql = "SELECT name FROM master..sysdatabases ORDER BY name";
 
                 using (var conn = new SqlConnection(connectionString))
                 {
