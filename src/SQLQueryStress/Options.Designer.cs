@@ -39,8 +39,8 @@ namespace SQLQueryStress
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.connectionTimeout_numericUpDown = new System.Windows.Forms.NumericUpDown();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.commandTimeout_numericUpDown = new System.Windows.Forms.NumericUpDown();
             this.killQueriesOnCancel_checkBox = new System.Windows.Forms.CheckBox();
+            this.commandTimeout_numericUpDown = new System.Windows.Forms.NumericUpDown();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.connectionTimeout_numericUpDown)).BeginInit();
             this.groupBox2.SuspendLayout();
@@ -54,7 +54,7 @@ namespace SQLQueryStress
             this.IOStatistics_checkBox.Location = new System.Drawing.Point(6, 58);
             this.IOStatistics_checkBox.Name = "IOStatistics_checkBox";
             this.IOStatistics_checkBox.Size = new System.Drawing.Size(144, 17);
-            this.IOStatistics_checkBox.TabIndex = 0;
+            this.IOStatistics_checkBox.TabIndex = 1;
             this.IOStatistics_checkBox.Text = "Collect I/O Statistics";
             this.IOStatistics_checkBox.UseVisualStyleBackColor = true;
             // 
@@ -65,7 +65,7 @@ namespace SQLQueryStress
             this.timeStatistics_checkBox.Location = new System.Drawing.Point(6, 81);
             this.timeStatistics_checkBox.Name = "timeStatistics_checkBox";
             this.timeStatistics_checkBox.Size = new System.Drawing.Size(152, 17);
-            this.timeStatistics_checkBox.TabIndex = 1;
+            this.timeStatistics_checkBox.TabIndex = 2;
             this.timeStatistics_checkBox.Text = "Collect Time Statistics";
             this.timeStatistics_checkBox.UseVisualStyleBackColor = true;
             // 
@@ -96,7 +96,7 @@ namespace SQLQueryStress
             this.connectionPooling_checkBox.Location = new System.Drawing.Point(6, 58);
             this.connectionPooling_checkBox.Name = "connectionPooling_checkBox";
             this.connectionPooling_checkBox.Size = new System.Drawing.Size(179, 17);
-            this.connectionPooling_checkBox.TabIndex = 6;
+            this.connectionPooling_checkBox.TabIndex = 1;
             this.connectionPooling_checkBox.Text = "Enable Connection Pooling";
             this.connectionPooling_checkBox.UseVisualStyleBackColor = true;
             // 
@@ -107,7 +107,7 @@ namespace SQLQueryStress
             this.clientDataRetrieval_checkBox.Location = new System.Drawing.Point(6, 104);
             this.clientDataRetrieval_checkBox.Name = "clientDataRetrieval_checkBox";
             this.clientDataRetrieval_checkBox.Size = new System.Drawing.Size(195, 17);
-            this.clientDataRetrieval_checkBox.TabIndex = 7;
+            this.clientDataRetrieval_checkBox.TabIndex = 3;
             this.clientDataRetrieval_checkBox.Text = "Force Client Retrieval of Data";
             this.clientDataRetrieval_checkBox.UseVisualStyleBackColor = true;
             // 
@@ -117,7 +117,7 @@ namespace SQLQueryStress
             this.ok_button.Location = new System.Drawing.Point(344, 170);
             this.ok_button.Name = "ok_button";
             this.ok_button.Size = new System.Drawing.Size(75, 23);
-            this.ok_button.TabIndex = 8;
+            this.ok_button.TabIndex = 2;
             this.ok_button.Text = "OK";
             this.ok_button.UseVisualStyleBackColor = true;
             this.ok_button.Click += new System.EventHandler(this.ok_button_Click);
@@ -129,7 +129,7 @@ namespace SQLQueryStress
             this.cancel_button.Location = new System.Drawing.Point(425, 170);
             this.cancel_button.Name = "cancel_button";
             this.cancel_button.Size = new System.Drawing.Size(75, 23);
-            this.cancel_button.TabIndex = 9;
+            this.cancel_button.TabIndex = 3;
             this.cancel_button.Text = "Cancel";
             this.cancel_button.UseVisualStyleBackColor = true;
             this.cancel_button.Click += new System.EventHandler(this.cancel_button_Click);
@@ -142,7 +142,7 @@ namespace SQLQueryStress
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(241, 150);
-            this.groupBox1.TabIndex = 10;
+            this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Connection Options";
             // 
@@ -161,7 +161,7 @@ namespace SQLQueryStress
             0});
             this.connectionTimeout_numericUpDown.Name = "connectionTimeout_numericUpDown";
             this.connectionTimeout_numericUpDown.Size = new System.Drawing.Size(120, 20);
-            this.connectionTimeout_numericUpDown.TabIndex = 7;
+            this.connectionTimeout_numericUpDown.TabIndex = 0;
             this.connectionTimeout_numericUpDown.Value = new decimal(new int[] {
             1,
             0,
@@ -179,9 +179,20 @@ namespace SQLQueryStress
             this.groupBox2.Location = new System.Drawing.Point(259, 12);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(241, 150);
-            this.groupBox2.TabIndex = 11;
+            this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Command Options";
+            // 
+            // killQueriesOnCancel_checkBox
+            // 
+            this.killQueriesOnCancel_checkBox.AutoSize = true;
+            this.killQueriesOnCancel_checkBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.killQueriesOnCancel_checkBox.Location = new System.Drawing.Point(6, 127);
+            this.killQueriesOnCancel_checkBox.Name = "killQueriesOnCancel_checkBox";
+            this.killQueriesOnCancel_checkBox.Size = new System.Drawing.Size(151, 17);
+            this.killQueriesOnCancel_checkBox.TabIndex = 4;
+            this.killQueriesOnCancel_checkBox.Text = "Kill Queries on Cancel";
+            this.killQueriesOnCancel_checkBox.UseVisualStyleBackColor = true;
             // 
             // commandTimeout_numericUpDown
             // 
@@ -193,19 +204,8 @@ namespace SQLQueryStress
             0});
             this.commandTimeout_numericUpDown.Name = "commandTimeout_numericUpDown";
             this.commandTimeout_numericUpDown.Size = new System.Drawing.Size(120, 20);
-            this.commandTimeout_numericUpDown.TabIndex = 8;
+            this.commandTimeout_numericUpDown.TabIndex = 0;
             this.commandTimeout_numericUpDown.Tag = "";
-            // 
-            // killQueriesOnCancel_checkBox
-            // 
-            this.killQueriesOnCancel_checkBox.AutoSize = true;
-            this.killQueriesOnCancel_checkBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.killQueriesOnCancel_checkBox.Location = new System.Drawing.Point(6, 127);
-            this.killQueriesOnCancel_checkBox.Name = "killQueriesOnCancel_checkBox";
-            this.killQueriesOnCancel_checkBox.Size = new System.Drawing.Size(151, 17);
-            this.killQueriesOnCancel_checkBox.TabIndex = 13;
-            this.killQueriesOnCancel_checkBox.Text = "Kill Queries on Cancel";
-            this.killQueriesOnCancel_checkBox.UseVisualStyleBackColor = true;
             // 
             // Options
             // 

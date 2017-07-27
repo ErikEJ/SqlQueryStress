@@ -56,7 +56,7 @@ namespace SQLQueryStress
             this.columnMapGrid.Name = "columnMapGrid";
             this.columnMapGrid.ShowEditingIcon = false;
             this.columnMapGrid.Size = new System.Drawing.Size(435, 185);
-            this.columnMapGrid.TabIndex = 0;
+            this.columnMapGrid.TabIndex = 3;
             // 
             // Column
             // 
@@ -92,7 +92,7 @@ namespace SQLQueryStress
             this.getColumnsButton.Location = new System.Drawing.Point(15, 219);
             this.getColumnsButton.Name = "getColumnsButton";
             this.getColumnsButton.Size = new System.Drawing.Size(98, 23);
-            this.getColumnsButton.TabIndex = 3;
+            this.getColumnsButton.TabIndex = 1;
             this.getColumnsButton.Text = "Get Columns";
             this.getColumnsButton.UseVisualStyleBackColor = true;
             this.getColumnsButton.Click += new System.EventHandler(this.getColumnsButton_Click);
@@ -136,7 +136,7 @@ namespace SQLQueryStress
             this.database_button.Location = new System.Drawing.Point(119, 219);
             this.database_button.Name = "database_button";
             this.database_button.Size = new System.Drawing.Size(94, 23);
-            this.database_button.TabIndex = 7;
+            this.database_button.TabIndex = 2;
             this.database_button.Text = "Database";
             this.database_button.UseVisualStyleBackColor = true;
             this.database_button.Click += new System.EventHandler(this.database_button_Click);
@@ -146,7 +146,7 @@ namespace SQLQueryStress
             this.elementHost1.Location = new System.Drawing.Point(15, 36);
             this.elementHost1.Name = "elementHost1";
             this.elementHost1.Size = new System.Drawing.Size(432, 177);
-            this.elementHost1.TabIndex = 8;
+            this.elementHost1.TabIndex = 0;
             this.elementHost1.Text = "elementHost1";
             this.elementHost1.Child = this.sqlControl1;
             // 
