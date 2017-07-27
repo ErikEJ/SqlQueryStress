@@ -74,7 +74,7 @@ namespace SQLQueryStress
             this.server_textBox.Location = new System.Drawing.Point(9, 55);
             this.server_textBox.Name = "server_textBox";
             this.server_textBox.Size = new System.Drawing.Size(231, 20);
-            this.server_textBox.TabIndex = 1;
+            this.server_textBox.TabIndex = 0;
             // 
             // authentication_comboBox
             // 
@@ -85,21 +85,21 @@ namespace SQLQueryStress
             this.authentication_comboBox.Location = new System.Drawing.Point(9, 94);
             this.authentication_comboBox.Name = "authentication_comboBox";
             this.authentication_comboBox.Size = new System.Drawing.Size(231, 21);
-            this.authentication_comboBox.TabIndex = 2;
+            this.authentication_comboBox.TabIndex = 1;
             // 
             // login_textBox
             // 
             this.login_textBox.Location = new System.Drawing.Point(9, 134);
             this.login_textBox.Name = "login_textBox";
             this.login_textBox.Size = new System.Drawing.Size(231, 20);
-            this.login_textBox.TabIndex = 3;
+            this.login_textBox.TabIndex = 2;
             // 
             // password_textBox
             // 
             this.password_textBox.Location = new System.Drawing.Point(9, 173);
             this.password_textBox.Name = "password_textBox";
             this.password_textBox.Size = new System.Drawing.Size(231, 20);
-            this.password_textBox.TabIndex = 4;
+            this.password_textBox.TabIndex = 3;
             this.password_textBox.UseSystemPasswordChar = true;
             // 
             // label2
@@ -139,7 +139,7 @@ namespace SQLQueryStress
             this.cancel_button.Location = new System.Drawing.Point(430, 286);
             this.cancel_button.Name = "cancel_button";
             this.cancel_button.Size = new System.Drawing.Size(80, 23);
-            this.cancel_button.TabIndex = 8;
+            this.cancel_button.TabIndex = 3;
             this.cancel_button.Text = "Cancel";
             this.cancel_button.UseVisualStyleBackColor = true;
             this.cancel_button.Click += new System.EventHandler(this.cancel_button_Click);
@@ -150,7 +150,7 @@ namespace SQLQueryStress
             this.test_button.Location = new System.Drawing.Point(120, 239);
             this.test_button.Name = "test_button";
             this.test_button.Size = new System.Drawing.Size(120, 23);
-            this.test_button.TabIndex = 9;
+            this.test_button.TabIndex = 5;
             this.test_button.Text = "Test Connection";
             this.test_button.UseVisualStyleBackColor = true;
             this.test_button.Click += new System.EventHandler(this.test_button_Click);
@@ -161,7 +161,7 @@ namespace SQLQueryStress
             this.ok_button.Location = new System.Drawing.Point(344, 286);
             this.ok_button.Name = "ok_button";
             this.ok_button.Size = new System.Drawing.Size(80, 23);
-            this.ok_button.TabIndex = 10;
+            this.ok_button.TabIndex = 2;
             this.ok_button.Text = "OK";
             this.ok_button.UseVisualStyleBackColor = true;
             this.ok_button.Click += new System.EventHandler(this.ok_button_Click);
@@ -172,7 +172,7 @@ namespace SQLQueryStress
             this.db_comboBox.Location = new System.Drawing.Point(9, 212);
             this.db_comboBox.Name = "db_comboBox";
             this.db_comboBox.Size = new System.Drawing.Size(231, 21);
-            this.db_comboBox.TabIndex = 11;
+            this.db_comboBox.TabIndex = 4;
             // 
             // label5
             // 
@@ -200,7 +200,7 @@ namespace SQLQueryStress
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(246, 268);
-            this.groupBox1.TabIndex = 13;
+            this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Main Load Settings";
             // 
@@ -221,7 +221,7 @@ namespace SQLQueryStress
             this.groupBox2.Location = new System.Drawing.Point(264, 12);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(246, 268);
-            this.groupBox2.TabIndex = 14;
+            this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Parameterization Settings";
             // 
@@ -232,7 +232,7 @@ namespace SQLQueryStress
             this.pm_test_button.Location = new System.Drawing.Point(123, 239);
             this.pm_test_button.Name = "pm_test_button";
             this.pm_test_button.Size = new System.Drawing.Size(120, 23);
-            this.pm_test_button.TabIndex = 15;
+            this.pm_test_button.TabIndex = 5;
             this.pm_test_button.Text = "Test Connection";
             this.pm_test_button.UseVisualStyleBackColor = true;
             this.pm_test_button.Click += new System.EventHandler(this.pm_test_button_Click);
@@ -258,7 +258,7 @@ namespace SQLQueryStress
             this.pm_db_comboBox.Location = new System.Drawing.Point(9, 212);
             this.pm_db_comboBox.Name = "pm_db_comboBox";
             this.pm_db_comboBox.Size = new System.Drawing.Size(231, 21);
-            this.pm_db_comboBox.TabIndex = 11;
+            this.pm_db_comboBox.TabIndex = 4;
             // 
             // label6
             // 
@@ -276,7 +276,7 @@ namespace SQLQueryStress
             this.pm_password_textBox.Location = new System.Drawing.Point(9, 173);
             this.pm_password_textBox.Name = "pm_password_textBox";
             this.pm_password_textBox.Size = new System.Drawing.Size(231, 20);
-            this.pm_password_textBox.TabIndex = 4;
+            this.pm_password_textBox.TabIndex = 3;
             this.pm_password_textBox.UseSystemPasswordChar = true;
             // 
             // label7
@@ -295,7 +295,7 @@ namespace SQLQueryStress
             this.pm_server_textBox.Location = new System.Drawing.Point(9, 55);
             this.pm_server_textBox.Name = "pm_server_textBox";
             this.pm_server_textBox.Size = new System.Drawing.Size(231, 20);
-            this.pm_server_textBox.TabIndex = 1;
+            this.pm_server_textBox.TabIndex = 0;
             // 
             // label8
             // 
@@ -323,7 +323,7 @@ namespace SQLQueryStress
             this.pm_login_textBox.Location = new System.Drawing.Point(9, 134);
             this.pm_login_textBox.Name = "pm_login_textBox";
             this.pm_login_textBox.Size = new System.Drawing.Size(231, 20);
-            this.pm_login_textBox.TabIndex = 3;
+            this.pm_login_textBox.TabIndex = 2;
             // 
             // pm_authentication_comboBox
             // 
@@ -335,7 +335,7 @@ namespace SQLQueryStress
             this.pm_authentication_comboBox.Location = new System.Drawing.Point(9, 94);
             this.pm_authentication_comboBox.Name = "pm_authentication_comboBox";
             this.pm_authentication_comboBox.Size = new System.Drawing.Size(231, 21);
-            this.pm_authentication_comboBox.TabIndex = 2;
+            this.pm_authentication_comboBox.TabIndex = 1;
             // 
             // label10
             // 

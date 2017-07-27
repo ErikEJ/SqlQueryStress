@@ -84,8 +84,125 @@ namespace SQLQueryStress
             authentication_comboBox.SelectedIndexChanged += authentication_comboBox_SelectedIndexChanged;
             pm_authentication_comboBox.SelectedIndexChanged += pm_authentication_comboBox_SelectedIndexChanged;
 
-            db_comboBox.Click += db_comboBox_Click;
-            pm_db_comboBox.Click += pm_db_comboBox_Click;
+            db_comboBox.Enter += Db_comboBox_Enter;
+            db_comboBox.Leave += Db_comboBox_Leave;
+
+            pm_db_comboBox.Enter += Db_comboBox_Enter;
+            pm_db_comboBox.Leave += Db_comboBox_Leave;
+            
+            server_textBox.KeyDown += Server_textBox_KeyDown;
+            server_textBox.TextChanged += Server_textBox_TextChanged;
+
+            Server_textBox_TextChanged(null, null);
+        }
+
+        private void Server_textBox_TextChanged(object sender, EventArgs e)
+        {
+            if (server_textBox.Text == string.Empty)
+            {
+                ok_button.Enabled = false;
+            }
+            else
+            {
+                ok_button.Enabled = true;
+            }
+        }
+
+        private void Server_textBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            db_comboBox.SelectedIndex = -1;
+        }
+
+        private void Db_comboBox_Leave(object sender, EventArgs e)
+        {
+            ComboBox cbSender = ((ComboBox)sender);
+            if ((cbSender.SelectedValue == null || cbSender.Text != cbSender.SelectedItem.ToString()) && cbSender.Items.Contains(cbSender.Text))
+            {
+                cbSender.SelectedItem = cbSender.Text;
+            }
+        }
+
+        private void Db_comboBox_Enter(object sender, EventArgs e)
+        {
+            ComboBox cbSender = ((ComboBox)sender);
+            string _prevSelectedValue = cbSender.SelectedValue != null ? cbSender.SelectedValue.ToString() : string.Empty;
+            ReloadDatabaseList(sender);
+
+            if (cbSender.Items.Contains(_prevSelectedValue))
+            {
+                cbSender.SelectedItem = _prevSelectedValue;
+            }
+        }
+
+        private void ReloadDatabaseList(object objDatabaseParam)
+        {
+            ComboBox dbComboboxParam = (ComboBox)objDatabaseParam;
+            string selectedComboBoxItem = (string)dbComboboxParam.SelectedItem;
+            string connectionString;
+            if (dbComboboxParam == db_comboBox)
+            {
+                SaveLocalSettings();
+                connectionString = _localMainConnectionInfo.ConnectionString;
+            }
+            else
+            {
+                pm_saveLocalSettings();
+                connectionString = _localParamConnectionInfo.ConnectionString;
+            }
+            
+                var sql = "" + "SELECT name " + "FROM master..sysdatabases " + "ORDER BY name";
+
+                using (var conn = new SqlConnection(connectionString))
+                {
+                    var comm = new SqlCommand(sql, conn);
+
+                    var databases = new List<string>();
+
+                    try
+                    {
+                        conn.Open();
+
+                        var reader = comm.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            databases.Add((string)reader[0]);
+                        }
+                    }
+                    catch (SqlException ex)
+                    {
+                    if (ex.Number != 4060)
+                    {
+                        MessageBox.Show(Resources.ConnFail);
+
+                        if (dbComboboxParam == db_comboBox)
+                        {
+                            server_textBox.Focus();
+                        }
+                        else
+                        {
+                            pm_server_textBox.Focus();
+                        }
+                    }
+                    else
+                    {
+                        //Clear the db, try again
+                        dbComboboxParam.Items.Clear();
+                        ReloadDatabaseList(dbComboboxParam);
+                        return;
+                    }
+                    }
+
+                    dbComboboxParam.DataSource = databases.ToArray();
+
+                    if (selectedComboBoxItem != null)
+                    {
+                        if (dbComboboxParam.Items.Contains(selectedComboBoxItem))
+                        {
+                            dbComboboxParam.SelectedItem = selectedComboBoxItem;
+                        }
+                    }
+                }
         }
 
         private void authentication_comboBox_SelectedIndexChanged(object sender, EventArgs e)
