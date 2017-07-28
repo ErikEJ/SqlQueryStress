@@ -331,6 +331,7 @@ namespace SQLQueryStress
             }
             threads_numericUpDown.Value = _settings.NumThreads;
             iterations_numericUpDown.Value = _settings.NumIterations;
+            queryDelay_textBox.Text = _settings.DelayBetweenQueries.ToString();
         }
 
         private void openFileDialog1_FileOk(object sender, EventArgs e)
@@ -382,6 +383,7 @@ namespace SQLQueryStress
             if (sqlControl != null) _settings.MainQuery =  sqlControl.Text;
             _settings.NumThreads = (int) threads_numericUpDown.Value;
             _settings.NumIterations = (int) iterations_numericUpDown.Value;
+            _settings.DelayBetweenQueries = int.Parse(queryDelay_textBox.Text);
         }
 
         private void saveSettingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -502,6 +504,11 @@ namespace SQLQueryStress
             ///     Number of threads to test with
             /// </summary>
             public int NumThreads;
+
+            /// <summary>
+            /// Delay
+            /// </summary>
+            public int DelayBetweenQueries;
 
             /// <summary>
             ///     Connection info for the DB from which to get the paramaters
