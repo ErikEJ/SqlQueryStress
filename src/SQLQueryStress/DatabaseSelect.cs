@@ -164,26 +164,28 @@ namespace SQLQueryStress
                     }
                     catch (SqlException ex)
                     {
-                    if (ex.Number != 4060)
-                    {
-                        MessageBox.Show(Resources.ConnFail);
-
-                        if (dbComboboxParam == db_comboBox)
+                        if (ex.Number == 40615)
+                            return;
+                        if (ex.Number != 4060)
                         {
-                            server_textBox.Focus();
+                            MessageBox.Show(Resources.ConnFail);
+
+                            if (dbComboboxParam == db_comboBox)
+                            {
+                                server_textBox.Focus();
+                            }
+                            else
+                            {
+                                pm_server_textBox.Focus();
+                            }
                         }
                         else
                         {
-                            pm_server_textBox.Focus();
+                            //Clear the db, try again
+                            dbComboboxParam.Items.Clear();
+                            ReloadDatabaseList(dbComboboxParam);
+                            return;
                         }
-                    }
-                    else
-                    {
-                        //Clear the db, try again
-                        dbComboboxParam.Items.Clear();
-                        ReloadDatabaseList(dbComboboxParam);
-                        return;
-                    }
                     }
 
                     dbComboboxParam.DataSource = databases.ToArray();
@@ -413,7 +415,7 @@ namespace SQLQueryStress
                     {
                         conn.Open();
                     }
-                    catch
+                    catch (Exception ex)
                     {
                         return false;
                     }
