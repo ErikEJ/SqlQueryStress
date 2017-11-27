@@ -715,7 +715,6 @@ namespace SQLQueryStress
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(749, 423);
             this.Name = "Form1";
             this.Text = "SQLQueryStress";
