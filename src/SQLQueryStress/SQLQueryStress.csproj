@@ -19,7 +19,7 @@
     <ManifestKeyFile>SQLQueryStress_TemporaryKey.pfx</ManifestKeyFile>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <ApplicationIcon>Resources\QueryStressIcon.ico</ApplicationIcon>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>

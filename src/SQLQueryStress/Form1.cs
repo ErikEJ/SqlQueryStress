@@ -570,5 +570,51 @@ namespace SQLQueryStress
                 ? "Cache freed"
                 : "Errors encountered");
         }
+
+        private void saveBenchMarkToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+           var saveFileDialog = new SaveFileDialog();
+            saveFileDialog.AddExtension = true;
+            saveFileDialog.Filter = "Text Files (*.txt)|*.txt";
+            saveFileDialog.ShowDialog();
+
+            if(!string.IsNullOrEmpty(saveFileDialog.FileName))
+            ExportBenchMarkToFile(saveFileDialog.FileName);
+        }
+
+        private void ExportBenchMarkToFile(string fileName)
+        {
+            try
+            {
+                var file = new StreamWriter(fileName);
+                file.WriteLine(string.Format("Test TimeStamp: {0}", 
+                    DateTime.Now));
+                file.WriteLine(string.Format("Elapsed Time: {0}", 
+                    elapsedTime_textBox.Text));
+                file.WriteLine(string.Format("Number of Iterations: {0}", 
+                    (int) iterations_numericUpDown.Value));
+                file.WriteLine(string.Format("Number of Threads: {0}", 
+                    (int) threads_numericUpDown.Value));
+                file.WriteLine(string.Format("Delay Between Queries (ms): {0}", 
+                    int.Parse(queryDelay_textBox.Text)));
+                file.WriteLine(string.Format("CPU Seconds/Iteration (Avg): {0}",
+                    cpuTime_textBox.Text));
+                file.WriteLine(string.Format("Actual Seconds/Iteration (Avg): {0}",
+                    actualSeconds_textBox.Text));
+                file.WriteLine(string.Format("Iterations Completed: {0}",
+                    iterationsSecond_textBox.Text));
+                file.WriteLine(string.Format("Client Seconds/Iteration (Avg): {0}",
+                    avgSeconds_textBox.Text));
+                file.WriteLine(string.Format("Logical Reads/Iteration (Avg): {0}",
+                    logicalReads_textBox.Text));
+                file.Close();
+            }
+            catch
+            {
+                MessageBox
+                    .Show("Error While Saving BenchMark",
+                    string.Format("There was an error saving the benchmark to '{0}', make sure you have write privileges to that path",fileName));
+            }
+        }
     }
 }
