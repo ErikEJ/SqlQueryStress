@@ -195,6 +195,7 @@ namespace SQLQueryStress
             cancel_button.Enabled = false;
             threads_numericUpDown.Enabled = true;
             iterations_numericUpDown.Enabled = true;
+            queryDelay_textBox.Enabled = true;
 
             if (!_cancelled)
                 progressBar1.Value = 100;
@@ -271,6 +272,7 @@ namespace SQLQueryStress
             cancel_button.Enabled = true;
             iterations_numericUpDown.Enabled = false;
             threads_numericUpDown.Enabled = false;
+            queryDelay_textBox.Enabled = false;
 
             progressBar1.Value = 0;
 
