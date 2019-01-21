@@ -1,0 +1,6 @@
+MainPackage=C:\Code\SqlQueryStress\src\Packaging\bin\AnyCPU\Release\Upload\Packaging_1.0.5.0_AnyCPU.appx
+SymbolPackage=C:\Code\SqlQueryStress\src\Packaging\bin\AnyCPU\Release\Upload\Packaging_1.0.5.0\Packaging_1.0.5.0_AnyCPU.appxsym
+ResourcePack=C:\Code\SqlQueryStress\src\Packaging\bin\AnyCPU\Release\Upload\Packaging_1.0.5.0_scale-100.appx
+ResourcePack=C:\Code\SqlQueryStress\src\Packaging\bin\AnyCPU\Release\Upload\Packaging_1.0.5.0_scale-125.appx
+ResourcePack=C:\Code\SqlQueryStress\src\Packaging\bin\AnyCPU\Release\Upload\Packaging_1.0.5.0_scale-150.appx
+ResourcePack=C:\Code\SqlQueryStress\src\Packaging\bin\AnyCPU\Release\Upload\Packaging_1.0.5.0_scale-400.appx

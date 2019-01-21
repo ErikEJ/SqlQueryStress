@@ -1,0 +1,1 @@
+C:\Code\SqlQueryStress\src\Packaging\bin\AnyCPU\Release\Upload\Packaging_1.0.5.0\Packaging_1.0.5.0_AnyCPU.appxbundle
