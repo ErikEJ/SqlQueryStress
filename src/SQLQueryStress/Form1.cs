@@ -79,6 +79,10 @@ namespace SQLQueryStress
         //WAITFOR DELAY '00:00:05'  (1300 ms?? WTF??)
         private int _totalTimeMessages;
 
+        private DateTime _testStartTime;
+
+        private Guid _testGuid;
+
         public Form1(string configFile, bool unattendedMode, int numThreads) : this()
         {
             var fileExists = File.Exists(configFile);
@@ -249,6 +253,8 @@ namespace SQLQueryStress
                 return;
             }
 
+            _testStartTime = DateTime.Now;
+            _testGuid = Guid.NewGuid();
             _cancelled = false;
             _exitOnComplete = false;
 
@@ -573,43 +579,25 @@ namespace SQLQueryStress
                 : "Errors encountered");
         }
 
-        private void saveBenchMarkToolStripMenuItem_Click(object sender, EventArgs e)
+
+        private void toTextToolStripMenuItem_Click(object sender, EventArgs e)
         {
-           var saveFileDialog = new SaveFileDialog();
+            var saveFileDialog = new SaveFileDialog();
             saveFileDialog.AddExtension = true;
             saveFileDialog.Filter = "Text Files (*.txt)|*.txt";
             saveFileDialog.ShowDialog();
 
-            if(!string.IsNullOrEmpty(saveFileDialog.FileName))
-            ExportBenchMarkToFile(saveFileDialog.FileName);
+            if (!string.IsNullOrEmpty(saveFileDialog.FileName))
+                ExportBenchMarkToTextFile(saveFileDialog.FileName);
         }
 
-        private void ExportBenchMarkToFile(string fileName)
+        private void ExportBenchMarkToTextFile(string fileName)
         {
             try
             {
-                var file = new StreamWriter(fileName);
-                file.WriteLine(string.Format("Test TimeStamp: {0}", 
-                    DateTime.Now));
-                file.WriteLine(string.Format("Elapsed Time: {0}", 
-                    elapsedTime_textBox.Text));
-                file.WriteLine(string.Format("Number of Iterations: {0}", 
-                    (int) iterations_numericUpDown.Value));
-                file.WriteLine(string.Format("Number of Threads: {0}", 
-                    (int) threads_numericUpDown.Value));
-                file.WriteLine(string.Format("Delay Between Queries (ms): {0}", 
-                    int.Parse(queryDelay_textBox.Text)));
-                file.WriteLine(string.Format("CPU Seconds/Iteration (Avg): {0}",
-                    cpuTime_textBox.Text));
-                file.WriteLine(string.Format("Actual Seconds/Iteration (Avg): {0}",
-                    actualSeconds_textBox.Text));
-                file.WriteLine(string.Format("Iterations Completed: {0}",
-                    iterationsSecond_textBox.Text));
-                file.WriteLine(string.Format("Client Seconds/Iteration (Avg): {0}",
-                    avgSeconds_textBox.Text));
-                file.WriteLine(string.Format("Logical Reads/Iteration (Avg): {0}",
-                    logicalReads_textBox.Text));
-                file.Close();
+                var textWriter = new StreamWriter(fileName);
+                WriteBenchmarkTextContent(textWriter);
+                textWriter.Close();
             }
             catch
             {
@@ -618,5 +606,98 @@ namespace SQLQueryStress
                     string.Format("There was an error saving the benchmark to '{0}', make sure you have write privileges to that path",fileName));
             }
         }
+
+        private void WriteBenchmarkTextContent(TextWriter tw)
+        {
+            tw.WriteLine(string.Format("Test ID: {0}",
+                                _testGuid));
+            tw.WriteLine(string.Format("Test TimeStamp: {0}",
+                                _testStartTime));
+            tw.WriteLine(string.Format("Elapsed Time: {0}",
+                elapsedTime_textBox.Text));
+            tw.WriteLine(string.Format("Number of Iterations: {0}",
+                (int)iterations_numericUpDown.Value));
+            tw.WriteLine(string.Format("Number of Threads: {0}",
+                (int)threads_numericUpDown.Value));
+            tw.WriteLine(string.Format("Delay Between Queries (ms): {0}",
+                int.Parse(queryDelay_textBox.Text)));
+            tw.WriteLine(string.Format("CPU Seconds/Iteration (Avg): {0}",
+                cpuTime_textBox.Text));
+            tw.WriteLine(string.Format("Actual Seconds/Iteration (Avg): {0}",
+                actualSeconds_textBox.Text));
+            tw.WriteLine(string.Format("Iterations Completed: {0}",
+                iterationsSecond_textBox.Text));
+            tw.WriteLine(string.Format("Client Seconds/Iteration (Avg): {0}",
+                avgSeconds_textBox.Text));
+            tw.WriteLine(string.Format("Logical Reads/Iteration (Avg): {0}",
+                logicalReads_textBox.Text));
+            tw.WriteLine("");
+        }
+
+
+        private void toClipboardToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var textWriter = new StringWriter();
+                WriteBenchmarkTextContent(textWriter);
+                Clipboard.SetText(textWriter.ToString());
+            }
+            catch
+            {
+                MessageBox
+                    .Show("Error While Copying BenchMark to Clipboard",
+                    string.Format("There was an error copying the benchmark to clipboard"));
+            }
+        }
+
+        private void toCsvToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var saveFileDialog = new SaveFileDialog();
+            saveFileDialog.AddExtension = true;
+            saveFileDialog.Filter = "Csv Files (*.csv)|*.csv";
+            saveFileDialog.ShowDialog();
+
+            if (!string.IsNullOrEmpty(saveFileDialog.FileName))
+                ExportBenchMarkToCsvFile(saveFileDialog.FileName);
+        }
+
+        private void ExportBenchMarkToCsvFile(string fileName)
+        {
+            try
+            {
+                var fileExists = File.Exists(fileName);
+                var textWriter = new StreamWriter(fileName);
+
+                WriteBenchmarkCsvText(textWriter);
+                textWriter.Close();
+            }
+            catch
+            {
+                MessageBox
+                    .Show("Error While Saving BenchMark",
+                    string.Format("There was an error saving the benchmark to '{0}', make sure you have write privileges to that path", fileName));
+            }
+        }
+
+        private void WriteBenchmarkCsvText(TextWriter tw)
+        {
+            tw.WriteLine("TestId,TestStartTime,ElapsedTime,Iterations,Threads,Delay,CompletedIterations,AvgCPUSeconds,AvgActualSeconds,AvgClientSeconds,AvgLogicalReads");
+            tw.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}",
+                _testGuid,
+                _testStartTime,
+                elapsedTime_textBox.Text,
+                (int)iterations_numericUpDown.Value,
+                (int)threads_numericUpDown.Value,
+                int.Parse(queryDelay_textBox.Text),
+                iterationsSecond_textBox.Text,
+                cpuTime_textBox.Text,
+                actualSeconds_textBox.Text,
+                avgSeconds_textBox.Text,
+                logicalReads_textBox.Text
+                );
+        }
+
+
     }
 }
