@@ -584,6 +584,7 @@ namespace SQLQueryStress
         {
             var saveFileDialog = new SaveFileDialog();
             saveFileDialog.AddExtension = true;
+            saveFileDialog.OverwritePrompt = false;
             saveFileDialog.Filter = "Text Files (*.txt)|*.txt";
             saveFileDialog.ShowDialog();
 
@@ -595,7 +596,7 @@ namespace SQLQueryStress
         {
             try
             {
-                var textWriter = new StreamWriter(fileName);
+                var textWriter = new StreamWriter(fileName, true);
                 WriteBenchmarkTextContent(textWriter);
                 textWriter.Close();
             }
@@ -655,6 +656,7 @@ namespace SQLQueryStress
         {
             var saveFileDialog = new SaveFileDialog();
             saveFileDialog.AddExtension = true;
+            saveFileDialog.OverwritePrompt = false;
             saveFileDialog.Filter = "Csv Files (*.csv)|*.csv";
             saveFileDialog.ShowDialog();
 
@@ -667,8 +669,12 @@ namespace SQLQueryStress
             try
             {
                 var fileExists = File.Exists(fileName);
-                var textWriter = new StreamWriter(fileName);
-
+                var textWriter = new StreamWriter(fileName, true);
+                // we do not write the header line if we are appending to an existing file 
+                if (fileExists == false)
+                {
+                    WriteBenchmarkCsvHeader(textWriter);
+                }
                 WriteBenchmarkCsvText(textWriter);
                 textWriter.Close();
             }
@@ -680,9 +686,13 @@ namespace SQLQueryStress
             }
         }
 
-        private void WriteBenchmarkCsvText(TextWriter tw)
+        private void WriteBenchmarkCsvHeader(StreamWriter tw)
         {
             tw.WriteLine("TestId,TestStartTime,ElapsedTime,Iterations,Threads,Delay,CompletedIterations,AvgCPUSeconds,AvgActualSeconds,AvgClientSeconds,AvgLogicalReads");
+        }
+
+        private void WriteBenchmarkCsvText(TextWriter tw)
+        {
             tw.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}",
                 _testGuid,
                 _testStartTime,
