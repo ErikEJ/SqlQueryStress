@@ -110,6 +110,11 @@ namespace SQLQueryStress
             {
                 threads_numericUpDown.Value = _settings.NumThreads = _runParameters.NumberOfThreads;
             }
+
+            if (string.IsNullOrWhiteSpace(_runParameters.DbServer) == false)
+            {
+                _settings.MainDbConnectionInfo.Server = _runParameters.DbServer; 
+            }
         }
 
         public Form1()

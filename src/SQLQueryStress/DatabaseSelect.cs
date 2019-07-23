@@ -417,7 +417,7 @@ namespace SQLQueryStress
                     {
                         conn.Open();
                     }
-                    catch 
+                    catch (Exception exc)
                     {
                         return false;
                     }

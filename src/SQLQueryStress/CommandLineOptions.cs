@@ -18,7 +18,11 @@ namespace SQLQueryStress
 
         [Option("r", null, 
                 HelpText = "Autosave results to specified file")]
-        public string ResultsAutoSaveFileName = string.Empty; 
+        public string ResultsAutoSaveFileName = string.Empty;
+
+        [Option("d", null,
+                HelpText = "Database Server")]
+        public string DbServer = string.Empty;
 
         [Option("t", null,
                 HelpText = "Number of threads in unattended mode")]
@@ -33,7 +37,7 @@ namespace SQLQueryStress
             help.AddPreOptionsLine("Check for updates at: https://github.com/ErikEJ/SqlQueryStress");
             help.AddPreOptionsLine("");
             help.AddPreOptionsLine("Sample usage:");
-            help.AddPreOptionsLine("SqlQueryStress -c saved.SqlStress -u -t 32 -r results.csv");
+            help.AddPreOptionsLine("SqlQueryStress -c saved.SqlStress -u -t 32 -d sqldb.perfenv.mycompany.com -r results.csv");
             help.AddOptions(this);
             return help;
         }
