@@ -56,6 +56,9 @@ namespace SQLQueryStress
             this.saveSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveBenchMarkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toCsvToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toTextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toClipboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -150,40 +153,64 @@ namespace SQLQueryStress
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(158, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.optionsToolStripMenuItem.Text = "Options";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
             // 
             // saveSettingsToolStripMenuItem
             // 
             this.saveSettingsToolStripMenuItem.Name = "saveSettingsToolStripMenuItem";
-            this.saveSettingsToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.saveSettingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveSettingsToolStripMenuItem.Text = "Save Settings";
             this.saveSettingsToolStripMenuItem.Click += new System.EventHandler(this.saveSettingsToolStripMenuItem_Click);
             // 
             // loadSettingsToolStripMenuItem
             // 
             this.loadSettingsToolStripMenuItem.Name = "loadSettingsToolStripMenuItem";
-            this.loadSettingsToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.loadSettingsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.loadSettingsToolStripMenuItem.Text = "Load Settings";
             this.loadSettingsToolStripMenuItem.Click += new System.EventHandler(this.loadSettingsToolStripMenuItem_Click);
             // 
             // saveBenchMarkToolStripMenuItem
             // 
+            this.saveBenchMarkToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toCsvToolStripMenuItem,
+            this.toTextToolStripMenuItem,
+            this.toClipboardToolStripMenuItem});
             this.saveBenchMarkToolStripMenuItem.Name = "saveBenchMarkToolStripMenuItem";
-            this.saveBenchMarkToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.saveBenchMarkToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveBenchMarkToolStripMenuItem.Text = "Save BenchMark";
-            this.saveBenchMarkToolStripMenuItem.Click += new System.EventHandler(this.saveBenchMarkToolStripMenuItem_Click);
+            // 
+            // toCsvToolStripMenuItem
+            // 
+            this.toCsvToolStripMenuItem.Name = "toCsvToolStripMenuItem";
+            this.toCsvToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.toCsvToolStripMenuItem.Text = "To Csv";
+            this.toCsvToolStripMenuItem.Click += new System.EventHandler(this.toCsvToolStripMenuItem_Click);
+            // 
+            // toTextToolStripMenuItem
+            // 
+            this.toTextToolStripMenuItem.Name = "toTextToolStripMenuItem";
+            this.toTextToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.toTextToolStripMenuItem.Text = "To Text";
+            this.toTextToolStripMenuItem.Click += new System.EventHandler(this.toTextToolStripMenuItem_Click);
+            // 
+            // toClipboardToolStripMenuItem
+            // 
+            this.toClipboardToolStripMenuItem.Name = "toClipboardToolStripMenuItem";
+            this.toClipboardToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.toClipboardToolStripMenuItem.Text = "To Clipboard";
+            this.toClipboardToolStripMenuItem.Click += new System.EventHandler(this.toClipboardToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -333,7 +360,7 @@ namespace SQLQueryStress
             this.avgSeconds_textBox.Font = new System.Drawing.Font("Courier New", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.avgSeconds_textBox.ForeColor = System.Drawing.Color.Lime;
             this.avgSeconds_textBox.Location = new System.Drawing.Point(205, 219);
-            this.avgSeconds_textBox.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.avgSeconds_textBox.Margin = new System.Windows.Forms.Padding(3);
             this.avgSeconds_textBox.Name = "avgSeconds_textBox";
             this.avgSeconds_textBox.Size = new System.Drawing.Size(196, 30);
             this.avgSeconds_textBox.TabIndex = 12;
@@ -378,7 +405,7 @@ namespace SQLQueryStress
             this.totalExceptions_textBox.Font = new System.Drawing.Font("Courier New", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.totalExceptions_textBox.ForeColor = System.Drawing.Color.Red;
             this.totalExceptions_textBox.Location = new System.Drawing.Point(3, 3);
-            this.totalExceptions_textBox.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.totalExceptions_textBox.Margin = new System.Windows.Forms.Padding(3);
             this.totalExceptions_textBox.Name = "totalExceptions_textBox";
             this.totalExceptions_textBox.Size = new System.Drawing.Size(155, 30);
             this.totalExceptions_textBox.TabIndex = 1;
@@ -408,7 +435,7 @@ namespace SQLQueryStress
             this.elapsedTime_textBox.Font = new System.Drawing.Font("Courier New", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.elapsedTime_textBox.ForeColor = System.Drawing.Color.Lime;
             this.elapsedTime_textBox.Location = new System.Drawing.Point(205, 119);
-            this.elapsedTime_textBox.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.elapsedTime_textBox.Margin = new System.Windows.Forms.Padding(3);
             this.elapsedTime_textBox.Name = "elapsedTime_textBox";
             this.elapsedTime_textBox.Size = new System.Drawing.Size(196, 30);
             this.elapsedTime_textBox.TabIndex = 10;
@@ -438,7 +465,7 @@ namespace SQLQueryStress
             this.iterationsSecond_textBox.Font = new System.Drawing.Font("Courier New", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.iterationsSecond_textBox.ForeColor = System.Drawing.Color.Lime;
             this.iterationsSecond_textBox.Location = new System.Drawing.Point(205, 169);
-            this.iterationsSecond_textBox.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.iterationsSecond_textBox.Margin = new System.Windows.Forms.Padding(3);
             this.iterationsSecond_textBox.Name = "iterationsSecond_textBox";
             this.iterationsSecond_textBox.Size = new System.Drawing.Size(196, 30);
             this.iterationsSecond_textBox.TabIndex = 11;
@@ -474,7 +501,7 @@ namespace SQLQueryStress
             this.cpuTime_textBox.Font = new System.Drawing.Font("Courier New", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cpuTime_textBox.ForeColor = System.Drawing.Color.Lime;
             this.cpuTime_textBox.Location = new System.Drawing.Point(3, 319);
-            this.cpuTime_textBox.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.cpuTime_textBox.Margin = new System.Windows.Forms.Padding(3);
             this.cpuTime_textBox.Name = "cpuTime_textBox";
             this.cpuTime_textBox.Size = new System.Drawing.Size(196, 30);
             this.cpuTime_textBox.TabIndex = 6;
@@ -499,7 +526,7 @@ namespace SQLQueryStress
             this.logicalReads_textBox.Font = new System.Drawing.Font("Courier New", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.logicalReads_textBox.ForeColor = System.Drawing.Color.Lime;
             this.logicalReads_textBox.Location = new System.Drawing.Point(205, 319);
-            this.logicalReads_textBox.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.logicalReads_textBox.Margin = new System.Windows.Forms.Padding(3);
             this.logicalReads_textBox.Name = "logicalReads_textBox";
             this.logicalReads_textBox.Size = new System.Drawing.Size(196, 30);
             this.logicalReads_textBox.TabIndex = 14;
@@ -595,7 +622,7 @@ namespace SQLQueryStress
             this.actualSeconds_textBox.Font = new System.Drawing.Font("Courier New", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.actualSeconds_textBox.ForeColor = System.Drawing.Color.Lime;
             this.actualSeconds_textBox.Location = new System.Drawing.Point(3, 375);
-            this.actualSeconds_textBox.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.actualSeconds_textBox.Margin = new System.Windows.Forms.Padding(3);
             this.actualSeconds_textBox.Name = "actualSeconds_textBox";
             this.actualSeconds_textBox.Size = new System.Drawing.Size(196, 26);
             this.actualSeconds_textBox.TabIndex = 7;
@@ -648,7 +675,7 @@ namespace SQLQueryStress
             // 
             this.btnFreeCache.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnFreeCache.Location = new System.Drawing.Point(99, 1);
-            this.btnFreeCache.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.btnFreeCache.Margin = new System.Windows.Forms.Padding(1);
             this.btnFreeCache.Name = "btnFreeCache";
             this.btnFreeCache.Size = new System.Drawing.Size(96, 21);
             this.btnFreeCache.TabIndex = 1;
@@ -660,7 +687,7 @@ namespace SQLQueryStress
             // 
             this.btnCleanBuffer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnCleanBuffer.Location = new System.Drawing.Point(1, 1);
-            this.btnCleanBuffer.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.btnCleanBuffer.Margin = new System.Windows.Forms.Padding(1);
             this.btnCleanBuffer.Name = "btnCleanBuffer";
             this.btnCleanBuffer.Size = new System.Drawing.Size(96, 21);
             this.btnCleanBuffer.TabIndex = 0;
@@ -797,6 +824,9 @@ namespace SQLQueryStress
         private System.Windows.Forms.Integration.ElementHost elementHost1;
         private SqlControl sqlControl1;
         private ToolStripMenuItem saveBenchMarkToolStripMenuItem;
+        private ToolStripMenuItem toCsvToolStripMenuItem;
+        private ToolStripMenuItem toTextToolStripMenuItem;
+        private ToolStripMenuItem toClipboardToolStripMenuItem;
     }
 }
 
