@@ -53,6 +53,13 @@ namespace SQLQueryStress
                 db_comboBox.SelectedIndex = 0;
             }
 
+            if (_localMainConnectionInfo.ApplicationIntent > 0)
+            {
+                appintent_check.Checked = true;
+                appintent_combo.SelectedItem = _localMainConnectionInfo.ApplicationIntent;
+
+            }
+
             if (!settings.ShareDbSettings)
             {
                 pm_server_textBox.Text = _localParamConnectionInfo.Server;
@@ -74,6 +81,12 @@ namespace SQLQueryStress
                 {
                     pm_db_comboBox.Items.Add(_localParamConnectionInfo.Database);
                     pm_db_comboBox.SelectedIndex = 0;
+                }
+                if (_localParamConnectionInfo.ApplicationIntent > 0)
+                {
+                    pm_appintent_check.Checked = true;
+                    pm_appintent_combo.SelectedItem = _localParamConnectionInfo.ApplicationIntent;
+
                 }
             }
             else
@@ -266,6 +279,15 @@ namespace SQLQueryStress
                 }
 
                 _localParamConnectionInfo.Database = pm_db_comboBox.Text;
+
+                if (pm_appintent_check.Checked)
+                {
+                    ApplicationIntent applicationIntent;
+
+                    Enum.TryParse<ApplicationIntent>(pm_appintent_combo.Text, out applicationIntent);
+
+                    _localParamConnectionInfo.ApplicationIntent = applicationIntent;
+                }
             }
             else
                 _localParamConnectionInfo = new ConnectionInfo();
@@ -292,6 +314,15 @@ namespace SQLQueryStress
             {
                 _localMainConnectionInfo.Login = login_textBox.Text;
                 _localMainConnectionInfo.Password = password_textBox.Text;
+            }
+
+            if(appintent_check.Checked)
+            {
+                ApplicationIntent applicationIntent;
+
+                Enum.TryParse<ApplicationIntent>(appintent_combo.Text, out applicationIntent);
+
+                _localMainConnectionInfo.ApplicationIntent = applicationIntent;
             }
 
             _localMainConnectionInfo.Database = db_comboBox.Text;
@@ -339,12 +370,14 @@ namespace SQLQueryStress
             public string Password;
 
             public string Server;
+            public ApplicationIntent ApplicationIntent;
             public Form1.QueryStressSettings Settings;
 
             public ConnectionInfo()
             {
                 Server = "";
                 IntegratedAuth = true;
+                ApplicationIntent = ApplicationIntent.ReadWrite;
                 Login = "";
                 Password = "";
                 Database = "";
@@ -354,6 +387,7 @@ namespace SQLQueryStress
             {
                 Server = "";
                 IntegratedAuth = true;
+                ApplicationIntent = ApplicationIntent.ReadWrite;
                 Login = "";
                 Password = "";
                 Database = "";
@@ -364,7 +398,7 @@ namespace SQLQueryStress
             {
                 get
                 {
-                    var build = new SqlConnectionStringBuilder {DataSource = Server, IntegratedSecurity = IntegratedAuth, ApplicationName = "SQLQueryStress"};
+                    var build = new SqlConnectionStringBuilder {DataSource = Server, IntegratedSecurity = IntegratedAuth, ApplicationName = "SQLQueryStress", ApplicationIntent = ApplicationIntent};
                     if (!IntegratedAuth)
                     {
                         build.UserID = Login;
@@ -404,6 +438,7 @@ namespace SQLQueryStress
                 to.Login = Login;
                 to.Password = Password;
                 to.Database = Database;
+                to.ApplicationIntent = ApplicationIntent;
             }
 
             public bool TestConnection()
@@ -425,6 +460,20 @@ namespace SQLQueryStress
 
                 return true;
             }
+        }
+
+        private void appintent_check_CheckedChanged(object sender, EventArgs e)
+        {
+            appintent_combo.Enabled = appintent_check.Checked;
+
+            appintent_combo.DataSource = Enum.GetValues(typeof(ApplicationIntent));
+        }
+
+        private void pm_appintent_check_CheckedChanged(object sender, EventArgs e)
+        {
+            pm_appintent_combo.Enabled = pm_appintent_check.Checked;
+
+            pm_appintent_combo.DataSource = Enum.GetValues(typeof(ApplicationIntent));
         }
     }
 }
