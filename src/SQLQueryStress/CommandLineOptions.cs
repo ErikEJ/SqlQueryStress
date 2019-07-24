@@ -1,5 +1,6 @@
 ﻿using CommandLine;
 using CommandLine.Text;
+using System.Collections.Generic;
 
 namespace SQLQueryStress
 {
@@ -9,11 +10,19 @@ namespace SQLQueryStress
 
         [Option("c", null,
                 HelpText = "File name of saved session settings\r\n")]
-        public string SessionFile = string.Empty;
+        public string SettingsFile = string.Empty;
 
         [Option("u", null,
                 HelpText = "Run unattended (start, run settings file and quit)")]
         public bool Unattended = false;
+
+        [Option("r", null, 
+                HelpText = "Autosave results to specified file")]
+        public string ResultsAutoSaveFileName = string.Empty;
+
+        [Option("d", null,
+                HelpText = "Database Server")]
+        public string DbServer = string.Empty;
 
         [Option("t", null,
                 HelpText = "Number of threads in unattended mode")]
@@ -28,7 +37,7 @@ namespace SQLQueryStress
             help.AddPreOptionsLine("Check for updates at: https://github.com/ErikEJ/SqlQueryStress");
             help.AddPreOptionsLine("");
             help.AddPreOptionsLine("Sample usage:");
-            help.AddPreOptionsLine("SqlQueryStress -c \"saved.SqlStress\" -u  -t 32");
+            help.AddPreOptionsLine("SqlQueryStress -c saved.SqlStress -u -t 32 -d sqldb.perfenv.mycompany.com -r results.csv");
             help.AddOptions(this);
             return help;
         }

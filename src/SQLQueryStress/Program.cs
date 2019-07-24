@@ -19,26 +19,19 @@ namespace SQLQueryStress
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            var configFileName = string.Empty;
-            var unattendedMode = false;
-            int numThreads = -1;
 
             var options = new CommandLineOptions();
             ICommandLineParser parser = new CommandLineParser();
             var writer = new StringWriter();
-            if (parser.ParseArguments(args, options, writer))
-            {
-                configFileName = options.SessionFile;
-                unattendedMode = options.Unattended;
-                numThreads = options.NumberOfThreads;
-            }
+            parser.ParseArguments(args, options, writer);
+            
             if (writer.GetStringBuilder().Length > 0)
             {
                 MessageBox.Show(writer.GetStringBuilder().ToString());
             }
             else
             {
-                var f = new Form1(configFileName, unattendedMode, numThreads)
+                var f = new Form1(options)
                 {
                     StartPosition = FormStartPosition.CenterScreen
                 };

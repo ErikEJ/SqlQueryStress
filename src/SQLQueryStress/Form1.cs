@@ -65,7 +65,6 @@ namespace SQLQueryStress
         //This is the total time as reported by the client
         private double _totalTime;
 
-        private readonly bool _unattendedMode;
         //Number of query requests that returned time messages
         //Note:: Average times will be computed by:
         // A) Add up all results from time messages returned by 
@@ -83,22 +82,39 @@ namespace SQLQueryStress
 
         private Guid _testGuid;
 
-        public Form1(string configFile, bool unattendedMode, int numThreads) : this()
+        private CommandLineOptions _runParameters; 
+
+        public Form1(CommandLineOptions runParameters) : this()
         {
-            var fileExists = File.Exists(configFile);
-            // load config file if specified
-            if (!string.IsNullOrWhiteSpace(configFile)
-                && fileExists)
+            _runParameters = runParameters;
+
+            if (string.IsNullOrWhiteSpace(_runParameters.SettingsFile) == false)
             {
-                OpenConfigFile(configFile);
+                var isConfigFileExists = File.Exists(_runParameters.SettingsFile); 
+                if (isConfigFileExists)
+                {
+                    OpenConfigFile(_runParameters.SettingsFile);
+                    if (_runParameters.Unattended)
+                    {
+                        Load += StartProcessing;
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException(string.Format("Settings file could not be found: {0}", _runParameters.SettingsFile));
+                }
             }
 
-            // set the start processing after form is loaded
-            _unattendedMode = unattendedMode;
-            if (unattendedMode && fileExists) Load += StartProcessing;
-            
             // are we overriding the config file?
-            if (numThreads > 0) threads_numericUpDown.Value = _settings.NumThreads = numThreads;
+            if (_runParameters.NumberOfThreads > 0)
+            {
+                threads_numericUpDown.Value = _settings.NumThreads = _runParameters.NumberOfThreads;
+            }
+
+            if (string.IsNullOrWhiteSpace(_runParameters.DbServer) == false)
+            {
+                _settings.MainDbConnectionInfo.Server = _runParameters.DbServer; 
+            }
         }
 
         public Form1()
@@ -208,10 +224,28 @@ namespace SQLQueryStress
 
             db_label.Text = "";
 
+            if (string.IsNullOrEmpty(_runParameters.ResultsAutoSaveFileName) == false)
+            {
+                AutoSaveResults(_runParameters.ResultsAutoSaveFileName); 
+            }
+
             // if we started automatically exit when done
-            if (_exitOnComplete || _unattendedMode)
+            if (_exitOnComplete || _runParameters.Unattended)
             {
                 Dispose();
+            }
+        }
+
+        private void AutoSaveResults(string resultsAutoSaveFileName)
+        {
+            string extension = Path.GetExtension(resultsAutoSaveFileName).ToLower();
+            if (extension == ".csv")
+            {
+                ExportBenchMarkToCsvFile(resultsAutoSaveFileName);
+            }
+            else
+            {
+                ExportBenchMarkToTextFile(resultsAutoSaveFileName);
             }
         }
 
