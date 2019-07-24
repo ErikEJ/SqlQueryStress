@@ -1,0 +1,120 @@
+﻿
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+
+
+namespace SQLQueryStress
+{
+
+    [Serializable]
+    public class QueryStressSettings
+    {
+        /// <summary>
+        ///     Collect I/O stats?
+        /// </summary>
+        public bool CollectIoStats;
+
+        /// <summary>
+        ///     Collect time stats?
+        /// </summary>
+        public bool CollectTimeStats;
+
+        /// <summary>
+        ///     command timeout
+        /// </summary>
+        public int CommandTimeout;
+
+        /// <summary>
+        ///     Connection Timeout
+        /// </summary>
+        public int ConnectionTimeout;
+
+        /// <summary>
+        ///     Enable pooling?
+        /// </summary>
+        public bool EnableConnectionPooling;
+
+        /// <summary>
+        ///     Force the client to retrieve all data?
+        /// </summary>
+        public bool ForceDataRetrieval;
+
+        /// <summary>
+        ///     Cancel active SqlCommands on Cancel? (do not wait for completion)
+        /// </summary>
+        public bool KillQueriesOnCancel;
+
+        /// <summary>
+        ///     Connection info for the DB in which to run the test
+        /// </summary>
+        public ConnectionInfo MainDbConnectionInfo;
+
+        /// <summary>
+        ///     main query to test
+        /// </summary>
+        public string MainQuery;
+
+        /// <summary>
+        ///     Number of iterations to run per thread
+        /// </summary>
+        public int NumIterations;
+
+        /// <summary>
+        ///     Number of threads to test with
+        /// </summary>
+        public int NumThreads;
+
+        /// <summary>
+        /// Delay
+        /// </summary>
+        public int DelayBetweenQueries;
+
+        /// <summary>
+        ///     Connection info for the DB from which to get the paramaters
+        /// </summary>
+        public ConnectionInfo ParamDbConnectionInfo;
+
+        /// <summary>
+        ///     mapped parameters
+        /// </summary>
+        public Dictionary<string, string> ParamMappings;
+
+        /// <summary>
+        ///     query from which to take parameters
+        /// </summary>
+        public string ParamQuery;
+
+        /// <summary>
+        ///     Should the main db and param db share the same settings?
+        ///     If so, use main db settings for the params
+        /// </summary>
+        public bool ShareDbSettings;
+
+        public QueryStressSettings()
+        {
+            ShareDbSettings = true;
+            MainQuery = "";
+            ParamQuery = "";
+            NumThreads = 1;
+            NumIterations = 1;
+            ParamMappings = new Dictionary<string, string>();
+            ConnectionTimeout = 15;
+            CommandTimeout = 0;
+            EnableConnectionPooling = true;
+            CollectIoStats = true;
+            CollectTimeStats = true;
+            ForceDataRetrieval = false;
+            KillQueriesOnCancel = true;
+            MainDbConnectionInfo = new ConnectionInfo(ConnectionTimeout, EnableConnectionPooling, NumThreads * 2);
+            ParamDbConnectionInfo = new ConnectionInfo();
+        }
+
+        [OnDeserialized]
+        private void FixSettings(StreamingContext context)
+        {
+            ConnectionTimeout = ConnectionTimeout == 0 ? 15 : ConnectionTimeout;
+        }
+    }
+
+}

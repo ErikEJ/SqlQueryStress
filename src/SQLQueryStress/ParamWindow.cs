@@ -21,12 +21,12 @@ namespace SQLQueryStress
         private readonly Dictionary<string, string> _paramValues = new Dictionary<string, string>();
 
         //Query Stress Settings
-        private readonly Form1.QueryStressSettings _settings;
+        private readonly QueryStressSettings _settings;
 
         //Variables from the load query
         private string[] _queryVariables;
 
-        public ParamWindow(Form1.QueryStressSettings settings, string outerQuery)
+        public ParamWindow(QueryStressSettings settings, string outerQuery)
         {
             InitializeComponent();
 
