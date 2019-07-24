@@ -346,26 +346,15 @@ namespace SQLQueryStress
 
         private void OpenConfigFile(string fileName)
         {
-            var contents = File.ReadAllText(fileName);
-            _settings = Newtonsoft.Json.JsonConvert.DeserializeObject<QueryStressSettings>(contents); 
-            //FileStream fs = null;
-
-            //try
-            //{
-            //    fs = new FileStream(fileName, FileMode.Open);
-            //    var bf = new BinaryFormatter();
-
-            //    _settings = (QueryStressSettings) bf.Deserialize(fs);
-            //}
-            //catch
-            //{
-            //    MessageBox.Show(Resources.ErrLoadingSettings);
-            //}
-            //finally
-            //{
-            //    if (fs != null)
-            //        fs.Dispose();
-            //}
+            try
+            {
+                var contents = File.ReadAllText(fileName);
+                _settings = Newtonsoft.Json.JsonConvert.DeserializeObject<QueryStressSettings>(contents);
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(string.Format("{0}: {1}", Resources.ErrLoadingSettings, exc.Message));
+            }
 
             var sqlControl = elementHost1.Child as SqlControl;
             if (sqlControl != null)
