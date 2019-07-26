@@ -349,7 +349,7 @@ namespace SQLQueryStress
             try
             {
                 var contents = File.ReadAllText(fileName);
-                _settings = Newtonsoft.Json.JsonConvert.DeserializeObject<QueryStressSettings>(contents);
+                _settings = JsonSerializer.ReadToObject<QueryStressSettings>(contents);
             }
             catch (Exception exc)
             {
@@ -391,7 +391,7 @@ namespace SQLQueryStress
         {
             try
             {
-                var jsonContent = Newtonsoft.Json.JsonConvert.SerializeObject(_settings);
+                var jsonContent = JsonSerializer.WriteFromObject(_settings);
                 File.WriteAllText(saveSettingsFileDialog.FileName, jsonContent);
             }
             catch (Exception exc)

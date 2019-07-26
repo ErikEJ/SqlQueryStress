@@ -2,24 +2,35 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SQLQueryStress
 {
     [Serializable]
+    [DataContract]
     public class ConnectionInfo : ICloneable
     {
+        [DataMember]
         public string Database;
+        [DataMember]
         public bool IntegratedAuth;
+        [DataMember]
         public string Login;
+        [DataMember]
         public string Password;
 
+        [DataMember]
         public string Server;
+        [DataMember]
         public ApplicationIntent ApplicationIntent;
 
+        [DataMember]
         public int ConnectTimeout;
+        [DataMember]
         public bool EnablePooling;
+        [DataMember]
         public int MaxPoolSize; 
 
 
