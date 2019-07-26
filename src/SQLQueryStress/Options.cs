@@ -9,9 +9,9 @@ namespace SQLQueryStress
 {
     public partial class Options : Form
     {
-        private readonly Form1.QueryStressSettings _settings;
+        private readonly QueryStressSettings _settings;
 
-        public Options(Form1.QueryStressSettings settings)
+        public Options(QueryStressSettings settings)
         {
             _settings = settings;
 

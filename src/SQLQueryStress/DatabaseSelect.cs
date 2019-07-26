@@ -13,10 +13,10 @@ namespace SQLQueryStress
     public partial class DatabaseSelect : Form
     {
         private readonly ConnectionInfo _localMainConnectionInfo;
-        private readonly Form1.QueryStressSettings _settings;
+        private readonly QueryStressSettings _settings;
         private ConnectionInfo _localParamConnectionInfo;
 
-        public DatabaseSelect(Form1.QueryStressSettings settings)
+        public DatabaseSelect(QueryStressSettings settings)
         {
             _settings = settings;
             _localMainConnectionInfo = (ConnectionInfo) settings.MainDbConnectionInfo.Clone();
@@ -361,106 +361,6 @@ namespace SQLQueryStress
             MessageBox.Show(_localMainConnectionInfo.TestConnection() ? Resources.ConnSucc : Resources.ConnFail);
         }
 
-        [Serializable]
-        public class ConnectionInfo : ICloneable
-        {
-            public string Database;
-            public bool IntegratedAuth;
-            public string Login;
-            public string Password;
-
-            public string Server;
-            public ApplicationIntent ApplicationIntent;
-            public Form1.QueryStressSettings Settings;
-
-            public ConnectionInfo()
-            {
-                Server = "";
-                IntegratedAuth = true;
-                ApplicationIntent = ApplicationIntent.ReadWrite;
-                Login = "";
-                Password = "";
-                Database = "";
-            }
-
-            public ConnectionInfo(Form1.QueryStressSettings settings)
-            {
-                Server = "";
-                IntegratedAuth = true;
-                ApplicationIntent = ApplicationIntent.ReadWrite;
-                Login = "";
-                Password = "";
-                Database = "";
-                Settings = settings;
-            }
-
-            public string ConnectionString
-            {
-                get
-                {
-                    var build = new SqlConnectionStringBuilder {DataSource = Server, IntegratedSecurity = IntegratedAuth, ApplicationName = "SQLQueryStress", ApplicationIntent = ApplicationIntent};
-                    if (!IntegratedAuth)
-                    {
-                        build.UserID = Login;
-                        build.Password = Password;
-                    }
-
-                    if (Database.Length > 0)
-                        build.InitialCatalog = Database;
-
-                    if (Settings != null)
-                    {
-                        build.ConnectTimeout = Settings.ConnectionTimeout;
-                        build.Pooling = Settings.EnableConnectionPooling;
-                        build.MaxPoolSize = Settings.NumThreads * 2;
-                    }
-
-                    return build.ConnectionString;
-                }
-            }
-
-            #region ICloneable Members
-
-            public object Clone()
-            {
-                var newConnInfo = new ConnectionInfo();
-                CopyTo(newConnInfo);
-
-                return newConnInfo;
-            }
-
-            #endregion
-
-            public void CopyTo(ConnectionInfo to)
-            {
-                to.Server = Server;
-                to.IntegratedAuth = IntegratedAuth;
-                to.Login = Login;
-                to.Password = Password;
-                to.Database = Database;
-                to.ApplicationIntent = ApplicationIntent;
-            }
-
-            public bool TestConnection()
-            {
-                if ((Server == "") || ((IntegratedAuth == false) && (Login == "" || Password == "")))
-                    return false;
-
-                using (var conn = new SqlConnection(ConnectionString))
-                {
-                    try
-                    {
-                        conn.Open();
-                    }
-                    catch (Exception exc)
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-        }
 
         private void appintent_check_CheckedChanged(object sender, EventArgs e)
         {

@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.IO;
-using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
 using SQLQueryStress.Properties;
@@ -121,13 +120,13 @@ namespace SQLQueryStress
         {
             InitializeComponent();
 
-            saveFileDialog1.DefaultExt = "sqlstress";
-            saveFileDialog1.Filter = @"SQLQueryStress Configuration Files|*.sqlstress";
-            saveFileDialog1.FileOk += saveFileDialog1_FileOk;
+            saveSettingsFileDialog.DefaultExt = "json";
+            saveSettingsFileDialog.Filter = @"SQLQueryStress Configuration Files|*.json";
+            saveSettingsFileDialog.FileOk += saveSettingsFileDialog_FileOk;
 
-            openFileDialog1.DefaultExt = "sqlstress";
-            openFileDialog1.Filter = @"SQLQueryStress Configuration Files|*.sqlstress";
-            openFileDialog1.FileOk += openFileDialog1_FileOk;
+            loadSettingsFileDialog.DefaultExt = "json";
+            loadSettingsFileDialog.Filter = @"SQLQueryStress Configuration Files|*.json";
+            loadSettingsFileDialog.FileOk += loadSettingsFileDialog_FileOk;
         }
 
         private void StartProcessing(Object sender, EventArgs e)
@@ -337,7 +336,7 @@ namespace SQLQueryStress
 
         private void loadSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            openFileDialog1.ShowDialog();
+            loadSettingsFileDialog.ShowDialog();
         }
 
         private void mainUITimer_Tick(object sender, EventArgs e)
@@ -347,23 +346,14 @@ namespace SQLQueryStress
 
         private void OpenConfigFile(string fileName)
         {
-            FileStream fs = null;
-
             try
             {
-                fs = new FileStream(fileName, FileMode.Open);
-                var bf = new BinaryFormatter();
-
-                _settings = (QueryStressSettings) bf.Deserialize(fs);
+                var contents = File.ReadAllText(fileName);
+                _settings = JsonSerializer.ReadToObject<QueryStressSettings>(contents);
             }
-            catch
+            catch (Exception exc)
             {
-                MessageBox.Show(Resources.ErrLoadingSettings);
-            }
-            finally
-            {
-                if (fs != null)
-                    fs.Dispose();
+                MessageBox.Show(string.Format("{0}: {1}", Resources.ErrLoadingSettings, exc.Message));
             }
 
             var sqlControl = elementHost1.Child as SqlControl;
@@ -376,9 +366,9 @@ namespace SQLQueryStress
             queryDelay_textBox.Text = _settings.DelayBetweenQueries.ToString();
         }
 
-        private void openFileDialog1_FileOk(object sender, EventArgs e)
+        private void loadSettingsFileDialog_FileOk(object sender, EventArgs e)
         {
-            OpenConfigFile(openFileDialog1.FileName);
+            OpenConfigFile(loadSettingsFileDialog.FileName);
         }
 
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -397,25 +387,16 @@ namespace SQLQueryStress
             }
         }
 
-        private void saveFileDialog1_FileOk(object sender, EventArgs e)
+        private void saveSettingsFileDialog_FileOk(object sender, EventArgs e)
         {
-            FileStream fs = null;
-
             try
             {
-                fs = new FileStream(saveFileDialog1.FileName, FileMode.Create);
-                var bf = new BinaryFormatter();
-
-                bf.Serialize(fs, _settings);
+                var jsonContent = JsonSerializer.WriteFromObject(_settings);
+                File.WriteAllText(saveSettingsFileDialog.FileName, jsonContent);
             }
-            catch
+            catch (Exception exc)
             {
-                MessageBox.Show(Resources.ErrorSavingSettings);
-            }
-            finally
-            {
-                if (fs != null)
-                    fs.Dispose();
+                MessageBox.Show(string.Format("{0}: {1}", Resources.ErrorSavingSettings, exc.Message)); 
             }
         }
 
@@ -431,7 +412,7 @@ namespace SQLQueryStress
         private void saveSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveSettingsFromForm1();
-            saveFileDialog1.ShowDialog();
+            saveSettingsFileDialog.ShowDialog();
         }
 
         private void totalExceptions_textBox_Click(object sender, EventArgs e)
@@ -487,116 +468,6 @@ namespace SQLQueryStress
                 elapsedTime_textBox.Text = theTime.Substring(0, 13);
             else
                 elapsedTime_textBox.Text = theTime + @".0000";
-        }
-
-        [Serializable]
-        public class QueryStressSettings
-        {
-            /// <summary>
-            ///     Collect I/O stats?
-            /// </summary>
-            public bool CollectIoStats;
-
-            /// <summary>
-            ///     Collect time stats?
-            /// </summary>
-            public bool CollectTimeStats;
-
-            /// <summary>
-            ///     command timeout
-            /// </summary>
-            public int CommandTimeout;
-
-            /// <summary>
-            ///     Connection Timeout
-            /// </summary>
-            public int ConnectionTimeout;
-
-            /// <summary>
-            ///     Enable pooling?
-            /// </summary>
-            public bool EnableConnectionPooling;
-
-            /// <summary>
-            ///     Force the client to retrieve all data?
-            /// </summary>
-            public bool ForceDataRetrieval;
-
-            /// <summary>
-            ///     Cancel active SqlCommands on Cancel? (do not wait for completion)
-            /// </summary>
-            public bool KillQueriesOnCancel;
-
-            /// <summary>
-            ///     Connection info for the DB in which to run the test
-            /// </summary>
-            public DatabaseSelect.ConnectionInfo MainDbConnectionInfo;
-
-            /// <summary>
-            ///     main query to test
-            /// </summary>
-            public string MainQuery;
-
-            /// <summary>
-            ///     Number of iterations to run per thread
-            /// </summary>
-            public int NumIterations;
-
-            /// <summary>
-            ///     Number of threads to test with
-            /// </summary>
-            public int NumThreads;
-
-            /// <summary>
-            /// Delay
-            /// </summary>
-            public int DelayBetweenQueries;
-
-            /// <summary>
-            ///     Connection info for the DB from which to get the paramaters
-            /// </summary>
-            public DatabaseSelect.ConnectionInfo ParamDbConnectionInfo;
-
-            /// <summary>
-            ///     mapped parameters
-            /// </summary>
-            public Dictionary<string, string> ParamMappings;
-
-            /// <summary>
-            ///     query from which to take parameters
-            /// </summary>
-            public string ParamQuery;
-
-            /// <summary>
-            ///     Should the main db and param db share the same settings?
-            ///     If so, use main db settings for the params
-            /// </summary>
-            public bool ShareDbSettings;
-
-            public QueryStressSettings()
-            {
-                MainDbConnectionInfo = new DatabaseSelect.ConnectionInfo(this);
-                ShareDbSettings = true;
-                ParamDbConnectionInfo = new DatabaseSelect.ConnectionInfo();
-                MainQuery = "";
-                ParamQuery = "";
-                NumThreads = 1;
-                NumIterations = 1;
-                ParamMappings = new Dictionary<string, string>();
-                ConnectionTimeout = 15;
-                CommandTimeout = 0;
-                EnableConnectionPooling = true;
-                CollectIoStats = true;
-                CollectTimeStats = true;
-                ForceDataRetrieval = false;
-                KillQueriesOnCancel = true;
-            }
-
-            [OnDeserialized]
-            private void FixSettings(StreamingContext context)
-            {
-                ConnectionTimeout = ConnectionTimeout == 0 ? 15 : ConnectionTimeout;
-            }
         }
 
         private void btnCleanBuffer_Click(object sender, EventArgs e)

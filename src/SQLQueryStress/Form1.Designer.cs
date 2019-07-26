@@ -83,8 +83,8 @@ namespace SQLQueryStress
             this.database_button = new System.Windows.Forms.Button();
             this.iterationsSecond_textBox = new System.Windows.Forms.Label();
             this.exceptions_button = new System.Windows.Forms.Button();
-            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.saveSettingsFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.loadSettingsFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.label9 = new System.Windows.Forms.Label();
             this.cpuTime_textBox = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
@@ -831,8 +831,8 @@ namespace SQLQueryStress
         private System.Windows.Forms.ToolStripMenuItem saveSettingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadSettingsToolStripMenuItem;
         private System.Windows.Forms.Button exceptions_button;
-        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
-        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.SaveFileDialog saveSettingsFileDialog;
+        private System.Windows.Forms.OpenFileDialog loadSettingsFileDialog;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label cpuTime_textBox;
         private System.Windows.Forms.Label label12;
