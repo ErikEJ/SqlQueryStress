@@ -42,6 +42,7 @@ namespace SQLQueryStress
             var builder = new SqlConnectionStringBuilder(connectionString)
             {
                 MinPoolSize = threads,
+                MaxPoolSize = threads,
                 CurrentLanguage = "English"
             };
 

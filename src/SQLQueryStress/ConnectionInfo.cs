@@ -75,6 +75,7 @@ namespace SQLQueryStress
                 if (MaxPoolSize != 0)
                 {
                     build.MaxPoolSize = MaxPoolSize;
+                    build.MinPoolSize = MaxPoolSize;
                 }
 
                 build.Pooling = EnablePooling;
