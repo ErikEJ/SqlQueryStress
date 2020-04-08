@@ -34,11 +34,11 @@ namespace CommandLine
     /// Models an option specification.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field,
-            AllowMultiple=false,
-            Inherited=true)]
+            AllowMultiple = false,
+            Inherited = true)]
     public class OptionAttribute : BaseOptionAttribute
     {
-        private string uniqueName;
+        private readonly string uniqueName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandLine.OptionAttribute"/> class.

@@ -39,7 +39,7 @@ namespace SQLQueryStress
         {
             //Set the min pool size so that the pool does not have
             //to get allocated in real-time
-            var builder = new SqlConnectionStringBuilder(connectionString)
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString)
             {
                 MinPoolSize = threads,
                 MaxPoolSize = threads,
@@ -63,10 +63,10 @@ namespace SQLQueryStress
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public static bool ExecuteCommand(string connectionString, string sql)
         {
-            using (var conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
-                using (var cmd = new SqlCommand(sql, conn))
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
                     cmd.ExecuteNonQuery();
                     return true;
@@ -84,10 +84,10 @@ namespace SQLQueryStress
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         private void StartLoad(BackgroundWorker worker)
         {
-            var useParams = false;
+            bool useParams = false;
 
-            var badParams = new List<string>();
-            foreach (var theKey in _paramMappings.Keys)
+            List<string> badParams = new List<string>();
+            foreach (string theKey in _paramMappings.Keys)
             {
                 if ((_paramMappings[theKey] == null) || (_paramMappings[theKey].Length == 0))
                 {
@@ -95,7 +95,7 @@ namespace SQLQueryStress
                 }
             }
 
-            foreach (var theKey in badParams)
+            foreach (string theKey in badParams)
             {
                 _paramMappings.Remove(theKey);
             }
@@ -108,7 +108,7 @@ namespace SQLQueryStress
             }
 
             //Initialize the connection pool            
-            var conn = new SqlConnection(_connectionString);
+            SqlConnection conn = new SqlConnection(_connectionString);
             //TODO: use this or not??
             SqlConnection.ClearPool(conn);
             conn.Open();
@@ -118,7 +118,7 @@ namespace SQLQueryStress
             QueryInput.RunCancelled = false;
 
             //Spin up the load threads
-            for (var i = 0; i < _threads; i++)
+            for (int i = 0; i < _threads; i++)
             {
                 conn = new SqlConnection(_connectionString);
 
@@ -127,27 +127,27 @@ namespace SQLQueryStress
 
                 SqlCommand statsComm = null;
 
-                var queryComm = new SqlCommand {CommandTimeout = _commandTimeout, Connection = conn, CommandText = _query};
+                SqlCommand queryComm = new SqlCommand { CommandTimeout = _commandTimeout, Connection = conn, CommandText = _query };
 
                 if (useParams)
                 {
                     queryComm.Parameters.AddRange(ParamServer.GetParams());
                 }
 
-                var setStatistics = (_collectIoStats ? @"SET STATISTICS IO ON;" : "") + (_collectTimeStats ? @"SET STATISTICS TIME ON;" : "");
+                string setStatistics = (_collectIoStats ? @"SET STATISTICS IO ON;" : "") + (_collectTimeStats ? @"SET STATISTICS TIME ON;" : "");
 
                 if (setStatistics.Length > 0)
                 {
-                    statsComm = new SqlCommand {CommandTimeout = _commandTimeout, Connection = conn, CommandText = setStatistics};
+                    statsComm = new SqlCommand { CommandTimeout = _commandTimeout, Connection = conn, CommandText = setStatistics };
                 }
 
                 //Queue<queryOutput> queryOutInfo = new Queue<queryOutput>();
 
-                var input = new QueryInput(statsComm, queryComm,
-//                    this.queryOutInfo,
+                QueryInput input = new QueryInput(statsComm, queryComm,
+                    //                    this.queryOutInfo,
                     _iterations, _forceDataRetrieval, _queryDelay, worker, _killQueriesOnCancel);
 
-                var theThread = new Thread(input.StartLoadThread) {Priority = ThreadPriority.BelowNormal};
+                Thread theThread = new Thread(input.StartLoadThread) { Priority = ThreadPriority.BelowNormal };
 
                 _threadPool.Add(theThread);
                 _commandPool.Add(queryComm);
@@ -155,19 +155,19 @@ namespace SQLQueryStress
             }
 
             //Start the load threads
-            for (var i = 0; i < _threads; i++)
+            for (int i = 0; i < _threads; i++)
             {
                 _threadPool[i].Start();
             }
 
             //Start reading the queue...
-            var finishedThreads = 0;
-            var cancelled = false;
+            int finishedThreads = 0;
+            bool cancelled = false;
 
             while (finishedThreads < _threads)
             {
-//                for (int i = 0; i < threads; i++)
-//                {
+                //                for (int i = 0; i < threads; i++)
+                //                {
                 // try
                 // {
                 QueryOutput theOut = null;
@@ -185,7 +185,7 @@ namespace SQLQueryStress
                 if (theOut != null)
                 {
                     //Report output to the UI
-                    worker.ReportProgress((int) (finishedThreads / (decimal) _threads * 100), theOut);
+                    worker.ReportProgress((int)(finishedThreads / (decimal)_threads * 100), theOut);
 
                     //TODO: Make this actually remove the queue from the pool so that it's not checked again -- maintain this with a bitmap, perhaps?
                     if (theOut.Finished)
@@ -217,27 +217,27 @@ namespace SQLQueryStress
 
                     //for each 20 threads, create a new thread dedicated
                     //to killing them
-                    var threadNum = _threadPool.Count;
+                    int threadNum = _threadPool.Count;
 
-                    var killerThreads = new List<Thread>();
+                    List<Thread> killerThreads = new List<Thread>();
                     while (threadNum > 0)
                     {
-                        var i = threadNum <= 20 ? 0 : threadNum - 20;
+                        int i = threadNum <= 20 ? 0 : threadNum - 20;
 
-                        var killThreads = new Thread[threadNum - i < 1 ? threadNum : threadNum - i];
-                        var killCommands = new SqlCommand[threadNum - i < 1 ? threadNum : threadNum - i];
+                        Thread[] killThreads = new Thread[threadNum - i < 1 ? threadNum : threadNum - i];
+                        SqlCommand[] killCommands = new SqlCommand[threadNum - i < 1 ? threadNum : threadNum - i];
 
                         _threadPool.CopyTo(i, killThreads, 0, killThreads.Length);
                         _commandPool.CopyTo(i, killCommands, 0, killCommands.Length);
 
-                        for (var j = threadNum - 1; j >= i; j--)
+                        for (int j = threadNum - 1; j >= i; j--)
                         {
                             _threadPool.RemoveAt(j);
                             _commandPool.RemoveAt(j);
                         }
 
-                        var kill = new ThreadKiller(killThreads, killCommands);
-                        var killer = new Thread(kill.KillEm);
+                        ThreadKiller kill = new ThreadKiller(killThreads, killCommands);
+                        Thread killer = new Thread(kill.KillEm);
                         killer.Start();
                         Thread.Sleep(0);
 
@@ -248,7 +248,7 @@ namespace SQLQueryStress
 
                     //wait for the kill threads to return
                     //before exiting...
-                    foreach (var theThread in killerThreads)
+                    foreach (Thread theThread in killerThreads)
                     {
                         theThread.Join();
                     }
@@ -277,10 +277,10 @@ namespace SQLQueryStress
 
             public static void GetNextRow_Values(SqlParameterCollection newParam)
             {
-                var rowNum = Interlocked.Increment(ref _currentRow);
-                var dr = _theParams.Rows[rowNum % _numRows];
+                int rowNum = Interlocked.Increment(ref _currentRow);
+                DataRow dr = _theParams.Rows[rowNum % _numRows];
 
-                for (var i = 0; i < _outputParams.Length; i++)
+                for (int i = 0; i < _outputParams.Length; i++)
                 {
                     newParam[i].Value = dr[_paramDtMappings[i]];
                 }
@@ -288,11 +288,11 @@ namespace SQLQueryStress
 
             public static SqlParameter[] GetParams()
             {
-                var newParam = new SqlParameter[_outputParams.Length];
+                SqlParameter[] newParam = new SqlParameter[_outputParams.Length];
 
-                for (var i = 0; i < _outputParams.Length; i++)
+                for (int i = 0; i < _outputParams.Length; i++)
                 {
-                    newParam[i] = (SqlParameter) ((ICloneable) _outputParams[i]).Clone();
+                    newParam[i] = (SqlParameter)((ICloneable)_outputParams[i]).Clone();
                 }
 
                 return newParam;
@@ -301,7 +301,7 @@ namespace SQLQueryStress
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
             public static void Initialize(string paramQuery, string connString, Dictionary<string, string> paramMappings)
             {
-                var a = new SqlDataAdapter(paramQuery, connString);
+                SqlDataAdapter a = new SqlDataAdapter(paramQuery, connString);
                 _theParams = new DataTable();
                 a.Fill(_theParams);
 
@@ -312,11 +312,11 @@ namespace SQLQueryStress
 
                 //Populate the array of parameters that will be cloned and filled
                 //on each request
-                var i = 0;
-                foreach (var parameterName in paramMappings.Keys)
+                int i = 0;
+                foreach (string parameterName in paramMappings.Keys)
                 {
-                    _outputParams[i] = new SqlParameter {ParameterName = parameterName};
-                    var paramColumn = paramMappings[parameterName];
+                    _outputParams[i] = new SqlParameter { ParameterName = parameterName };
+                    string paramColumn = paramMappings[parameterName];
 
                     //if there is a param mapped to this column
                     if (paramColumn != null)
@@ -350,20 +350,20 @@ namespace SQLQueryStress
             //private static Dictionary<int, List<string>> theInfoMessages = new Dictionary<int, List<string>>();
 
             private readonly Stopwatch _sw = new Stopwatch();
-            private System.Timers.Timer _killTimer = new System.Timers.Timer();
+            private readonly System.Timers.Timer _killTimer = new System.Timers.Timer();
             private readonly bool _forceDataRetrieval;
             //          private readonly Queue<queryOutput> queryOutInfo;
             private readonly int _iterations;
             private readonly int _queryDelay;
-            private BackgroundWorker _backgroundWorker;
+            private readonly BackgroundWorker _backgroundWorker;
 
             public QueryInput(SqlCommand statsComm, SqlCommand queryComm,
-//                Queue<queryOutput> queryOutInfo,
+                //                Queue<queryOutput> queryOutInfo,
                 int iterations, bool forceDataRetrieval, int queryDelay, BackgroundWorker _backgroundWorker, bool killQueriesOnCancel)
             {
                 _statsComm = statsComm;
                 _queryComm = queryComm;
-//                this.queryOutInfo = queryOutInfo;
+                //                this.queryOutInfo = queryOutInfo;
                 _iterations = iterations;
                 _forceDataRetrieval = forceDataRetrieval;
                 _queryDelay = queryDelay;
@@ -377,18 +377,19 @@ namespace SQLQueryStress
                 if (killQueriesOnCancel)
                 {
                     _killTimer.Interval = 2000;
-                    _killTimer.Elapsed += _killTimer_Elapsed;
+                    _killTimer.Elapsed += KillTimer_Elapsed;
                     _killTimer.Enabled = true;
                 }
             }
 
-            private void _killTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+            private void KillTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
             {
                 if (_backgroundWorker.CancellationPending)
                 {
                     _queryComm.Cancel();
                     _killTimer.Enabled = false;
-                } else if(_queryComm.Connection == null || _queryComm.Connection.State == ConnectionState.Closed)
+                }
+                else if (_queryComm.Connection == null || _queryComm.Connection.State == ConnectionState.Closed)
                 {
                     _killTimer.Enabled = false;
                 }
@@ -403,7 +404,7 @@ namespace SQLQueryStress
             {
                 foreach (SqlError err in args.Errors)
                 {
-                    var matches = FindReads.Split(err.Message);
+                    string[] matches = FindReads.Split(err.Message);
 
                     //we have a read
                     if (matches.Length > 1)
@@ -429,11 +430,11 @@ namespace SQLQueryStress
                 try
                 {
                     //do the work
-                    using (var conn = _queryComm.Connection)
+                    using (SqlConnection conn = _queryComm.Connection)
                     {
                         SqlInfoMessageEventHandler handler = GetInfoMessages;
 
-                        for (var i = 0; i < _iterations; i++)
+                        for (int i = 0; i < _iterations; i++)
                         {
                             if (_runCancelled)
                                 throw new Exception();
@@ -469,7 +470,7 @@ namespace SQLQueryStress
                                 //TODO: This could be made better
                                 if (_forceDataRetrieval)
                                 {
-                                    var reader = _queryComm.ExecuteReader();
+                                    SqlDataReader reader = _queryComm.ExecuteReader();
                                     Thread.Sleep(0);
 
                                     do
@@ -480,7 +481,7 @@ namespace SQLQueryStress
                                         {
                                             //grab the first column to force the row down the pipe
                                             // ReSharper disable once UnusedVariable
-                                            var x = reader[0];
+                                            object x = reader[0];
                                             Thread.Sleep(0);
                                         }
                                     } while (reader.NextResult());
@@ -512,13 +513,13 @@ namespace SQLQueryStress
                                 {
                                     if (_statsComm != null)
                                     {
-                                        conn.InfoMessage -= handler;               
+                                        conn.InfoMessage -= handler;
                                     }
-                                    conn.Close();    
+                                    conn.Close();
                                 }
                             }
 
-                            var finished = i == _iterations - 1;
+                            bool finished = i == _iterations - 1;
 
                             //List<string> infoMessages = null;
 
@@ -613,7 +614,7 @@ namespace SQLQueryStress
 
             public void KillEm()
             {
-                foreach (var comm in _theCommands)
+                foreach (SqlCommand comm in _theCommands)
                 {
                     comm.Cancel();
                     comm.Connection.Dispose();
@@ -622,13 +623,13 @@ namespace SQLQueryStress
                     Thread.Sleep(0);
                 }
 
-                var keepKilling = true;
+                bool keepKilling = true;
 
                 while (keepKilling)
                 {
                     keepKilling = false;
 
-                    foreach (var theThread in _theThreads)
+                    foreach (Thread theThread in _theThreads)
                     {
                         if (theThread.IsAlive)
                         {

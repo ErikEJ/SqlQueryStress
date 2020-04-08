@@ -155,7 +155,7 @@ namespace SQLQueryStress
             this.cancel_button.TabIndex = 3;
             this.cancel_button.Text = "Cancel";
             this.cancel_button.UseVisualStyleBackColor = true;
-            this.cancel_button.Click += new System.EventHandler(this.cancel_button_Click);
+            this.cancel_button.Click += new System.EventHandler(this.Cancel_button_Click);
             // 
             // test_button
             // 
@@ -167,7 +167,7 @@ namespace SQLQueryStress
             this.test_button.TabIndex = 5;
             this.test_button.Text = "Test Connection";
             this.test_button.UseVisualStyleBackColor = true;
-            this.test_button.Click += new System.EventHandler(this.test_button_Click);
+            this.test_button.Click += new System.EventHandler(this.Test_button_Click);
             // 
             // ok_button
             // 
@@ -179,7 +179,7 @@ namespace SQLQueryStress
             this.ok_button.TabIndex = 2;
             this.ok_button.Text = "OK";
             this.ok_button.UseVisualStyleBackColor = true;
-            this.ok_button.Click += new System.EventHandler(this.ok_button_Click);
+            this.ok_button.Click += new System.EventHandler(this.Ok_button_Click);
             // 
             // db_comboBox
             // 
@@ -249,7 +249,7 @@ namespace SQLQueryStress
             this.appintent_check.TabIndex = 13;
             this.appintent_check.Text = "Application Intent";
             this.appintent_check.UseVisualStyleBackColor = true;
-            this.appintent_check.CheckedChanged += new System.EventHandler(this.appintent_check_CheckedChanged);
+            this.appintent_check.CheckedChanged += new System.EventHandler(this.Appintent_check_CheckedChanged);
             // 
             // groupBox2
             // 
@@ -287,7 +287,7 @@ namespace SQLQueryStress
             this.pm_test_button.TabIndex = 5;
             this.pm_test_button.Text = "Test Connection";
             this.pm_test_button.UseVisualStyleBackColor = true;
-            this.pm_test_button.Click += new System.EventHandler(this.pm_test_button_Click);
+            this.pm_test_button.Click += new System.EventHandler(this.Pm_test_button_Click);
             // 
             // shareSettings_checkBox
             // 
@@ -302,7 +302,7 @@ namespace SQLQueryStress
             this.shareSettings_checkBox.TabIndex = 13;
             this.shareSettings_checkBox.Text = "Share Connection Settings";
             this.shareSettings_checkBox.UseVisualStyleBackColor = true;
-            this.shareSettings_checkBox.CheckedChanged += new System.EventHandler(this.shareSettings_checkBox_CheckedChanged);
+            this.shareSettings_checkBox.CheckedChanged += new System.EventHandler(this.ShareSettings_checkBox_CheckedChanged);
             // 
             // pm_db_comboBox
             // 
@@ -434,7 +434,7 @@ namespace SQLQueryStress
             this.pm_appintent_check.TabIndex = 15;
             this.pm_appintent_check.Text = "Application Intent";
             this.pm_appintent_check.UseVisualStyleBackColor = true;
-            this.pm_appintent_check.CheckedChanged += new System.EventHandler(this.pm_appintent_check_CheckedChanged);
+            this.pm_appintent_check.CheckedChanged += new System.EventHandler(this.Pm_appintent_check_CheckedChanged);
             // 
             // DatabaseSelect
             // 

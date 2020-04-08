@@ -81,7 +81,7 @@ namespace SQLQueryStress
 
         private Guid _testGuid;
 
-        private CommandLineOptions _runParameters; 
+        private readonly CommandLineOptions _runParameters;
 
         public Form1(CommandLineOptions runParameters) : this()
         {
@@ -89,7 +89,7 @@ namespace SQLQueryStress
 
             if (string.IsNullOrWhiteSpace(_runParameters.SettingsFile) == false)
             {
-                var isConfigFileExists = File.Exists(_runParameters.SettingsFile); 
+                bool isConfigFileExists = File.Exists(_runParameters.SettingsFile);
                 if (isConfigFileExists)
                 {
                     OpenConfigFile(_runParameters.SettingsFile);
@@ -112,7 +112,7 @@ namespace SQLQueryStress
 
             if (string.IsNullOrWhiteSpace(_runParameters.DbServer) == false)
             {
-                _settings.MainDbConnectionInfo.Server = _runParameters.DbServer; 
+                _settings.MainDbConnectionInfo.Server = _runParameters.DbServer;
             }
         }
 
@@ -122,11 +122,11 @@ namespace SQLQueryStress
 
             saveSettingsFileDialog.DefaultExt = "json";
             saveSettingsFileDialog.Filter = @"SQLQueryStress Configuration Files|*.json";
-            saveSettingsFileDialog.FileOk += saveSettingsFileDialog_FileOk;
+            saveSettingsFileDialog.FileOk += SaveSettingsFileDialog_FileOk;
 
             loadSettingsFileDialog.DefaultExt = "json";
             loadSettingsFileDialog.Filter = @"SQLQueryStress Configuration Files|*.json";
-            loadSettingsFileDialog.FileOk += loadSettingsFileDialog_FileOk;
+            loadSettingsFileDialog.FileOk += LoadSettingsFileDialog_FileOk;
         }
 
         private void StartProcessing(Object sender, EventArgs e)
@@ -134,21 +134,20 @@ namespace SQLQueryStress
             go_button.PerformClick();
         }
 
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        private void AboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var a = new AboutBox();
+            AboutBox a = new AboutBox();
             a.ShowDialog();
         }
 
-        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            int tmp;
-            ((LoadEngine) e.Argument).StartLoad(backgroundWorker1, (Int32.TryParse(queryDelay_textBox.Text, out tmp) ? tmp : 0));
+            ((LoadEngine)e.Argument).StartLoad(backgroundWorker1, int.TryParse(queryDelay_textBox.Text, out int tmp) ? tmp : 0);
         }
 
-        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void BackgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            var output = (LoadEngine.QueryOutput) e.UserState;
+            LoadEngine.QueryOutput output = (LoadEngine.QueryOutput)e.UserState;
 
             _totalIterations++;
 
@@ -176,7 +175,7 @@ namespace SQLQueryStress
                 //of the exception
                 if (_settings.CollectTimeStats)
                 {
-                    var matchPos = output.E.Message.IndexOf("SQL Server parse and compile time:", StringComparison.Ordinal);
+                    int matchPos = output.E.Message.IndexOf("SQL Server parse and compile time:", StringComparison.Ordinal);
 
                     theMessage = matchPos > -1 ? output.E.Message.Substring(0, matchPos - 2) : output.E.Message;
                 }
@@ -204,7 +203,7 @@ namespace SQLQueryStress
             }
         }
 
-        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void BackgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             mainUITimer.Stop();
 
@@ -219,13 +218,13 @@ namespace SQLQueryStress
             if (!_cancelled)
                 progressBar1.Value = 100;
 
-            ((BackgroundWorker) sender).Dispose();
+            ((BackgroundWorker)sender).Dispose();
 
             db_label.Text = "";
 
             if (string.IsNullOrEmpty(_runParameters.ResultsAutoSaveFileName) == false)
             {
-                AutoSaveResults(_runParameters.ResultsAutoSaveFileName); 
+                AutoSaveResults(_runParameters.ResultsAutoSaveFileName);
             }
 
             // if we started automatically exit when done
@@ -248,7 +247,7 @@ namespace SQLQueryStress
             }
         }
 
-        private void cancel_button_Click(object sender, EventArgs e)
+        private void Cancel_button_Click(object sender, EventArgs e)
         {
             cancel_button.Enabled = false;
 
@@ -262,23 +261,23 @@ namespace SQLQueryStress
             }
         }
 
-        private void database_button_Click(object sender, EventArgs e)
+        private void Database_button_Click(object sender, EventArgs e)
         {
-            var dbselect = new DatabaseSelect(_settings) {StartPosition = FormStartPosition.CenterParent};
+            DatabaseSelect dbselect = new DatabaseSelect(_settings) { StartPosition = FormStartPosition.CenterParent };
             dbselect.ShowDialog();
         }
 
-        private void exceptions_button_Click(object sender, EventArgs e)
+        private void Exceptions_button_Click(object sender, EventArgs e)
         {
-            totalExceptions_textBox_Click(null, null);
+            TotalExceptions_textBox_Click(null, null);
         }
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Dispose();
         }
 
-        private void go_button_Click(object sender, EventArgs e)
+        private void Go_button_Click(object sender, EventArgs e)
         {
             if (!_settings.MainDbConnectionInfo.TestConnection())
             {
@@ -319,11 +318,11 @@ namespace SQLQueryStress
 
             _totalExpectedIterations = _settings.NumThreads * _settings.NumIterations;
 
-            var paramConnectionInfo = _settings.ShareDbSettings ? _settings.MainDbConnectionInfo : _settings.ParamDbConnectionInfo;
+            ConnectionInfo paramConnectionInfo = _settings.ShareDbSettings ? _settings.MainDbConnectionInfo : _settings.ParamDbConnectionInfo;
             db_label.Text = "" + @"Server: " + paramConnectionInfo.Server +
                             (paramConnectionInfo.Database.Length > 0 ? "  //  Database: " + paramConnectionInfo.Database : "");
 
-            var engine = new LoadEngine(_settings.MainDbConnectionInfo.ConnectionString, _settings.MainQuery, _settings.NumThreads, _settings.NumIterations,
+            LoadEngine engine = new LoadEngine(_settings.MainDbConnectionInfo.ConnectionString, _settings.MainQuery, _settings.NumThreads, _settings.NumIterations,
                 _settings.ParamQuery, _settings.ParamMappings, paramConnectionInfo.ConnectionString, _settings.CommandTimeout, _settings.CollectIoStats,
                 _settings.CollectTimeStats, _settings.ForceDataRetrieval, _settings.KillQueriesOnCancel);
 
@@ -334,12 +333,12 @@ namespace SQLQueryStress
             mainUITimer.Start();
         }
 
-        private void loadSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void LoadSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             loadSettingsFileDialog.ShowDialog();
         }
 
-        private void mainUITimer_Tick(object sender, EventArgs e)
+        private void MainUITimer_Tick(object sender, EventArgs e)
         {
             UpdateUi();
         }
@@ -348,7 +347,7 @@ namespace SQLQueryStress
         {
             try
             {
-                var contents = File.ReadAllText(fileName);
+                string contents = File.ReadAllText(fileName);
                 _settings = JsonSerializer.ReadToObject<QueryStressSettings>(contents);
             }
             catch (Exception exc)
@@ -356,8 +355,7 @@ namespace SQLQueryStress
                 MessageBox.Show(string.Format("{0}: {1}", Resources.ErrLoadingSettings, exc.Message));
             }
 
-            var sqlControl = elementHost1.Child as SqlControl;
-            if (sqlControl != null)
+            if (elementHost1.Child is SqlControl sqlControl)
             {
                 sqlControl.Text = _settings.MainQuery;
             }
@@ -366,71 +364,69 @@ namespace SQLQueryStress
             queryDelay_textBox.Text = _settings.DelayBetweenQueries.ToString();
         }
 
-        private void loadSettingsFileDialog_FileOk(object sender, EventArgs e)
+        private void LoadSettingsFileDialog_FileOk(object sender, EventArgs e)
         {
             OpenConfigFile(loadSettingsFileDialog.FileName);
         }
 
-        private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OptionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var options = new Options(_settings);
+            Options options = new Options(_settings);
             options.ShowDialog();
         }
 
-        private void param_button_Click(object sender, EventArgs e)
+        private void Param_button_Click(object sender, EventArgs e)
         {
-            var sqlControl = elementHost1.Child as SqlControl;
-            if (sqlControl != null)
+            if (elementHost1.Child is SqlControl sqlControl)
             {
-                var p = new ParamWindow(_settings, sqlControl.Text) {StartPosition = FormStartPosition.CenterParent};
+                ParamWindow p = new ParamWindow(_settings, sqlControl.Text) { StartPosition = FormStartPosition.CenterParent };
                 p.ShowDialog();
             }
         }
 
-        private void saveSettingsFileDialog_FileOk(object sender, EventArgs e)
+        private void SaveSettingsFileDialog_FileOk(object sender, EventArgs e)
         {
             try
             {
-                var jsonContent = JsonSerializer.WriteFromObject(_settings);
+                string jsonContent = JsonSerializer.WriteFromObject(_settings);
                 File.WriteAllText(saveSettingsFileDialog.FileName, jsonContent);
             }
             catch (Exception exc)
             {
-                MessageBox.Show(string.Format("{0}: {1}", Resources.ErrorSavingSettings, exc.Message)); 
+                MessageBox.Show(string.Format("{0}: {1}", Resources.ErrorSavingSettings, exc.Message));
             }
         }
 
         private void SaveSettingsFromForm1()
         {
-            var sqlControl = elementHost1.Child as SqlControl;
-            if (sqlControl != null) _settings.MainQuery =  sqlControl.Text;
-            _settings.NumThreads = (int) threads_numericUpDown.Value;
-            _settings.NumIterations = (int) iterations_numericUpDown.Value;
+            if (elementHost1.Child is SqlControl sqlControl) _settings.MainQuery = sqlControl.Text;
+            _settings.NumThreads = (int)threads_numericUpDown.Value;
+            _settings.NumIterations = (int)iterations_numericUpDown.Value;
             _settings.DelayBetweenQueries = int.Parse(queryDelay_textBox.Text);
         }
 
-        private void saveSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SaveSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveSettingsFromForm1();
             saveSettingsFileDialog.ShowDialog();
         }
 
-        private void totalExceptions_textBox_Click(object sender, EventArgs e)
+        private void TotalExceptions_textBox_Click(object sender, EventArgs e)
         {
-            _exceptionViewer = new DataViewer {StartPosition = FormStartPosition.CenterParent, Text = Resources.Exceptions};
+            _exceptionViewer = new DataViewer { StartPosition = FormStartPosition.CenterParent, Text = Resources.Exceptions };
 
-            var dt = new DataTable();
+            DataTable dt = new DataTable();
             dt.Columns.Add("Count");
             dt.Columns.Add("Exception");
 
             if (_exceptions != null)
             {
-                var values = _exceptions.Values.GetEnumerator();
+                Dictionary<string, int>.ValueCollection.Enumerator values = _exceptions.Values.GetEnumerator();
 
-                foreach (var ex in _exceptions.Keys)
+                foreach (string ex in _exceptions.Keys)
                 {
                     values.MoveNext();
-                    var count = values.Current;
+                    int count = values.Current;
                     dt.Rows.Add(count, ex);
                 }
             }
@@ -443,10 +439,10 @@ namespace SQLQueryStress
         private void UpdateUi()
         {
             iterationsSecond_textBox.Text = _totalIterations.ToString();
-            var avgIterations = _totalIterations == 0 ? 0.0 : _totalTime / _totalIterations / 1000;
-            var avgCpu = _totalTimeMessages == 0 ? 0.0 : _totalCpuTime / _totalTimeMessages / 1000;
-            var avgActual = _totalTimeMessages == 0 ? 0.0 : _totalElapsedTime / _totalTimeMessages / 1000;
-            var avgReads = _totalReadMessages == 0 ? 0.0 : _totalLogicalReads / _totalReadMessages;
+            double avgIterations = _totalIterations == 0 ? 0.0 : _totalTime / _totalIterations / 1000;
+            double avgCpu = _totalTimeMessages == 0 ? 0.0 : _totalCpuTime / _totalTimeMessages / 1000;
+            double avgActual = _totalTimeMessages == 0 ? 0.0 : _totalElapsedTime / _totalTimeMessages / 1000;
+            double avgReads = _totalReadMessages == 0 ? 0.0 : _totalLogicalReads / _totalReadMessages;
 
             avgSeconds_textBox.Text = avgIterations.ToString("0.0000");
             cpuTime_textBox.Text = _totalTimeMessages == 0 ? "---" : avgCpu.ToString("0.0000");
@@ -454,12 +450,12 @@ namespace SQLQueryStress
             logicalReads_textBox.Text = _totalReadMessages == 0 ? "---" : avgReads.ToString("0.0000");
 
             totalExceptions_textBox.Text = _totalExceptions.ToString();
-            progressBar1.Value = Math.Min((int) (_totalIterations / (decimal) _totalExpectedIterations * 100), 100);
+            progressBar1.Value = Math.Min((int)(_totalIterations / (decimal)_totalExpectedIterations * 100), 100);
 
-            var end = new TimeSpan(DateTime.Now.Ticks);
+            TimeSpan end = new TimeSpan(DateTime.Now.Ticks);
             end = end.Subtract(_start);
 
-            var theTime = end.ToString();
+            string theTime = end.ToString();
 
             //Some systems return "hh:mm:ss" instead of "hh:mm:ss.0000" if
             //there is no fractional part of the second.  I'm not sure
@@ -470,14 +466,14 @@ namespace SQLQueryStress
                 elapsedTime_textBox.Text = theTime + @".0000";
         }
 
-        private void btnCleanBuffer_Click(object sender, EventArgs e)
+        private void BtnCleanBuffer_Click(object sender, EventArgs e)
         {
             MessageBox.Show(LoadEngine.ExecuteCommand(_settings.MainDbConnectionInfo.ConnectionString, "DBCC DROPCLEANBUFFERS")
                 ? "Buffers cleared"
                 : "Errors encountered");
         }
 
-        private void btnFreeCache_Click(object sender, EventArgs e)
+        private void BtnFreeCache_Click(object sender, EventArgs e)
         {
             MessageBox.Show(LoadEngine.ExecuteCommand(_settings.MainDbConnectionInfo.ConnectionString, "DBCC FREEPROCCACHE")
                 ? "Cache freed"
@@ -485,12 +481,14 @@ namespace SQLQueryStress
         }
 
 
-        private void toTextToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ToTextToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var saveFileDialog = new SaveFileDialog();
-            saveFileDialog.AddExtension = true;
-            saveFileDialog.OverwritePrompt = false;
-            saveFileDialog.Filter = "Text Files (*.txt)|*.txt";
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                AddExtension = true,
+                OverwritePrompt = false,
+                Filter = "Text Files (*.txt)|*.txt"
+            };
             saveFileDialog.ShowDialog();
 
             if (!string.IsNullOrEmpty(saveFileDialog.FileName))
@@ -501,7 +499,7 @@ namespace SQLQueryStress
         {
             try
             {
-                var textWriter = new StreamWriter(fileName, true);
+                StreamWriter textWriter = new StreamWriter(fileName, true);
                 WriteBenchmarkTextContent(textWriter);
                 textWriter.Close();
             }
@@ -509,7 +507,7 @@ namespace SQLQueryStress
             {
                 MessageBox
                     .Show("Error While Saving BenchMark",
-                    string.Format("There was an error saving the benchmark to '{0}', make sure you have write privileges to that path",fileName));
+                    string.Format("There was an error saving the benchmark to '{0}', make sure you have write privileges to that path", fileName));
             }
         }
 
@@ -541,11 +539,11 @@ namespace SQLQueryStress
         }
 
 
-        private void toClipboardToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
-                var textWriter = new StringWriter();
+                StringWriter textWriter = new StringWriter();
                 WriteBenchmarkTextContent(textWriter);
                 Clipboard.SetText(textWriter.ToString());
             }
@@ -557,12 +555,14 @@ namespace SQLQueryStress
             }
         }
 
-        private void toCsvToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ToCsvToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var saveFileDialog = new SaveFileDialog();
-            saveFileDialog.AddExtension = true;
-            saveFileDialog.OverwritePrompt = false;
-            saveFileDialog.Filter = "Csv Files (*.csv)|*.csv";
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                AddExtension = true,
+                OverwritePrompt = false,
+                Filter = "Csv Files (*.csv)|*.csv"
+            };
             saveFileDialog.ShowDialog();
 
             if (!string.IsNullOrEmpty(saveFileDialog.FileName))
@@ -573,8 +573,8 @@ namespace SQLQueryStress
         {
             try
             {
-                var fileExists = File.Exists(fileName);
-                var textWriter = new StreamWriter(fileName, true);
+                bool fileExists = File.Exists(fileName);
+                StreamWriter textWriter = new StreamWriter(fileName, true);
                 // we do not write the header line if we are appending to an existing file 
                 if (fileExists == false)
                 {

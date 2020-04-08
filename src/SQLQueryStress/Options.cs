@@ -33,8 +33,8 @@ namespace SQLQueryStress
 
         private void ok_button_Click(object sender, EventArgs e)
         {
-            _settings.ConnectionTimeout = (int) connectionTimeout_numericUpDown.Value;
-            _settings.CommandTimeout = (int) commandTimeout_numericUpDown.Value;
+            _settings.ConnectionTimeout = (int)connectionTimeout_numericUpDown.Value;
+            _settings.CommandTimeout = (int)commandTimeout_numericUpDown.Value;
             _settings.EnableConnectionPooling = connectionPooling_checkBox.Checked;
             _settings.CollectIoStats = IOStatistics_checkBox.Checked;
             _settings.CollectTimeStats = timeStatistics_checkBox.Checked;

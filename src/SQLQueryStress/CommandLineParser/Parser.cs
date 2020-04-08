@@ -39,7 +39,7 @@ namespace CommandLine
     [Obsolete("Parser is obsolete, instead use CommandLineParser.")]
     public static class Parser
     {
-        private static ICommandLineParser parser = new CommandLineParser();
+        private static readonly ICommandLineParser parser = new CommandLineParser();
 
         /// <summary>
         /// Parses a <see cref="System.String"/> array of command line arguments,
@@ -74,6 +74,6 @@ namespace CommandLine
         public static bool ParseArguments(string[] args, object options, TextWriter helpWriter)
         {
             return parser.ParseArguments(args, options, helpWriter);
-        } 
-   }
+        }
+    }
 }

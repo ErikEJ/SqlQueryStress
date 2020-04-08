@@ -142,7 +142,7 @@ namespace SQLQueryStress
             this.textBoxDescription.TabStop = false;
             this.textBoxDescription.Text = "Please visit https://github.com/ErikEJ/SqlQueryStress for documentation and updat" +
     "es!";
-            this.textBoxDescription.Click += new System.EventHandler(this.textBoxDescription_Click);
+            this.textBoxDescription.Click += new System.EventHandler(this.TextBoxDescription_Click);
             // 
             // okButton
             // 
@@ -153,7 +153,7 @@ namespace SQLQueryStress
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 24;
             this.okButton.Text = "&OK";
-            this.okButton.Click += new System.EventHandler(this.okButton_Click);
+            this.okButton.Click += new System.EventHandler(this.OkButton_Click);
             // 
             // AboutBox
             // 

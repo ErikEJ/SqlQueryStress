@@ -44,9 +44,9 @@ namespace CommandLine.Text
         private const int builderCapacity = 128;
         private readonly string heading;
         private string copyright;
-        private StringBuilder preOptionsHelp;
+        private readonly StringBuilder preOptionsHelp;
         private StringBuilder optionsHelp;
-        private static readonly string defaultRequiredWord = "Required.";
+        private const string defaultRequiredWord = "Required.";
         #endregion
 
         private HelpText()
@@ -64,7 +64,7 @@ namespace CommandLine.Text
         public HelpText(string heading)
             : this()
         {
-            Validator.CheckIsNullOrEmpty(heading, "heading");
+            Validator.CheckIsNullOrEmpty(heading, nameof(heading));
 
             this.heading = heading;
         }
@@ -73,13 +73,10 @@ namespace CommandLine.Text
         /// Sets the copyright information string.
         /// You can directly assign a <see cref="CommandLine.Text.CopyrightInfo"/> instance.
         /// </summary>
-        public string Copyright
+        public void SetCopyright(string value)
         {
-            set
-            {
-                Validator.CheckIsNullOrEmpty(value, "value");
-                this.copyright = value;
-            }
+            Validator.CheckIsNullOrEmpty(value, nameof(value));
+            this.copyright = value;
         }
 
         /// <summary>
@@ -111,8 +108,8 @@ namespace CommandLine.Text
         /// <exception cref="System.ArgumentNullException">Thrown when parameter <paramref name="requiredWord"/> is null or empty string.</exception>
         public void AddOptions(object options, string requiredWord)
         {
-            Validator.CheckIsNull(options, "options");
-            Validator.CheckIsNullOrEmpty(requiredWord, "requiredWord");
+            Validator.CheckIsNull(options, nameof(options));
+            Validator.CheckIsNullOrEmpty(requiredWord, nameof(requiredWord));
 
             IList<BaseOptionAttribute> optionList =
                                 ReflectionUtil.RetrieveFieldAttributeList<BaseOptionAttribute>(options);
@@ -212,7 +209,7 @@ namespace CommandLine.Text
         private static void AddLine(StringBuilder builder, string value)
         {
             //Validator.CheckIsNullOrEmpty(value, "value");
-            Validator.CheckIsNull(value, "value");
+            Validator.CheckIsNull(value, nameof(value));
 
             if (builder.Length > 0)
             {

@@ -16,7 +16,7 @@ namespace SQLQueryStress
                 HelpText = "Run unattended (start, run settings file and quit)")]
         public bool Unattended = false;
 
-        [Option("r", null, 
+        [Option("r", null,
                 HelpText = "Autosave results to specified file")]
         public string ResultsAutoSaveFileName = string.Empty;
 
@@ -33,7 +33,7 @@ namespace SQLQueryStress
         public string GetUsage()
         {
             HelpText help = new HelpText(_headingInfo);
-            help.Copyright = new CopyrightInfo("Adam Machanic", 2006);
+            help.SetCopyright(new CopyrightInfo("Adam Machanic", 2006));
             help.AddPreOptionsLine("Check for updates at: https://github.com/ErikEJ/SqlQueryStress");
             help.AddPreOptionsLine("");
             help.AddPreOptionsLine("Sample usage:");

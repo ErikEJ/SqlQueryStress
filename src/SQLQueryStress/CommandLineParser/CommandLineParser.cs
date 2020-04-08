@@ -39,7 +39,7 @@ namespace CommandLine
     /// </summary>
     public class CommandLineParser : ICommandLineParser
     {
-        private object valueListLock = new object();
+        private readonly object valueListLock = new object();
 
         /// <summary>
         /// Parses a <see cref="System.String"/> array of command line arguments,
@@ -53,8 +53,8 @@ namespace CommandLine
         /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="options"/> is null.</exception>
         public virtual bool ParseArguments(string[] args, object options)
         {
-            Validator.CheckIsNull(args, "args");
-            Validator.CheckIsNull(options, "options");
+            Validator.CheckIsNull(args, nameof(args));
+            Validator.CheckIsNull(options, nameof(options));
 
             return ParseArgumentList(args, options);
         }
@@ -76,9 +76,9 @@ namespace CommandLine
         /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="helpWriter"/> is null.</exception>
         public virtual bool ParseArguments(string[] args, object options, TextWriter helpWriter)
         {
-            Validator.CheckIsNull(args, "args");
-            Validator.CheckIsNull(options, "options");
-            Validator.CheckIsNull(helpWriter, "helpWriter");
+            Validator.CheckIsNull(args, nameof(args));
+            Validator.CheckIsNull(options, nameof(options));
+            Validator.CheckIsNull(helpWriter, nameof(helpWriter));
 
             Pair<MethodInfo, HelpOptionAttribute> pair =
                                 ReflectionUtil.RetrieveMethod<HelpOptionAttribute>(options);
@@ -88,8 +88,7 @@ namespace CommandLine
             }
             if (ParseHelp(args, pair.Right) || !ParseArgumentList(args, options))
             {
-                string helpText;
-                HelpOptionAttribute.InvokeMethod(options, pair, out helpText);
+                HelpOptionAttribute.InvokeMethod(options, pair, out string helpText);
                 helpWriter.Write(helpText);
                 return false;
             }

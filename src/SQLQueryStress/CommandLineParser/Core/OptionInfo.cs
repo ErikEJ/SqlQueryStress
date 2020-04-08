@@ -37,13 +37,13 @@ namespace CommandLine
     {
         private readonly OptionAttribute attribute;
         private readonly FieldInfo field;
-        private bool required;
-        private string helpText;
+        private readonly bool required;
+        private readonly string helpText;
         private bool isDefined;
-        private string shortName;
-        private string longName;
-        
-        private object setValueLock = new object();
+        private readonly string shortName;
+        private readonly string longName;
+
+        private readonly object setValueLock = new object();
 
         public OptionInfo(OptionAttribute attribute, FieldInfo field)
         {

@@ -36,8 +36,8 @@ namespace CommandLine
     /// of <see cref="System.String"/> instances.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field,
-            AllowMultiple=false,
-            Inherited=true)]
+            AllowMultiple = false,
+            Inherited = true)]
     public sealed class OptionListAttribute : OptionAttribute
     {
         private char separator;

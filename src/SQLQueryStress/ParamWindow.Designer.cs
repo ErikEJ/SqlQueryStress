@@ -98,7 +98,7 @@ namespace SQLQueryStress
             this.getColumnsButton.TabIndex = 1;
             this.getColumnsButton.Text = "Get Columns";
             this.getColumnsButton.UseVisualStyleBackColor = true;
-            this.getColumnsButton.Click += new System.EventHandler(this.getColumnsButton_Click);
+            this.getColumnsButton.Click += new System.EventHandler(this.GetColumnsButton_Click);
             // 
             // okButton
             // 
@@ -110,7 +110,7 @@ namespace SQLQueryStress
             this.okButton.TabIndex = 4;
             this.okButton.Text = "OK";
             this.okButton.UseVisualStyleBackColor = true;
-            this.okButton.Click += new System.EventHandler(this.okButton_Click);
+            this.okButton.Click += new System.EventHandler(this.OkButton_Click);
             // 
             // cancelButton
             // 
@@ -123,7 +123,7 @@ namespace SQLQueryStress
             this.cancelButton.TabIndex = 5;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
-            this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
+            this.cancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // label2
             // 
@@ -146,7 +146,7 @@ namespace SQLQueryStress
             this.database_button.TabIndex = 2;
             this.database_button.Text = "Database";
             this.database_button.UseVisualStyleBackColor = true;
-            this.database_button.Click += new System.EventHandler(this.database_button_Click);
+            this.database_button.Click += new System.EventHandler(this.Database_button_Click);
             // 
             // elementHost1
             // 

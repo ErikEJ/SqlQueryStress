@@ -34,7 +34,7 @@ namespace SQLQueryStress
 
             _outerQuery = outerQuery;
 
-            var sqlControl = elementHost1.Child as SqlControl;
+            SqlControl sqlControl = elementHost1.Child as SqlControl;
             if (sqlControl != null)
             {
                 sqlControl.Text = (string)settings.ParamQuery.Clone();
@@ -45,30 +45,30 @@ namespace SQLQueryStress
             columnMapGrid.Columns[2].SortMode = DataGridViewColumnSortMode.NotSortable;
 
             //TODO: Which event to handle?!?!
-            columnMapGrid.CellEndEdit += columnMapGrid_CellValueChanged;
+            columnMapGrid.CellEndEdit += ColumnMapGrid_CellValueChanged;
 
             if (sqlControl != null && ((outerQuery.Length > 0) && (sqlControl.Text.Length > 0)))
             {
-                getColumnsButton_Click("constructor", null);
+                GetColumnsButton_Click("constructor", null);
             }
         }
 
-        private void cancelButton_Click(object sender, EventArgs e)
+        private void CancelButton_Click(object sender, EventArgs e)
         {
             Dispose();
         }
 
-        private void columnMapGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void ColumnMapGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             //handle changes to the parameter column
             if (e.ColumnIndex == 2)
             {
-                var theRow = columnMapGrid.Rows[e.RowIndex];
-                var combo = (DataGridViewComboBoxCell) theRow.Cells[2];
+                DataGridViewRow theRow = columnMapGrid.Rows[e.RowIndex];
+                DataGridViewComboBoxCell combo = (DataGridViewComboBoxCell)theRow.Cells[2];
 
                 if (combo.Value != null)
                 {
-                    var colType = _paramValues[(string) combo.Value];
+                    string colType = _paramValues[(string)combo.Value];
                     theRow.Cells[1].Value = colType;
                 }
                 else
@@ -78,20 +78,20 @@ namespace SQLQueryStress
             }
         }
 
-        private void database_button_Click(object sender, EventArgs e)
+        private void Database_button_Click(object sender, EventArgs e)
         {
-            var dbSelect = new DatabaseSelect(_settings) {StartPosition = FormStartPosition.CenterParent};
+            DatabaseSelect dbSelect = new DatabaseSelect(_settings) { StartPosition = FormStartPosition.CenterParent };
             dbSelect.ShowDialog();
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
-        private void getColumnsButton_Click(object sender, EventArgs e)
+        private void GetColumnsButton_Click(object sender, EventArgs e)
         {
             _queryVariables = GetParams();
 
             SqlDataReader reader = null;
 
-            var dbInfo = _settings.ShareDbSettings ? _settings.MainDbConnectionInfo : _settings.ParamDbConnectionInfo;
+            ConnectionInfo dbInfo = _settings.ShareDbSettings ? _settings.MainDbConnectionInfo : _settings.ParamDbConnectionInfo;
 
             if (!dbInfo.TestConnection())
             {
@@ -99,14 +99,13 @@ namespace SQLQueryStress
                 return;
             }
 
-            using (var conn = new SqlConnection(dbInfo.ConnectionString))
+            using (SqlConnection conn = new SqlConnection(dbInfo.ConnectionString))
             {
                 try
                 {
-                    var sqlControl = elementHost1.Child as SqlControl;
-                    if (sqlControl != null)
+                    if (elementHost1.Child is SqlControl sqlControl)
                     {
-                        var comm = new SqlCommand(sqlControl.Text, conn);
+                        SqlCommand comm = new SqlCommand(sqlControl.Text, conn);
                         conn.Open();
                         reader = comm.ExecuteReader(CommandBehavior.SchemaOnly);
                     }
@@ -121,17 +120,17 @@ namespace SQLQueryStress
                     columnMapGrid.Rows.Clear();
                     _paramValues.Clear();
 
-                    for (var i = 0; i < reader.FieldCount; i++)
+                    for (int i = 0; i < reader.FieldCount; i++)
                     {
                         _paramValues.Add(reader.GetName(i), reader.GetDataTypeName(i));
                     }
 
                     reader.Dispose();
 
-                    foreach (var variable in _queryVariables)
+                    foreach (string variable in _queryVariables)
                     {
-                        var colOrdinal = columnMapGrid.Rows.Add();
-                        var row = columnMapGrid.Rows[colOrdinal];
+                        int colOrdinal = columnMapGrid.Rows.Add();
+                        DataGridViewRow row = columnMapGrid.Rows[colOrdinal];
                         row.Cells[0].Value = variable;
                         row.Cells[0].ReadOnly = true;
 
@@ -139,14 +138,13 @@ namespace SQLQueryStress
                         row.Cells[1].Value = "";
                         row.Cells[1].ReadOnly = true;
 
-                        var combo = new DataGridViewComboBoxCell();
+                        DataGridViewComboBoxCell combo = new DataGridViewComboBoxCell();
 
                         combo.Items.Add("");
 
-                        string s = sender as string;
-                        bool checkParam = s != null && s == "constructor" && _settings.ParamMappings.ContainsKey(variable);
+                        bool checkParam = sender is string s && s == "constructor" && _settings.ParamMappings.ContainsKey(variable);
 
-                        foreach (var paramName in _paramValues.Keys)
+                        foreach (string paramName in _paramValues.Keys)
                         {
                             combo.Items.Add(paramName);
 
@@ -173,13 +171,13 @@ namespace SQLQueryStress
             //then, any "word" character
             //Finally, '=', ',', or any white space, repeated 0 or more times 
             //(in the case of end-of-string, will be 0 times)
-            var r = new Regex(@"(?<=[=,\s\(])@\w{1,}(?=[=,\s\)]?)");
+            Regex r = new Regex(@"(?<=[=,\s\(])@\w{1,}(?=[=,\s\)]?)");
 
-            var output = new List<string>();
+            List<string> output = new List<string>();
 
             foreach (Match m in r.Matches(_outerQuery))
             {
-                var lowerVal = m.Value.ToLower();
+                string lowerVal = m.Value.ToLower();
                 if (!output.Contains(lowerVal))
                     output.Add(m.Value.ToLower());
             }
@@ -190,19 +188,20 @@ namespace SQLQueryStress
             return output.ToArray();
         }
 
-        private void okButton_Click(object sender, EventArgs e)
+        private void OkButton_Click(object sender, EventArgs e)
         {
-            var sqlControl = elementHost1.Child as SqlControl;
-            if (sqlControl != null)
+            if (elementHost1.Child is SqlControl sqlControl)
             {
                 _settings.ParamQuery = sqlControl.Text;
             }
 
-            var localParamMappings = new Dictionary<string, string>();
+            Dictionary<string, string> localParamMappings = new Dictionary<string, string>();
             foreach (DataGridViewRow row in columnMapGrid.Rows)
             {
-                if ((string) row.Cells[2].Value != "")
-                    localParamMappings.Add((string) row.Cells[0].Value, (string) row.Cells[2].Value);
+                if (!string.IsNullOrEmpty((string)row.Cells[2].Value))
+                {
+                    localParamMappings.Add((string)row.Cells[0].Value, (string)row.Cells[2].Value);
+                }
             }
 
             _settings.ParamMappings = localParamMappings;

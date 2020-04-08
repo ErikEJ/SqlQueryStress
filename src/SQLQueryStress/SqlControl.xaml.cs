@@ -27,8 +27,10 @@ namespace SQLQueryStress
                 stream =
                     System.Reflection.Assembly.GetExecutingAssembly()
                         .GetManifestResourceStream("SQLQueryStress.Resources.SQL.xshd");
+
                 if (stream == null) return;
-                using (var reader = new System.Xml.XmlTextReader(stream))
+
+                using (System.Xml.XmlTextReader reader = new System.Xml.XmlTextReader(stream))
                 {
                     stream = null;
                     AvalonEdit.SyntaxHighlighting =
@@ -39,7 +41,7 @@ namespace SQLQueryStress
             finally
             {
                 if (stream != null)
-                    stream.Dispose();    
+                    stream.Dispose();
             }
         }
     }

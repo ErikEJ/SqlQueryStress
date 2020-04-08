@@ -25,7 +25,7 @@ namespace SQLQueryStress
                 System.Windows.Forms.MessageBoxButtons.YesNo,
                 System.Windows.Forms.MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
                 {
-                    cancel_button_Click(new System.String(' ', 0), null);
+                    Cancel_button_Click(new System.String(' ', 0), null);
                 }
             }
             else
@@ -162,21 +162,21 @@ namespace SQLQueryStress
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(225, 30);
             this.optionsToolStripMenuItem.Text = "Options";
-            this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
+            this.optionsToolStripMenuItem.Click += new System.EventHandler(this.OptionsToolStripMenuItem_Click);
             // 
             // saveSettingsToolStripMenuItem
             // 
             this.saveSettingsToolStripMenuItem.Name = "saveSettingsToolStripMenuItem";
             this.saveSettingsToolStripMenuItem.Size = new System.Drawing.Size(225, 30);
             this.saveSettingsToolStripMenuItem.Text = "Save Settings";
-            this.saveSettingsToolStripMenuItem.Click += new System.EventHandler(this.saveSettingsToolStripMenuItem_Click);
+            this.saveSettingsToolStripMenuItem.Click += new System.EventHandler(this.SaveSettingsToolStripMenuItem_Click);
             // 
             // loadSettingsToolStripMenuItem
             // 
             this.loadSettingsToolStripMenuItem.Name = "loadSettingsToolStripMenuItem";
             this.loadSettingsToolStripMenuItem.Size = new System.Drawing.Size(225, 30);
             this.loadSettingsToolStripMenuItem.Text = "Load Settings";
-            this.loadSettingsToolStripMenuItem.Click += new System.EventHandler(this.loadSettingsToolStripMenuItem_Click);
+            this.loadSettingsToolStripMenuItem.Click += new System.EventHandler(this.LoadSettingsToolStripMenuItem_Click);
             // 
             // saveBenchMarkToolStripMenuItem
             // 
@@ -193,28 +193,28 @@ namespace SQLQueryStress
             this.toCsvToolStripMenuItem.Name = "toCsvToolStripMenuItem";
             this.toCsvToolStripMenuItem.Size = new System.Drawing.Size(197, 30);
             this.toCsvToolStripMenuItem.Text = "To Csv";
-            this.toCsvToolStripMenuItem.Click += new System.EventHandler(this.toCsvToolStripMenuItem_Click);
+            this.toCsvToolStripMenuItem.Click += new System.EventHandler(this.ToCsvToolStripMenuItem_Click);
             // 
             // toTextToolStripMenuItem
             // 
             this.toTextToolStripMenuItem.Name = "toTextToolStripMenuItem";
             this.toTextToolStripMenuItem.Size = new System.Drawing.Size(197, 30);
             this.toTextToolStripMenuItem.Text = "To Text";
-            this.toTextToolStripMenuItem.Click += new System.EventHandler(this.toTextToolStripMenuItem_Click);
+            this.toTextToolStripMenuItem.Click += new System.EventHandler(this.ToTextToolStripMenuItem_Click);
             // 
             // toClipboardToolStripMenuItem
             // 
             this.toClipboardToolStripMenuItem.Name = "toClipboardToolStripMenuItem";
             this.toClipboardToolStripMenuItem.Size = new System.Drawing.Size(197, 30);
             this.toClipboardToolStripMenuItem.Text = "To Clipboard";
-            this.toClipboardToolStripMenuItem.Click += new System.EventHandler(this.toClipboardToolStripMenuItem_Click);
+            this.toClipboardToolStripMenuItem.Click += new System.EventHandler(this.ToClipboardToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(225, 30);
             this.exitToolStripMenuItem.Text = "Exit";
-            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -229,7 +229,7 @@ namespace SQLQueryStress
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(146, 30);
             this.aboutToolStripMenuItem.Text = "About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
             // go_button
             // 
@@ -242,7 +242,7 @@ namespace SQLQueryStress
             this.go_button.TabIndex = 0;
             this.go_button.Text = "GO";
             this.go_button.UseVisualStyleBackColor = true;
-            this.go_button.Click += new System.EventHandler(this.go_button_Click);
+            this.go_button.Click += new System.EventHandler(this.Go_button_Click);
             // 
             // label2
             // 
@@ -328,7 +328,7 @@ namespace SQLQueryStress
             this.cancel_button.TabIndex = 1;
             this.cancel_button.Text = "Cancel";
             this.cancel_button.UseVisualStyleBackColor = true;
-            this.cancel_button.Click += new System.EventHandler(this.cancel_button_Click);
+            this.cancel_button.Click += new System.EventHandler(this.Cancel_button_Click);
             // 
             // label4
             // 
@@ -346,9 +346,9 @@ namespace SQLQueryStress
             // 
             this.backgroundWorker1.WorkerReportsProgress = true;
             this.backgroundWorker1.WorkerSupportsCancellation = true;
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
-            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker1_DoWork);
+            this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.BackgroundWorker1_ProgressChanged);
+            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker1_RunWorkerCompleted);
             // 
             // label5
             // 
@@ -423,11 +423,11 @@ namespace SQLQueryStress
             this.totalExceptions_textBox.Size = new System.Drawing.Size(232, 46);
             this.totalExceptions_textBox.TabIndex = 1;
             this.totalExceptions_textBox.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.totalExceptions_textBox.Click += new System.EventHandler(this.totalExceptions_textBox_Click);
+            this.totalExceptions_textBox.Click += new System.EventHandler(this.TotalExceptions_textBox_Click);
             // 
             // mainUITimer
             // 
-            this.mainUITimer.Tick += new System.EventHandler(this.mainUITimer_Tick);
+            this.mainUITimer.Tick += new System.EventHandler(this.MainUITimer_Tick);
             // 
             // label8
             // 
@@ -470,7 +470,7 @@ namespace SQLQueryStress
             this.database_button.TabIndex = 1;
             this.database_button.Text = "Database";
             this.database_button.UseVisualStyleBackColor = true;
-            this.database_button.Click += new System.EventHandler(this.database_button_Click);
+            this.database_button.Click += new System.EventHandler(this.Database_button_Click);
             // 
             // iterationsSecond_textBox
             // 
@@ -496,7 +496,7 @@ namespace SQLQueryStress
             this.exceptions_button.TabIndex = 1;
             this.exceptions_button.Text = "...";
             this.exceptions_button.UseVisualStyleBackColor = true;
-            this.exceptions_button.Click += new System.EventHandler(this.exceptions_button_Click);
+            this.exceptions_button.Click += new System.EventHandler(this.Exceptions_button_Click);
             // 
             // label9
             // 
@@ -677,7 +677,7 @@ namespace SQLQueryStress
             this.param_button.TabIndex = 2;
             this.param_button.Text = "Parameter Substitution";
             this.param_button.UseVisualStyleBackColor = true;
-            this.param_button.Click += new System.EventHandler(this.param_button_Click);
+            this.param_button.Click += new System.EventHandler(this.Param_button_Click);
             // 
             // tableLayoutPanel4
             // 
@@ -706,7 +706,7 @@ namespace SQLQueryStress
             this.btnFreeCache.TabIndex = 1;
             this.btnFreeCache.Text = "Free Cache";
             this.btnFreeCache.UseVisualStyleBackColor = true;
-            this.btnFreeCache.Click += new System.EventHandler(this.btnFreeCache_Click);
+            this.btnFreeCache.Click += new System.EventHandler(this.BtnFreeCache_Click);
             // 
             // btnCleanBuffer
             // 
@@ -718,7 +718,7 @@ namespace SQLQueryStress
             this.btnCleanBuffer.TabIndex = 0;
             this.btnCleanBuffer.Text = "Clean Buffers";
             this.btnCleanBuffer.UseVisualStyleBackColor = true;
-            this.btnCleanBuffer.Click += new System.EventHandler(this.btnCleanBuffer_Click);
+            this.btnCleanBuffer.Click += new System.EventHandler(this.BtnCleanBuffer_Click);
             // 
             // label11
             // 
