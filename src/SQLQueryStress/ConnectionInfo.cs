@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SQLQueryStress
 {
@@ -32,7 +28,6 @@ namespace SQLQueryStress
         public readonly bool EnablePooling;
         [DataMember]
         public readonly int MaxPoolSize;
-
 
         public ConnectionInfo()
         {

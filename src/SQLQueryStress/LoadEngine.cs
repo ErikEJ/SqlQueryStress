@@ -148,6 +148,7 @@ namespace SQLQueryStress
                     _iterations, _forceDataRetrieval, _queryDelay, worker, _killQueriesOnCancel);
 
                 Thread theThread = new Thread(input.StartLoadThread) { Priority = ThreadPriority.BelowNormal };
+                input.Dispose();
 
                 _threadPool.Add(theThread);
                 _commandPool.Add(queryComm);
@@ -262,7 +263,6 @@ namespace SQLQueryStress
             //queryOutInfo.Clear();
         }
 
-
         //TODO: Monostate pattern to be investigated (class is never instantiated)
         private class ParamServer
         {
@@ -304,6 +304,7 @@ namespace SQLQueryStress
                 SqlDataAdapter a = new SqlDataAdapter(paramQuery, connString);
                 _theParams = new DataTable();
                 a.Fill(_theParams);
+                a.Dispose();
 
                 _numRows = _theParams.Rows.Count;
 

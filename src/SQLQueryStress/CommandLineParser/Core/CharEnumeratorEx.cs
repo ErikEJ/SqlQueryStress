@@ -40,23 +40,23 @@ namespace CommandLine
         {
             Validator.CheckIsNullOrEmpty(value, nameof(value));
 
-            this.data = value;
-            this.index = -1;
+            data = value;
+            index = -1;
         }
 
         public string Current
         {
             get
             {
-                if (this.index == -1)
+                if (index == -1)
                 {
                     throw new InvalidOperationException();
                 }
-                if (this.index >= this.data.Length)
+                if (index >= data.Length)
                 {
                     throw new InvalidOperationException();
                 }
-                return this.currentElement;
+                return currentElement;
             }
         }
 
@@ -64,55 +64,55 @@ namespace CommandLine
         {
             get
             {
-                if (this.index == -1)
+                if (index == -1)
                 {
                     throw new InvalidOperationException();
                 }
-                if (this.index > this.data.Length)
+                if (index > data.Length)
                 {
                     throw new InvalidOperationException();
                 }
-                if (this.IsLast)
+                if (IsLast)
                 {
                     return null;
                 }
-                return this.data.Substring(this.index + 1, 1);
+                return data.Substring(index + 1, 1);
             }
         }
 
         public bool IsLast
         {
-            get { return this.index == this.data.Length - 1; }
+            get { return index == data.Length - 1; }
         }
 
         public void Reset()
         {
-            this.index = -1;
+            index = -1;
         }
 
         public bool MoveNext()
         {
-            if (this.index < (this.data.Length - 1))
+            if (index < (data.Length - 1))
             {
-                this.index++;
-                this.currentElement = this.data.Substring(this.index, 1);
+                index++;
+                currentElement = data.Substring(index, 1);
                 return true;
             }
-            this.index = this.data.Length;
+            index = data.Length;
             return false;
         }
 
         public string GetRemainingFromNext()
         {
-            if (this.index == -1)
+            if (index == -1)
             {
                 throw new InvalidOperationException();
             }
-            if (this.index > this.data.Length)
+            if (index > data.Length)
             {
                 throw new InvalidOperationException();
             }
-            return this.data.Substring(index + 1);
+            return data.Substring(index + 1);
         }
     }
 }

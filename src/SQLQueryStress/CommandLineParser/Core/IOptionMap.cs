@@ -28,7 +28,7 @@
 
 namespace CommandLine
 {
-    interface IOptionMap
+    internal interface IOptionMap
     {
         OptionInfo this[string key] { get; set; }
 

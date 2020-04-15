@@ -72,14 +72,14 @@ namespace CommandLine.Text
         /// <returns>The <see cref="System.String"/> that contains the heading informations.</returns>
         public override string ToString()
         {
-            bool isVersionNull = string.IsNullOrEmpty(this.version);
-            StringBuilder builder = new StringBuilder(this.programName.Length +
+            bool isVersionNull = string.IsNullOrEmpty(version);
+            StringBuilder builder = new StringBuilder(programName.Length +
                                 (!isVersionNull ? version.Length + 1 : 0));
-            builder.Append(this.programName);
+            builder.Append(programName);
             if (!isVersionNull)
             {
                 builder.Append(' ');
-                builder.Append(this.version);
+                builder.Append(version);
             }
             return builder.ToString();
         }
@@ -107,8 +107,8 @@ namespace CommandLine.Text
             Validator.CheckIsNullOrEmpty(message, nameof(message));
             Validator.CheckIsNull(writer, nameof(writer));
 
-            StringBuilder builder = new StringBuilder(this.programName.Length + message.Length + 2);
-            builder.Append(this.programName);
+            StringBuilder builder = new StringBuilder(programName.Length + message.Length + 2);
+            builder.Append(programName);
             builder.Append(": ");
             builder.Append(message);
             writer.WriteLine(builder.ToString());
@@ -122,7 +122,7 @@ namespace CommandLine.Text
         /// <exception cref="System.ArgumentException">Thrown when parameter <paramref name="message"/> is null or empty string.</exception>
         public void WriteMessage(string message)
         {
-            this.WriteMessage(message, System.Console.Out);
+            WriteMessage(message, System.Console.Out);
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace CommandLine.Text
         /// <exception cref="System.ArgumentException">Thrown when parameter <paramref name="message"/> is null or empty string.</exception>
         public void WriteError(string message)
         {
-            this.WriteMessage(message, System.Console.Error);
+            WriteMessage(message, System.Console.Error);
         }
     }
 }

@@ -33,7 +33,7 @@ namespace CommandLine
     using System.Globalization;
     using System.Reflection;
 
-    sealed class OptionInfo
+    internal sealed class OptionInfo
     {
         private readonly OptionAttribute attribute;
         private readonly FieldInfo field;
@@ -47,10 +47,10 @@ namespace CommandLine
 
         public OptionInfo(OptionAttribute attribute, FieldInfo field)
         {
-            this.required = attribute.Required;
-            this.helpText = attribute.HelpText;
-            this.shortName = attribute.ShortName;
-            this.longName = attribute.LongName;
+            required = attribute.Required;
+            helpText = attribute.HelpText;
+            shortName = attribute.ShortName;
+            longName = attribute.LongName;
             this.field = field;
             this.attribute = attribute;
         }
@@ -77,11 +77,11 @@ namespace CommandLine
         {
             if (attribute is OptionListAttribute)
             {
-                return this.SetValueList(value, options);
+                return SetValueList(value, options);
             }
             else
             {
-                return this.SetValueScalar(value, options);
+                return SetValueScalar(value, options);
             }
         }
 
@@ -89,18 +89,18 @@ namespace CommandLine
         {
             try
             {
-                if (this.field.FieldType.IsEnum)
+                if (field.FieldType.IsEnum)
                 {
-                    lock (this.setValueLock)
+                    lock (setValueLock)
                     {
-                        this.field.SetValue(options, Enum.Parse(this.field.FieldType, value, true));
+                        field.SetValue(options, Enum.Parse(field.FieldType, value, true));
                     }
                 }
                 else
                 {
-                    lock (this.setValueLock)
+                    lock (setValueLock)
                     {
-                        this.field.SetValue(options, Convert.ChangeType(value, this.field.FieldType, CultureInfo.InvariantCulture));
+                        field.SetValue(options, Convert.ChangeType(value, field.FieldType, CultureInfo.InvariantCulture));
                     }
                 }
             }
@@ -121,20 +121,20 @@ namespace CommandLine
 
         public bool SetValue(bool value, object options)
         {
-            lock (this.setValueLock)
+            lock (setValueLock)
             {
-                this.field.SetValue(options, value);
+                field.SetValue(options, value);
                 return true;
             }
         }
 
         public bool SetValueList(string value, object options)
         {
-            lock (this.setValueLock)
+            lock (setValueLock)
             {
                 field.SetValue(options, new List<string>());
                 IList<string> fieldRef = (IList<string>)field.GetValue(options);
-                string[] values = value.Split(((OptionListAttribute)this.attribute).Separator);
+                string[] values = value.Split(((OptionListAttribute)attribute).Separator);
                 for (int i = 0; i < values.Length; i++)
                 {
                     fieldRef.Add(values[i]);
@@ -145,38 +145,38 @@ namespace CommandLine
 
         public string ShortName
         {
-            get { return this.shortName; }
+            get { return shortName; }
         }
 
         public string LongName
         {
-            get { return this.longName; }
+            get { return longName; }
         }
 
         public bool Required
         {
-            get { return this.required; }
+            get { return required; }
         }
 
         public string HelpText
         {
-            get { return this.helpText; }
+            get { return helpText; }
         }
 
         public bool IsBoolean
         {
-            get { return this.field.FieldType == typeof(bool); }
+            get { return field.FieldType == typeof(bool); }
         }
 
         public bool IsDefined
         {
-            get { return this.isDefined; }
-            set { this.isDefined = value; }
+            get { return isDefined; }
+            set { isDefined = value; }
         }
 
         public bool HasBothNames
         {
-            get { return (this.shortName != null && this.longName != null); }
+            get { return (shortName != null && longName != null); }
         }
     }
 }

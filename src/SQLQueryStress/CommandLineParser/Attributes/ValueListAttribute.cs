@@ -48,7 +48,7 @@ namespace CommandLine
 
         private ValueListAttribute()
         {
-            this.maximumElements = -1;
+            maximumElements = -1;
         }
 
         /// <summary>
@@ -77,13 +77,13 @@ namespace CommandLine
         /// </summary>
         public int MaximumElements
         {
-            get { return this.maximumElements; }
-            set { this.maximumElements = value; }
+            get { return maximumElements; }
+            set { maximumElements = value; }
         }
 
         internal Type ConcreteType
         {
-            get { return this.concreteType; }
+            get { return concreteType; }
         }
 
         internal static IList<string> GetReference(object target)

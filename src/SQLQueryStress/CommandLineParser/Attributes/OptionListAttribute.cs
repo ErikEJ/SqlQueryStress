@@ -69,8 +69,8 @@ namespace CommandLine
         /// </summary>
         public char Separator
         {
-            get { return this.separator; }
-            set { this.separator = value; }
+            get { return separator; }
+            set { separator = value; }
         }
     }
 }

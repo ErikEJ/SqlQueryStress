@@ -1,13 +1,12 @@
 #region
 
+using SQLQueryStress.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
-using SQLQueryStress.Properties;
 
 #endregion
 
@@ -28,11 +27,10 @@ namespace SQLQueryStress
 
         //Has this run been cancelled?
         private bool _cancelled;
+
         //Exceptions that occurred
         private Dictionary<string, int> _exceptions;
 
-        //The exception viewer window
-        private DataViewer _exceptionViewer;
         //Exit as soon as cancellation is finished?
         private bool _exitOnComplete;
 
@@ -41,6 +39,10 @@ namespace SQLQueryStress
 
         //start of the load
         private TimeSpan _start;
+
+        //used later to limit UI refresh rate
+        private TimeSpan _timeSinceLastUiUpdate;
+
         //total CPU time in milliseconds
         private double _totalCpuTime;
 
@@ -138,6 +140,7 @@ namespace SQLQueryStress
         {
             AboutBox a = new AboutBox();
             a.ShowDialog();
+            a.Dispose();
         }
 
         private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
@@ -151,6 +154,8 @@ namespace SQLQueryStress
 
             _totalIterations++;
 
+            _totalTime += output.Time.TotalMilliseconds;
+
             if (output.LogicalReads > 0)
             {
                 _totalReadMessages++;
@@ -163,8 +168,6 @@ namespace SQLQueryStress
                 _totalCpuTime += output.CpuTime;
                 _totalElapsedTime += output.ElapsedTime;
             }
-
-            _totalTime += output.Time.TotalMilliseconds;
 
             if (output.E != null)
             {
@@ -209,6 +212,8 @@ namespace SQLQueryStress
 
             UpdateUi();
 
+            ((BackgroundWorker)sender).Dispose();
+
             go_button.Enabled = true;
             cancel_button.Enabled = false;
             threads_numericUpDown.Enabled = true;
@@ -218,8 +223,6 @@ namespace SQLQueryStress
             if (!_cancelled)
                 progressBar1.Value = 100;
 
-            ((BackgroundWorker)sender).Dispose();
-
             db_label.Text = "";
 
             if (string.IsNullOrEmpty(_runParameters.ResultsAutoSaveFileName) == false)
@@ -227,7 +230,7 @@ namespace SQLQueryStress
                 AutoSaveResults(_runParameters.ResultsAutoSaveFileName);
             }
 
-            // if we started automatically exit when done
+            // if we started automatically, exit when done
             if (_exitOnComplete || _runParameters.Unattended)
             {
                 Dispose();
@@ -236,8 +239,8 @@ namespace SQLQueryStress
 
         private void AutoSaveResults(string resultsAutoSaveFileName)
         {
-            string extension = Path.GetExtension(resultsAutoSaveFileName).ToLower();
-            if (extension == ".csv")
+            string extension = Path.GetExtension(resultsAutoSaveFileName).ToUpperInvariant();
+            if (extension == ".CSV")
             {
                 ExportBenchMarkToCsvFile(resultsAutoSaveFileName);
             }
@@ -265,6 +268,7 @@ namespace SQLQueryStress
         {
             DatabaseSelect dbselect = new DatabaseSelect(_settings) { StartPosition = FormStartPosition.CenterParent };
             dbselect.ShowDialog();
+            dbselect.Dispose();
         }
 
         private void Exceptions_button_Click(object sender, EventArgs e)
@@ -352,7 +356,7 @@ namespace SQLQueryStress
             }
             catch (Exception exc)
             {
-                MessageBox.Show(string.Format("{0}: {1}", Resources.ErrLoadingSettings, exc.Message));
+                _ = MessageBox.Show(string.Format("{0}: {1}", Resources.ErrLoadingSettings, exc.Message));
             }
 
             if (elementHost1.Child is SqlControl sqlControl)
@@ -373,6 +377,7 @@ namespace SQLQueryStress
         {
             Options options = new Options(_settings);
             options.ShowDialog();
+            options.Dispose();
         }
 
         private void Param_button_Click(object sender, EventArgs e)
@@ -381,6 +386,7 @@ namespace SQLQueryStress
             {
                 ParamWindow p = new ParamWindow(_settings, sqlControl.Text) { StartPosition = FormStartPosition.CenterParent };
                 p.ShowDialog();
+                p.Dispose();
             }
         }
 
@@ -413,9 +419,10 @@ namespace SQLQueryStress
 
         private void TotalExceptions_textBox_Click(object sender, EventArgs e)
         {
-            _exceptionViewer = new DataViewer { StartPosition = FormStartPosition.CenterParent, Text = Resources.Exceptions };
+            DataViewer _exceptionViewer = new DataViewer { StartPosition = FormStartPosition.CenterParent, Text = Resources.Exceptions };
 
             DataTable dt = new DataTable();
+
             dt.Columns.Add("Count");
             dt.Columns.Add("Exception");
 
@@ -432,54 +439,72 @@ namespace SQLQueryStress
             }
 
             _exceptionViewer.DataView = dt;
-
             _exceptionViewer.ShowDialog();
+            _exceptionViewer.Dispose();
         }
 
         private void UpdateUi()
         {
-            iterationsSecond_textBox.Text = _totalIterations.ToString();
-            double avgIterations = _totalIterations == 0 ? 0.0 : _totalTime / _totalIterations / 1000;
-            double avgCpu = _totalTimeMessages == 0 ? 0.0 : _totalCpuTime / _totalTimeMessages / 1000;
-            double avgActual = _totalTimeMessages == 0 ? 0.0 : _totalElapsedTime / _totalTimeMessages / 1000;
-            double avgReads = _totalReadMessages == 0 ? 0.0 : _totalLogicalReads / _totalReadMessages;
+            TimeSpan timeNow = new TimeSpan(DateTime.Now.Ticks);
 
-            avgSeconds_textBox.Text = avgIterations.ToString("0.0000");
-            cpuTime_textBox.Text = _totalTimeMessages == 0 ? "---" : avgCpu.ToString("0.0000");
-            actualSeconds_textBox.Text = _totalTimeMessages == 0 ? "---" : avgActual.ToString("0.0000");
-            logicalReads_textBox.Text = _totalReadMessages == 0 ? "---" : avgReads.ToString("0.0000");
+            if (timeNow.Subtract(_timeSinceLastUiUpdate).Milliseconds > 500)
+            {
+                _timeSinceLastUiUpdate = timeNow;
 
-            totalExceptions_textBox.Text = _totalExceptions.ToString();
-            progressBar1.Value = Math.Min((int)(_totalIterations / (decimal)_totalExpectedIterations * 100), 100);
+                TimeSpan end = new TimeSpan(DateTime.Now.Ticks);
+                end = end.Subtract(_start);
 
-            TimeSpan end = new TimeSpan(DateTime.Now.Ticks);
-            end = end.Subtract(_start);
+                string theTime = end.ToString();
 
-            string theTime = end.ToString();
+                //Some systems return "hh:mm:ss" instead of "hh:mm:ss.0000" if
+                //there is no fractional part of the second.  I'm not sure
+                //why, but this fixes it for now.
+                if (theTime.Length > 8)
+                    elapsedTime_textBox.Text = theTime.Substring(0, 13);
+                else
+                    elapsedTime_textBox.Text = theTime + @".0000";
 
-            //Some systems return "hh:mm:ss" instead of "hh:mm:ss.0000" if
-            //there is no fractional part of the second.  I'm not sure
-            //why, but this fixes it for now.
-            if (theTime.Length > 8)
-                elapsedTime_textBox.Text = theTime.Substring(0, 13);
-            else
-                elapsedTime_textBox.Text = theTime + @".0000";
+                double avgIterations = _totalIterations == 0 ? 0.0 : _totalTime / _totalIterations / 1000;
+                double avgCpu = _totalTimeMessages == 0 ? 0.0 : _totalCpuTime / _totalTimeMessages / 1000;
+                double avgActual = _totalTimeMessages == 0 ? 0.0 : _totalElapsedTime / _totalTimeMessages / 1000;
+                double avgReads = _totalReadMessages == 0 ? 0.0 : _totalLogicalReads / _totalReadMessages;
+
+                //update the other form fields too
+                progressBar1.Value = Math.Min((int)(_totalIterations / (decimal)_totalExpectedIterations * 100), 100);
+                iterationsSecond_textBox.Text = _totalIterations.ToString();
+                avgSeconds_textBox.Text = avgIterations.ToString("0.0000");
+                cpuTime_textBox.Text = avgCpu.ToString("0.0000");
+                actualSeconds_textBox.Text = avgActual.ToString("0.0000");
+                logicalReads_textBox.Text = avgReads.ToString("0.0000");
+                totalExceptions_textBox.Text = _totalExceptions.ToString();
+            }
         }
 
         private void BtnCleanBuffer_Click(object sender, EventArgs e)
         {
+            if (!_settings.MainDbConnectionInfo.TestConnection())
+            {
+                MessageBox.Show(Resources.MustSetValidDbConnInfo);
+                return;
+            }
+
             MessageBox.Show(LoadEngine.ExecuteCommand(_settings.MainDbConnectionInfo.ConnectionString, "DBCC DROPCLEANBUFFERS")
-                ? "Buffers cleared"
-                : "Errors encountered");
+                ? "Buffers cleared."
+                : "Errors encountered!");
         }
 
         private void BtnFreeCache_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(LoadEngine.ExecuteCommand(_settings.MainDbConnectionInfo.ConnectionString, "DBCC FREEPROCCACHE")
-                ? "Cache freed"
-                : "Errors encountered");
-        }
+            if (!_settings.MainDbConnectionInfo.TestConnection())
+            {
+                MessageBox.Show(Resources.MustSetValidDbConnInfo);
+                return;
+            }
 
+            MessageBox.Show(LoadEngine.ExecuteCommand(_settings.MainDbConnectionInfo.ConnectionString, "DBCC FREEPROCCACHE")
+                ? "Cache freed."
+                : "Errors encountered!");
+        }
 
         private void ToTextToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -493,6 +518,8 @@ namespace SQLQueryStress
 
             if (!string.IsNullOrEmpty(saveFileDialog.FileName))
                 ExportBenchMarkToTextFile(saveFileDialog.FileName);
+
+            saveFileDialog.Dispose();
         }
 
         private void ExportBenchMarkToTextFile(string fileName)
@@ -503,11 +530,16 @@ namespace SQLQueryStress
                 WriteBenchmarkTextContent(textWriter);
                 textWriter.Close();
             }
-            catch
+            catch (Exception exc)
             {
-                MessageBox
-                    .Show("Error While Saving BenchMark",
-                    string.Format("There was an error saving the benchmark to '{0}', make sure you have write privileges to that path", fileName));
+                MessageBox.Show(
+                    "Error While Saving BenchMark",
+                    string.Format(
+                        "There was an error saving the benchmark to '{0}',"
+                        + " make sure you have write privileges to that path: "
+                        + exc.Message, fileName
+                        )
+                    );
             }
         }
 
@@ -538,7 +570,6 @@ namespace SQLQueryStress
             tw.WriteLine("");
         }
 
-
         private void ToClipboardToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
@@ -546,6 +577,7 @@ namespace SQLQueryStress
                 StringWriter textWriter = new StringWriter();
                 WriteBenchmarkTextContent(textWriter);
                 Clipboard.SetText(textWriter.ToString());
+                textWriter.Dispose();
             }
             catch
             {
@@ -563,10 +595,13 @@ namespace SQLQueryStress
                 OverwritePrompt = false,
                 Filter = "Csv Files (*.csv)|*.csv"
             };
+
             saveFileDialog.ShowDialog();
 
             if (!string.IsNullOrEmpty(saveFileDialog.FileName))
                 ExportBenchMarkToCsvFile(saveFileDialog.FileName);
+
+            saveFileDialog.Dispose();
         }
 
         private void ExportBenchMarkToCsvFile(string fileName)
@@ -591,7 +626,7 @@ namespace SQLQueryStress
             }
         }
 
-        private void WriteBenchmarkCsvHeader(StreamWriter tw)
+        private static void WriteBenchmarkCsvHeader(StreamWriter tw)
         {
             tw.WriteLine("TestId,TestStartTime,ElapsedTime,Iterations,Threads,Delay,CompletedIterations,AvgCPUSeconds,AvgActualSeconds,AvgClientSeconds,AvgLogicalReads");
         }
@@ -612,7 +647,5 @@ namespace SQLQueryStress
                 logicalReads_textBox.Text
                 );
         }
-
-
     }
 }

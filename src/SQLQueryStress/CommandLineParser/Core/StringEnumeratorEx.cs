@@ -30,7 +30,7 @@ namespace CommandLine
 {
     using System;
 
-    sealed class StringEnumeratorEx : IStringEnumerator
+    internal sealed class StringEnumeratorEx : IStringEnumerator
     {
         private readonly string[] data;
         private int index;
@@ -40,24 +40,24 @@ namespace CommandLine
         {
             Validator.CheckIsNull(value, nameof(value));
 
-            this.data = value;
-            this.index = -1;
-            this.endIndex = value.Length;
+            data = value;
+            index = -1;
+            endIndex = value.Length;
         }
 
         public string Current
         {
             get
             {
-                if (this.index == -1)
+                if (index == -1)
                 {
                     throw new InvalidOperationException();
                 }
-                if (this.index >= this.endIndex)
+                if (index >= endIndex)
                 {
                     throw new InvalidOperationException();
                 }
-                return this.data[this.index];
+                return data[index];
             }
         }
 
@@ -65,38 +65,38 @@ namespace CommandLine
         {
             get
             {
-                if (this.index == -1)
+                if (index == -1)
                 {
                     throw new InvalidOperationException();
                 }
-                if (this.index > this.endIndex)
+                if (index > endIndex)
                 {
                     throw new InvalidOperationException();
                 }
-                if (this.IsLast)
+                if (IsLast)
                 {
                     return null;
                 }
-                return this.data[this.index + 1];
+                return data[index + 1];
             }
         }
 
         public bool IsLast
         {
-            get { return this.index == this.endIndex - 1; }
+            get { return index == endIndex - 1; }
         }
 
         public void Reset()
         {
-            this.index = -1;
+            index = -1;
         }
 
         public bool MoveNext()
         {
-            if (this.index < this.endIndex)
+            if (index < endIndex)
             {
-                this.index++;
-                return this.index < this.endIndex;
+                index++;
+                return index < endIndex;
             }
             return false;
         }

@@ -95,7 +95,7 @@ namespace CommandLine.Text
             this.isSymbolUpper = isSymbolUpper; //this.symbol = symbol;
             this.author = author;
             this.years = years;
-            this.builder = new StringBuilder
+            builder = new StringBuilder
                     (CopyrightWord.Length + author.Length + (4 * years.Length) + extraLength);
         }
 
@@ -105,9 +105,9 @@ namespace CommandLine.Text
         /// <returns>The <see cref="System.String"/> that contains the copyright informations.</returns>
         public override string ToString()
         {
-            builder.Append(this.CopyrightWord);
+            builder.Append(CopyrightWord);
             builder.Append(' ');
-            if (this.isSymbolUpper)
+            if (isSymbolUpper)
             {
                 builder.Append(symbolUpper);
             }
@@ -116,9 +116,9 @@ namespace CommandLine.Text
                 builder.Append(symbolLower);
             }
             builder.Append(' ');
-            builder.Append(this.FormatYears(years));
+            builder.Append(FormatYears(years));
             builder.Append(' ');
-            builder.Append(this.author);
+            builder.Append(author);
             return builder.ToString();
         }
 

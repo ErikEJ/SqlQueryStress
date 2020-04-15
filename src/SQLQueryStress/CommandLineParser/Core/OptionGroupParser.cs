@@ -28,7 +28,7 @@
 
 namespace CommandLine
 {
-    sealed class OptionGroupParser : ArgumentParser
+    internal sealed class OptionGroupParser : ArgumentParser
     {
         public sealed override ParserState Parse(IStringEnumerator argumentEnumerator, IOptionMap map, object options)
         {

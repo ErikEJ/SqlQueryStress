@@ -28,7 +28,7 @@
 
 namespace CommandLine
 {
-    interface IStringEnumerator
+    internal interface IStringEnumerator
     {
         bool MoveNext();
         string GetRemainingFromNext();

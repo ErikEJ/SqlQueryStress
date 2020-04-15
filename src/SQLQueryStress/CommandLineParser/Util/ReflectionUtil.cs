@@ -32,7 +32,7 @@ namespace CommandLine
     using System.Collections.Generic;
     using System.Reflection;
 
-    static class ReflectionUtil
+    internal static class ReflectionUtil
     {
         public static IList<Pair<FieldInfo, TAttribute>> RetrieveFieldList<TAttribute>(object target)
                 where TAttribute : Attribute
