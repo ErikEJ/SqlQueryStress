@@ -1,5 +1,4 @@
-﻿using System.Resources;
-#region
+﻿#region
 
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -39,4 +38,3 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersion("0.9.7.0")]
 [assembly: AssemblyFileVersion("0.9.7.0")]
-[assembly: NeutralResourcesLanguage("en")]

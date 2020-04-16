@@ -174,13 +174,9 @@ namespace SQLQueryStress
                     {
                         databases.Add((string)reader[0]);
                     }
-
-                    comm.Dispose();
                 }
                 catch (SqlException ex)
                 {
-                    comm.Dispose();
-
                     if (ex.Number == 40615)
                         return;
                     if (ex.Number == 18456) // login failed. This helps with connecting to Azure databases
@@ -359,6 +355,7 @@ namespace SQLQueryStress
 
             MessageBox.Show(_localMainConnectionInfo.TestConnection() ? Resources.ConnSucc : Resources.ConnFail);
         }
+
 
         private void Appintent_check_CheckedChanged(object sender, EventArgs e)
         {

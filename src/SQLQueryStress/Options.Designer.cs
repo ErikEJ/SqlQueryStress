@@ -120,7 +120,7 @@ namespace SQLQueryStress
             this.ok_button.TabIndex = 2;
             this.ok_button.Text = "OK";
             this.ok_button.UseVisualStyleBackColor = true;
-            this.ok_button.Click += new System.EventHandler(this.Ok_button_Click);
+            this.ok_button.Click += new System.EventHandler(this.ok_button_Click);
             // 
             // cancel_button
             // 
@@ -132,7 +132,7 @@ namespace SQLQueryStress
             this.cancel_button.TabIndex = 3;
             this.cancel_button.Text = "Cancel";
             this.cancel_button.UseVisualStyleBackColor = true;
-            this.cancel_button.Click += new System.EventHandler(this.Cancel_button_Click);
+            this.cancel_button.Click += new System.EventHandler(this.cancel_button_Click);
             // 
             // groupBox1
             // 

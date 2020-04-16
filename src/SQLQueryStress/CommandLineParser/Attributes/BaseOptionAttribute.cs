@@ -45,8 +45,8 @@ namespace CommandLine
         /// </summary>
         public string ShortName
         {
-            get { return shortName; }
-            internal set { shortName = value; }
+            get { return this.shortName; }
+            internal set { this.shortName = value; }
         }
 
         /// <summary>
@@ -54,8 +54,8 @@ namespace CommandLine
         /// </summary>
         public string LongName
         {
-            get { return longName; }
-            internal set { longName = value; }
+            get { return this.longName; }
+            internal set { this.longName = value; }
         }
 
         /// <summary>
@@ -63,18 +63,18 @@ namespace CommandLine
         /// </summary>
         public virtual bool Required
         {
-            get { return required; }
-            set { required = value; }
+            get { return this.required; }
+            set { this.required = value; }
         }
 
         internal bool HasShortName
         {
-            get { return !string.IsNullOrEmpty(shortName); }
+            get { return !string.IsNullOrEmpty(this.shortName); }
         }
 
         internal bool HasLongName
         {
-            get { return !string.IsNullOrEmpty(longName); }
+            get { return !string.IsNullOrEmpty(this.longName); }
         }
 
         /// <summary>
@@ -82,8 +82,8 @@ namespace CommandLine
         /// </summary>
         public string HelpText
         {
-            get { return helpText; }
-            set { helpText = value; }
+            get { return this.helpText; }
+            set { this.helpText = value; }
         }
     }
 }

@@ -28,7 +28,7 @@
 
 namespace CommandLine
 {
-    internal sealed class Pair<TLeft, TRight>
+    sealed class Pair<TLeft, TRight>
     {
         private readonly TLeft left;
         private readonly TRight right;
@@ -41,12 +41,12 @@ namespace CommandLine
 
         public TLeft Left
         {
-            get { return left; }
+            get { return this.left; }
         }
 
         public TRight Right
         {
-            get { return right; }
+            get { return this.right; }
         }
     }
 }

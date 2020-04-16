@@ -30,7 +30,7 @@ namespace CommandLine
 {
     using System;
 
-    internal static class Validator
+    static class Validator
     {
         public static void CheckIsNull<T>(T value, string paramName)
                 where T : class

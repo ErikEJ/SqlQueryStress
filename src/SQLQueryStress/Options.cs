@@ -26,12 +26,12 @@ namespace SQLQueryStress
             killQueriesOnCancel_checkBox.Checked = settings.KillQueriesOnCancel;
         }
 
-        private void Cancel_button_Click(object sender, EventArgs e)
+        private void cancel_button_Click(object sender, EventArgs e)
         {
             Dispose();
         }
 
-        private void Ok_button_Click(object sender, EventArgs e)
+        private void ok_button_Click(object sender, EventArgs e)
         {
             _settings.ConnectionTimeout = (int)connectionTimeout_numericUpDown.Value;
             _settings.CommandTimeout = (int)commandTimeout_numericUpDown.Value;

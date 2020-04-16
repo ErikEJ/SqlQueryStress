@@ -78,7 +78,7 @@ Settings for a test, including the query, database information, and parameter as
 
         #region Assembly Attribute Accessors
 
-        public static string AssemblyTitle
+        public string AssemblyTitle
         {
             get
             {
@@ -98,12 +98,12 @@ Settings for a test, including the query, database information, and parameter as
             }
         }
 
-        public static string AssemblyVersion
+        public string AssemblyVersion
         {
             get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
         }
 
-        public static string AssemblyDescription
+        public string AssemblyDescription
         {
             get
             {
@@ -117,7 +117,7 @@ Settings for a test, including the query, database information, and parameter as
             }
         }
 
-        public static string AssemblyProduct
+        public string AssemblyProduct
         {
             get
             {
@@ -131,7 +131,7 @@ Settings for a test, including the query, database information, and parameter as
             }
         }
 
-        public static string AssemblyCopyright
+        public string AssemblyCopyright
         {
             get
             {
@@ -145,7 +145,7 @@ Settings for a test, including the query, database information, and parameter as
             }
         }
 
-        public static string AssemblyCompany
+        public string AssemblyCompany
         {
             get
             {

@@ -57,8 +57,8 @@ namespace CommandLine
         /// <param name="longName">The long name of the option or null if not used.</param>
         public HelpOptionAttribute(string shortName, string longName)
         {
-            ShortName = shortName;
-            LongName = longName;
+            this.ShortName = shortName;
+            this.LongName = longName;
         }
 
         /// <summary>

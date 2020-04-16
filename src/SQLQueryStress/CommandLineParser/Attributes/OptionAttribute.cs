@@ -49,20 +49,20 @@ namespace CommandLine
         {
             if (!string.IsNullOrEmpty(shortName))
             {
-                uniqueName = shortName;
+                this.uniqueName = shortName;
             }
             else if (!string.IsNullOrEmpty(longName))
             {
-                uniqueName = longName;
+                this.uniqueName = longName;
             }
 
-            if (uniqueName == null)
+            if (this.uniqueName == null)
             {
                 throw new InvalidOperationException();
             }
 
-            ShortName = shortName;
-            LongName = longName;
+            this.ShortName = shortName;
+            this.LongName = longName;
         }
 
 #if UNIT_TESTS
@@ -74,7 +74,7 @@ namespace CommandLine
 
         internal string UniqueName
         {
-            get { return uniqueName; }
+            get { return this.uniqueName; }
         }
     }
 }

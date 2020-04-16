@@ -30,15 +30,15 @@ namespace CommandLine
 {
     using System.Collections.Generic;
 
-    internal sealed class OptionMap : IOptionMap
+    sealed class OptionMap : IOptionMap
     {
         private readonly Dictionary<string, string> names;
         private readonly Dictionary<string, OptionInfo> map;
 
         public OptionMap(int capacity)
         {
-            names = new Dictionary<string, string>(capacity);
-            map = new Dictionary<string, OptionInfo>(capacity * 2);
+            this.names = new Dictionary<string, string>(capacity);
+            this.map = new Dictionary<string, OptionInfo>(capacity * 2);
         }
 
         public OptionInfo this[string key]
@@ -46,33 +46,34 @@ namespace CommandLine
             get
             {
                 OptionInfo option = null;
-                if (map.ContainsKey(key))
+                if (this.map.ContainsKey(key))
                 {
-                    option = map[key];
+                    option = this.map[key];
                 }
                 else
                 {
-                    if (names.ContainsKey(key))
+                    string optionKey = null;
+                    if (this.names.ContainsKey(key))
                     {
-                        string optionKey = names[key];
-                        option = map[optionKey];
+                        optionKey = this.names[key];
+                        option = this.map[optionKey];
                     }
                 }
                 return option;
             }
             set
             {
-                map[key] = value;
+                this.map[key] = value;
                 if (value.HasBothNames)
                 {
-                    names[value.LongName] = value.ShortName;
+                    this.names[value.LongName] = value.ShortName;
                 }
             }
         }
 
         public bool EnforceRules()
         {
-            foreach (OptionInfo option in map.Values)
+            foreach (OptionInfo option in this.map.Values)
             {
                 if (option.Required && !option.IsDefined)
                 {

@@ -51,7 +51,7 @@ namespace CommandLine.Text
 
         private HelpText()
         {
-            preOptionsHelp = new StringBuilder(builderCapacity);
+            this.preOptionsHelp = new StringBuilder(builderCapacity);
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace CommandLine.Text
         public void SetCopyright(string value)
         {
             Validator.CheckIsNullOrEmpty(value, nameof(value));
-            copyright = value;
+            this.copyright = value;
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace CommandLine.Text
         /// <exception cref="System.ArgumentNullException">Thrown when parameter <paramref name="value"/> is null or empty string.</exception>
         public void AddPreOptionsLine(string value)
         {
-            AddLine(preOptionsHelp, value);
+            AddLine(this.preOptionsHelp, value);
         }
 
         /// <summary>
@@ -127,11 +127,11 @@ namespace CommandLine.Text
             }
 
             int maxLength = GetMaxLength(optionList);
-            optionsHelp = new StringBuilder(builderCapacity);
+            this.optionsHelp = new StringBuilder(builderCapacity);
 
             foreach (BaseOptionAttribute option in optionList)
             {
-                optionsHelp.Append("  ");
+                this.optionsHelp.Append("  ");
                 StringBuilder optionName = new StringBuilder(maxLength);
                 if (option.HasShortName)
                 {
@@ -147,20 +147,20 @@ namespace CommandLine.Text
                 }
                 if (optionName.Length < maxLength)
                 {
-                    optionsHelp.Append(optionName.ToString().PadRight(maxLength));
+                    this.optionsHelp.Append(optionName.ToString().PadRight(maxLength));
                 }
                 else
                 {
-                    optionsHelp.Append(optionName.ToString());
+                    this.optionsHelp.Append(optionName.ToString());
                 }
-                optionsHelp.Append("\t");
+                this.optionsHelp.Append("\t");
                 if (option.Required)
                 {
-                    optionsHelp.Append(requiredWord);
-                    optionsHelp.Append(' ');
+                    this.optionsHelp.Append(requiredWord);
+                    this.optionsHelp.Append(' ');
                 }
-                optionsHelp.Append(option.HelpText);
-                optionsHelp.Append(Environment.NewLine);
+                this.optionsHelp.Append(option.HelpText);
+                this.optionsHelp.Append(Environment.NewLine);
             }
         }
 
@@ -171,26 +171,26 @@ namespace CommandLine.Text
         public override string ToString()
         {
             const int extraLength = 10;
-            StringBuilder builder = new StringBuilder(heading.Length +
-                                GetLength(copyright) + GetLength(preOptionsHelp) +
-                                GetLength(optionsHelp) + extraLength);
+            StringBuilder builder = new StringBuilder(this.heading.Length +
+                                GetLength(this.copyright) + GetLength(this.preOptionsHelp) +
+                                GetLength(this.optionsHelp) + extraLength);
 
-            builder.Append(heading);
-            if (!string.IsNullOrEmpty(copyright))
+            builder.Append(this.heading);
+            if (!string.IsNullOrEmpty(this.copyright))
             {
                 builder.Append(Environment.NewLine);
-                builder.Append(copyright);
+                builder.Append(this.copyright);
             }
-            if (preOptionsHelp.Length > 0)
+            if (this.preOptionsHelp.Length > 0)
             {
                 builder.Append(Environment.NewLine);
-                builder.Append(preOptionsHelp.ToString());
+                builder.Append(this.preOptionsHelp.ToString());
             }
-            if (optionsHelp != null && optionsHelp.Length > 0)
+            if (this.optionsHelp != null && this.optionsHelp.Length > 0)
             {
                 builder.Append(Environment.NewLine);
                 builder.Append(Environment.NewLine);
-                builder.Append(optionsHelp.ToString());
+                builder.Append(this.optionsHelp.ToString());
             }
 
             return builder.ToString();

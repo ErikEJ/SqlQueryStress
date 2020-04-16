@@ -1,9 +1,9 @@
-using CommandLine;
 using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using CommandLine;
 
 namespace SQLQueryStress
 {
@@ -22,7 +22,6 @@ namespace SQLQueryStress
             CommandLineOptions options = new CommandLineOptions();
             ICommandLineParser parser = new CommandLineParser();
             StringWriter writer = new StringWriter();
-
             parser.ParseArguments(args, options, writer);
 
             if (writer.GetStringBuilder().Length > 0)
@@ -36,10 +35,7 @@ namespace SQLQueryStress
                     StartPosition = FormStartPosition.CenterScreen
                 };
                 Application.Run(f);
-                f.Dispose();
             }
-
-            writer.Dispose();
         }
 
         private static Assembly OnResolveAssembly(object sender, ResolveEventArgs args)
@@ -47,9 +43,7 @@ namespace SQLQueryStress
             string dllName = new AssemblyName(args.Name).Name + ".dll";
             Assembly assem = Assembly.GetExecutingAssembly();
             string resourceName = assem.GetManifestResourceNames().FirstOrDefault(rn => rn.EndsWith(dllName));
-
             if (resourceName == null) return null; // Not found, maybe another handler will find it
-            
             using (Stream stream = assem.GetManifestResourceStream(resourceName))
             {
                 if (stream == null)

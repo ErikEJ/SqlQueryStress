@@ -82,7 +82,6 @@ namespace SQLQueryStress
         {
             DatabaseSelect dbSelect = new DatabaseSelect(_settings) { StartPosition = FormStartPosition.CenterParent };
             dbSelect.ShowDialog();
-            dbSelect.Dispose();
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
@@ -109,7 +108,6 @@ namespace SQLQueryStress
                         SqlCommand comm = new SqlCommand(sqlControl.Text, conn);
                         conn.Open();
                         reader = comm.ExecuteReader(CommandBehavior.SchemaOnly);
-                        comm.Dispose();
                     }
                 }
                 catch (Exception ex)
