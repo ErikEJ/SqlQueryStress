@@ -21,7 +21,7 @@ namespace SQLQueryStress
         {
             dataGridView1.DataSource = DataView;
 
-            int columnWidth = (dataGridView1.Width - 41) / DataView.Columns.Count;
+            var columnWidth = (dataGridView1.Width - 41) / DataView.Columns.Count;
 
             foreach (DataGridViewColumn col in dataGridView1.Columns)
                 col.Width = columnWidth;

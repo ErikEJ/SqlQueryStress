@@ -32,13 +32,13 @@ namespace CommandLine
 
     sealed class StringEnumeratorEx : IStringEnumerator
     {
-        private readonly string[] data;
+        private string[] data;
         private int index;
-        private readonly int endIndex;
+        private int endIndex;
 
         public StringEnumeratorEx(string[] value)
         {
-            Validator.CheckIsNull(value, nameof(value));
+            Validator.CheckIsNull(value, "value");
 
             this.data = value;
             this.index = -1;

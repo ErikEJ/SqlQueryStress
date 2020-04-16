@@ -19,15 +19,15 @@ namespace SQLQueryStress
         public DatabaseSelect(QueryStressSettings settings)
         {
             _settings = settings;
-            _localMainConnectionInfo = (ConnectionInfo)settings.MainDbConnectionInfo.Clone();
+            _localMainConnectionInfo = (ConnectionInfo) settings.MainDbConnectionInfo.Clone();
 
             if (settings.ShareDbSettings)
             {
-                _localParamConnectionInfo = (ConnectionInfo)settings.MainDbConnectionInfo.Clone();
+                _localParamConnectionInfo = (ConnectionInfo) settings.MainDbConnectionInfo.Clone();
             }
             else
             {
-                _localParamConnectionInfo = (ConnectionInfo)settings.ParamDbConnectionInfo.Clone();
+                _localParamConnectionInfo = (ConnectionInfo) settings.ParamDbConnectionInfo.Clone();
             }
 
             InitializeComponent();
@@ -94,15 +94,15 @@ namespace SQLQueryStress
 
             shareSettings_checkBox.Checked = settings.ShareDbSettings;
 
-            authentication_comboBox.SelectedIndexChanged += Authentication_comboBox_SelectedIndexChanged;
-            pm_authentication_comboBox.SelectedIndexChanged += Pm_authentication_comboBox_SelectedIndexChanged;
+            authentication_comboBox.SelectedIndexChanged += authentication_comboBox_SelectedIndexChanged;
+            pm_authentication_comboBox.SelectedIndexChanged += pm_authentication_comboBox_SelectedIndexChanged;
 
             db_comboBox.Enter += Db_comboBox_Enter;
             db_comboBox.Leave += Db_comboBox_Leave;
 
             pm_db_comboBox.Enter += Db_comboBox_Enter;
             pm_db_comboBox.Leave += Db_comboBox_Leave;
-
+            
             server_textBox.KeyDown += Server_textBox_KeyDown;
             server_textBox.TextChanged += Server_textBox_TextChanged;
 
@@ -121,7 +121,7 @@ namespace SQLQueryStress
 
         private void Db_comboBox_Leave(object sender, EventArgs e)
         {
-            ComboBox cbSender = ((ComboBox)sender);
+            var cbSender = ((ComboBox)sender);
             if ((cbSender.SelectedValue == null || cbSender.Text != cbSender.SelectedItem.ToString()) && cbSender.Items.Contains(cbSender.Text))
             {
                 cbSender.SelectedItem = cbSender.Text;
@@ -130,8 +130,8 @@ namespace SQLQueryStress
 
         private void Db_comboBox_Enter(object sender, EventArgs e)
         {
-            ComboBox cbSender = ((ComboBox)sender);
-            string _prevSelectedValue = cbSender.SelectedValue != null ? cbSender.SelectedValue.ToString() : string.Empty;
+            var cbSender = ((ComboBox)sender);
+            var _prevSelectedValue = cbSender.SelectedValue != null ? cbSender.SelectedValue.ToString() : string.Empty;
             ReloadDatabaseList(sender);
 
             if (cbSender.Items.Contains(_prevSelectedValue))
@@ -142,8 +142,8 @@ namespace SQLQueryStress
 
         private void ReloadDatabaseList(object objDatabaseParam)
         {
-            ComboBox dbComboboxParam = (ComboBox)objDatabaseParam;
-            string selectedComboBoxItem = (string)dbComboboxParam.SelectedItem;
+            var dbComboboxParam = (ComboBox)objDatabaseParam;
+            var selectedComboBoxItem = (string)dbComboboxParam.SelectedItem;
             string connectionString;
             if (dbComboboxParam == db_comboBox)
             {
@@ -152,23 +152,23 @@ namespace SQLQueryStress
             }
             else
             {
-                Pm_saveLocalSettings();
+                pm_saveLocalSettings();
                 connectionString = _localParamConnectionInfo.ConnectionString;
             }
 
-            string sql = "SELECT databases.name FROM sys.databases WHERE databases.state = 0 ORDER BY databases.name";
+            var sql = "SELECT databases.name FROM sys.databases WHERE databases.state = 0 ORDER BY databases.name";
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (var conn = new SqlConnection(connectionString))
             {
-                SqlCommand comm = new SqlCommand(sql, conn);
+                var comm = new SqlCommand(sql, conn);
 
-                List<string> databases = new List<string>();
+                var databases = new List<string>();
 
                 try
                 {
                     conn.Open();
 
-                    SqlDataReader reader = comm.ExecuteReader();
+                    var reader = comm.ExecuteReader();
 
                     while (reader.Read())
                     {
@@ -215,7 +215,7 @@ namespace SQLQueryStress
             }
         }
 
-        private void Authentication_comboBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void authentication_comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (authentication_comboBox.SelectedIndex == 0)
             {
@@ -229,15 +229,15 @@ namespace SQLQueryStress
             }
         }
 
-        private void Cancel_button_Click(object sender, EventArgs e)
+        private void cancel_button_Click(object sender, EventArgs e)
         {
             Dispose();
         }
 
-        private void Ok_button_Click(object sender, EventArgs e)
+        private void ok_button_Click(object sender, EventArgs e)
         {
             SaveLocalSettings();
-            Pm_saveLocalSettings();
+            pm_saveLocalSettings();
 
             _localMainConnectionInfo.CopyTo(_settings.MainDbConnectionInfo);
             _localParamConnectionInfo.CopyTo(_settings.ParamDbConnectionInfo);
@@ -246,7 +246,7 @@ namespace SQLQueryStress
             Dispose();
         }
 
-        private void Pm_authentication_comboBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void pm_authentication_comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (pm_authentication_comboBox.SelectedIndex == 0)
             {
@@ -260,7 +260,7 @@ namespace SQLQueryStress
             }
         }
 
-        private void Pm_saveLocalSettings()
+        private void pm_saveLocalSettings()
         {
             if (!shareSettings_checkBox.Checked)
             {
@@ -282,7 +282,9 @@ namespace SQLQueryStress
 
                 if (pm_appintent_check.Checked)
                 {
-                    _ = Enum.TryParse(pm_appintent_combo.Text, out ApplicationIntent applicationIntent);
+                    ApplicationIntent applicationIntent;
+
+                    Enum.TryParse<ApplicationIntent>(pm_appintent_combo.Text, out applicationIntent);
 
                     _localParamConnectionInfo.ApplicationIntent = applicationIntent;
                 }
@@ -291,9 +293,9 @@ namespace SQLQueryStress
                 _localParamConnectionInfo = new ConnectionInfo();
         }
 
-        private void Pm_test_button_Click(object sender, EventArgs e)
+        private void pm_test_button_Click(object sender, EventArgs e)
         {
-            Pm_saveLocalSettings();
+            pm_saveLocalSettings();
 
             MessageBox.Show(_localParamConnectionInfo.TestConnection() ? Resources.ConnSucc : Resources.ConnFail);
         }
@@ -314,16 +316,19 @@ namespace SQLQueryStress
                 _localMainConnectionInfo.Password = password_textBox.Text;
             }
 
-            if (appintent_check.Checked)
+            if(appintent_check.Checked)
             {
-                _ = Enum.TryParse(appintent_combo.Text, out ApplicationIntent applicationIntent);
+                ApplicationIntent applicationIntent;
+
+                Enum.TryParse<ApplicationIntent>(appintent_combo.Text, out applicationIntent);
+
                 _localMainConnectionInfo.ApplicationIntent = applicationIntent;
             }
 
             _localMainConnectionInfo.Database = db_comboBox.Text;
         }
 
-        private void ShareSettings_checkBox_CheckedChanged(object sender, EventArgs e)
+        private void shareSettings_checkBox_CheckedChanged(object sender, EventArgs e)
         {
             if (shareSettings_checkBox.Checked)
             {
@@ -349,7 +354,7 @@ namespace SQLQueryStress
             }
         }
 
-        private void Test_button_Click(object sender, EventArgs e)
+        private void test_button_Click(object sender, EventArgs e)
         {
             SaveLocalSettings();
 
@@ -357,14 +362,14 @@ namespace SQLQueryStress
         }
 
 
-        private void Appintent_check_CheckedChanged(object sender, EventArgs e)
+        private void appintent_check_CheckedChanged(object sender, EventArgs e)
         {
             appintent_combo.Enabled = appintent_check.Checked;
 
             appintent_combo.DataSource = Enum.GetValues(typeof(ApplicationIntent));
         }
 
-        private void Pm_appintent_check_CheckedChanged(object sender, EventArgs e)
+        private void pm_appintent_check_CheckedChanged(object sender, EventArgs e)
         {
             pm_appintent_combo.Enabled = pm_appintent_check.Checked;
 

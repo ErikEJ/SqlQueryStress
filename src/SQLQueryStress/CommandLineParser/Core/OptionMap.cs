@@ -32,8 +32,8 @@ namespace CommandLine
 
     sealed class OptionMap : IOptionMap
     {
-        private readonly Dictionary<string, string> names;
-        private readonly Dictionary<string, OptionInfo> map;
+        private Dictionary<string, string> names;
+        private Dictionary<string, OptionInfo> map;
 
         public OptionMap(int capacity)
         {

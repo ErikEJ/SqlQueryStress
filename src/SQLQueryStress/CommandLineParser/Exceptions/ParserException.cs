@@ -52,7 +52,7 @@ namespace CommandLine
         {
         }
 
-        private ParserException(SerializationInfo info, StreamingContext context)
+        internal ParserException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

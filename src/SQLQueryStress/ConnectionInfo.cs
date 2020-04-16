@@ -27,11 +27,11 @@ namespace SQLQueryStress
         public ApplicationIntent ApplicationIntent;
 
         [DataMember]
-        public readonly int ConnectTimeout;
+        public int ConnectTimeout;
         [DataMember]
-        public readonly bool EnablePooling;
+        public bool EnablePooling;
         [DataMember]
-        public readonly int MaxPoolSize;
+        public int MaxPoolSize; 
 
 
         public ConnectionInfo()
@@ -44,7 +44,7 @@ namespace SQLQueryStress
             Database = "";
             ConnectTimeout = 0;
             MaxPoolSize = 0;
-            EnablePooling = true;
+            EnablePooling = true; 
         }
 
         public ConnectionInfo(int connectTimeout, bool enablePooling, int maxPoolSize) : this()
@@ -58,7 +58,7 @@ namespace SQLQueryStress
         {
             get
             {
-                SqlConnectionStringBuilder build = new SqlConnectionStringBuilder { DataSource = Server, IntegratedSecurity = IntegratedAuth, ApplicationName = "SQLQueryStress", ApplicationIntent = ApplicationIntent };
+                var build = new SqlConnectionStringBuilder { DataSource = Server, IntegratedSecurity = IntegratedAuth, ApplicationName = "SQLQueryStress", ApplicationIntent = ApplicationIntent };
                 if (!IntegratedAuth)
                 {
                     build.UserID = Login;
@@ -68,8 +68,7 @@ namespace SQLQueryStress
                 if (Database.Length > 0)
                     build.InitialCatalog = Database;
 
-                if (ConnectTimeout != 0)
-                {
+                if (ConnectTimeout != 0){
                     build.ConnectTimeout = ConnectTimeout;
                 }
 
@@ -89,7 +88,7 @@ namespace SQLQueryStress
 
         public object Clone()
         {
-            ConnectionInfo newConnInfo = new ConnectionInfo();
+            var newConnInfo = new ConnectionInfo();
             CopyTo(newConnInfo);
 
             return newConnInfo;
@@ -109,18 +108,16 @@ namespace SQLQueryStress
 
         public bool TestConnection()
         {
-            if (string.IsNullOrEmpty(Server) || ((IntegratedAuth == false) && (string.IsNullOrEmpty(Login) || string.IsNullOrEmpty(Password))))
-            {
+            if ((Server == "") || ((IntegratedAuth == false) && (Login == "" || Password == "")))
                 return false;
-            }
 
-            using (SqlConnection conn = new SqlConnection(ConnectionString))
+            using (var conn = new SqlConnection(ConnectionString))
             {
                 try
                 {
                     conn.Open();
                 }
-                catch (Exception)
+                catch (Exception exc)
                 {
                     return false;
                 }

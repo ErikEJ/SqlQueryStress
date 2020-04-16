@@ -38,7 +38,7 @@ namespace CommandLine
 
         public CharEnumeratorEx(string value)
         {
-            Validator.CheckIsNullOrEmpty(value, nameof(value));
+            Validator.CheckIsNullOrEmpty(value, "value");
 
             this.data = value;
             this.index = -1;

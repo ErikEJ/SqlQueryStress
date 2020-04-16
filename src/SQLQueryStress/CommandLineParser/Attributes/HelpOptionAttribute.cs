@@ -37,8 +37,8 @@ namespace CommandLine
     /// return value.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method,
-            AllowMultiple = false,
-            Inherited = true)]
+            AllowMultiple=false,
+            Inherited=true)]
     public sealed class HelpOptionAttribute : BaseOptionAttribute
     {
         /// <summary>

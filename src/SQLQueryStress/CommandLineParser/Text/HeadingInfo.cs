@@ -60,7 +60,7 @@ namespace CommandLine.Text
         /// <exception cref="System.ArgumentException">Thrown when parameter <paramref name="programName"/> is null or empty string.</exception>
         public HeadingInfo(string programName, string version)
         {
-            Validator.CheckIsNullOrEmpty(programName, nameof(programName));
+            Validator.CheckIsNullOrEmpty(programName, "programName");
 
             this.programName = programName;
             this.version = version;
@@ -74,7 +74,7 @@ namespace CommandLine.Text
         {
             bool isVersionNull = string.IsNullOrEmpty(this.version);
             StringBuilder builder = new StringBuilder(this.programName.Length +
-                                (!isVersionNull ? version.Length + 1 : 0));
+                                (!isVersionNull ? version.Length + 1: 0));
             builder.Append(this.programName);
             if (!isVersionNull)
             {
@@ -104,8 +104,8 @@ namespace CommandLine.Text
         /// <exception cref="System.ArgumentNullException">Thrown when parameter <paramref name="writer"/> is null.</exception>
         public void WriteMessage(string message, TextWriter writer)
         {
-            Validator.CheckIsNullOrEmpty(message, nameof(message));
-            Validator.CheckIsNull(writer, nameof(writer));
+            Validator.CheckIsNullOrEmpty(message, "message");
+            Validator.CheckIsNull(writer, "writer");
 
             StringBuilder builder = new StringBuilder(this.programName.Length + message.Length + 2);
             builder.Append(this.programName);

@@ -12,9 +12,9 @@ namespace SQLQueryStress
     {
         public static T ReadToObject<T>(string json)
         {
-            using (MemoryStream memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(json)))
+            using (var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(json)))
             {
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
+                var serializer = new DataContractJsonSerializer(typeof(T));
                 T retObj = (T)serializer.ReadObject(memoryStream);
                 return retObj;
             }
@@ -22,9 +22,9 @@ namespace SQLQueryStress
 
         public static string WriteFromObject<T>(T user)
         {
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (var memoryStream = new MemoryStream())
             {
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
+                var serializer = new DataContractJsonSerializer(typeof(T));
                 serializer.WriteObject(memoryStream, user);
                 byte[] json = memoryStream.ToArray();
                 return Encoding.UTF8.GetString(json, 0, json.Length);

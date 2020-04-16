@@ -56,7 +56,7 @@ namespace CommandLine
         {
         }
 
-        private IncompatibleTypesException(SerializationInfo info, StreamingContext context)
+        internal IncompatibleTypesException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

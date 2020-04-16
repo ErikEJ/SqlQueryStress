@@ -38,12 +38,11 @@ namespace CommandLine
     /// of <see cref="System.String"/> instances.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field,
-            AllowMultiple = false,
-            Inherited = true)]
+            AllowMultiple=false,
+            Inherited=true)]
     public sealed class ValueListAttribute : Attribute
     {
-        private const string Message = "The types are incompatible.";
-        private readonly Type concreteType;
+        private Type concreteType;
         private int maximumElements;
 
         private ValueListAttribute()
@@ -61,11 +60,11 @@ namespace CommandLine
         {
             if (concreteType == null)
             {
-                throw new ArgumentNullException(nameof(concreteType));
+                throw new ArgumentNullException("concreteType");
             }
             if (!typeof(IList<string>).IsAssignableFrom(concreteType))
             {
-                throw new ParserException(Message);
+                throw new ParserException("The types are incompatible.");
             }
             this.concreteType = concreteType;
         }
@@ -88,8 +87,8 @@ namespace CommandLine
 
         internal static IList<string> GetReference(object target)
         {
-            FieldInfo field = GetField(target, out Type concreteType);
-
+            Type concreteType;
+            FieldInfo field = GetField(target, out concreteType);
             if (field == null)
             {
                 return null;
