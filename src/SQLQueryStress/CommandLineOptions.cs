@@ -32,10 +32,8 @@ namespace SQLQueryStress
                 HelpText = "Display this help screen")]
         public string GetUsage()
         {
-            HelpText help = new HelpText(_headingInfo)
-            {
-                Copyright = new CopyrightInfo("Adam Machanic", 2006)
-            };
+            HelpText help = new HelpText(_headingInfo);
+            help.Copyright = new CopyrightInfo("Adam Machanic", 2006);
             help.AddPreOptionsLine("Check for updates at: https://github.com/ErikEJ/SqlQueryStress");
             help.AddPreOptionsLine("");
             help.AddPreOptionsLine("Sample usage:");

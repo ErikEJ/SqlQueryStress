@@ -81,7 +81,7 @@ namespace SQLQueryStress
 
         private Guid _testGuid;
 
-        private readonly CommandLineOptions _runParameters; 
+        private CommandLineOptions _runParameters; 
 
         public Form1(CommandLineOptions runParameters) : this()
         {
@@ -142,7 +142,8 @@ namespace SQLQueryStress
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            ((LoadEngine)e.Argument).StartLoad(backgroundWorker1, (Int32.TryParse(queryDelay_textBox.Text, out int tmp) ? tmp : 0));
+            int tmp;
+            ((LoadEngine) e.Argument).StartLoad(backgroundWorker1, (Int32.TryParse(queryDelay_textBox.Text, out tmp) ? tmp : 0));
         }
 
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -355,7 +356,8 @@ namespace SQLQueryStress
                 MessageBox.Show(string.Format("{0}: {1}", Resources.ErrLoadingSettings, exc.Message));
             }
 
-            if (elementHost1.Child is SqlControl sqlControl)
+            var sqlControl = elementHost1.Child as SqlControl;
+            if (sqlControl != null)
             {
                 sqlControl.Text = _settings.MainQuery;
             }
@@ -377,7 +379,8 @@ namespace SQLQueryStress
 
         private void param_button_Click(object sender, EventArgs e)
         {
-            if (elementHost1.Child is SqlControl sqlControl)
+            var sqlControl = elementHost1.Child as SqlControl;
+            if (sqlControl != null)
             {
                 var p = new ParamWindow(_settings, sqlControl.Text) {StartPosition = FormStartPosition.CenterParent};
                 p.ShowDialog();
@@ -399,7 +402,8 @@ namespace SQLQueryStress
 
         private void SaveSettingsFromForm1()
         {
-            if (elementHost1.Child is SqlControl sqlControl) _settings.MainQuery = sqlControl.Text;
+            var sqlControl = elementHost1.Child as SqlControl;
+            if (sqlControl != null) _settings.MainQuery =  sqlControl.Text;
             _settings.NumThreads = (int) threads_numericUpDown.Value;
             _settings.NumIterations = (int) iterations_numericUpDown.Value;
             _settings.DelayBetweenQueries = int.Parse(queryDelay_textBox.Text);
@@ -495,12 +499,10 @@ namespace SQLQueryStress
 
         private void toTextToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var saveFileDialog = new SaveFileDialog
-            {
-                AddExtension = true,
-                OverwritePrompt = false,
-                Filter = "Text Files (*.txt)|*.txt"
-            };
+            var saveFileDialog = new SaveFileDialog();
+            saveFileDialog.AddExtension = true;
+            saveFileDialog.OverwritePrompt = false;
+            saveFileDialog.Filter = "Text Files (*.txt)|*.txt";
             saveFileDialog.ShowDialog();
 
             if (!string.IsNullOrEmpty(saveFileDialog.FileName))
@@ -569,12 +571,10 @@ namespace SQLQueryStress
 
         private void toCsvToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var saveFileDialog = new SaveFileDialog
-            {
-                AddExtension = true,
-                OverwritePrompt = false,
-                Filter = "Csv Files (*.csv)|*.csv"
-            };
+            var saveFileDialog = new SaveFileDialog();
+            saveFileDialog.AddExtension = true;
+            saveFileDialog.OverwritePrompt = false;
+            saveFileDialog.Filter = "Csv Files (*.csv)|*.csv";
             saveFileDialog.ShowDialog();
 
             if (!string.IsNullOrEmpty(saveFileDialog.FileName))

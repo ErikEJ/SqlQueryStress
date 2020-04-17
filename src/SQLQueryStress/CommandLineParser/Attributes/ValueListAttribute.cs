@@ -87,7 +87,8 @@ namespace CommandLine
 
         internal static IList<string> GetReference(object target)
         {
-            FieldInfo field = GetField(target, out Type concreteType);
+            Type concreteType;
+            FieldInfo field = GetField(target, out concreteType);
             if (field == null)
             {
                 return null;

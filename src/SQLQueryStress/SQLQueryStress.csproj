@@ -141,7 +141,6 @@
     <Compile Include="DataViewer.Designer.cs">
       <DependentUpon>DataViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="JsonSerializer.cs" />
     <Compile Include="LoadEngine.cs" />
     <Compile Include="Options.cs">

@@ -282,8 +282,9 @@ namespace SQLQueryStress
 
                 if (pm_appintent_check.Checked)
                 {
+                    ApplicationIntent applicationIntent;
 
-                    Enum.TryParse<ApplicationIntent>(pm_appintent_combo.Text, out ApplicationIntent applicationIntent);
+                    Enum.TryParse<ApplicationIntent>(pm_appintent_combo.Text, out applicationIntent);
 
                     _localParamConnectionInfo.ApplicationIntent = applicationIntent;
                 }
@@ -317,8 +318,9 @@ namespace SQLQueryStress
 
             if(appintent_check.Checked)
             {
+                ApplicationIntent applicationIntent;
 
-                Enum.TryParse<ApplicationIntent>(appintent_combo.Text, out ApplicationIntent applicationIntent);
+                Enum.TryParse<ApplicationIntent>(appintent_combo.Text, out applicationIntent);
 
                 _localMainConnectionInfo.ApplicationIntent = applicationIntent;
             }
