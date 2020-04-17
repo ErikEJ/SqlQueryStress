@@ -43,7 +43,7 @@ namespace CommandLine.Text
         private static readonly string defaultCopyrightWord = "Copyright";
         private static readonly string symbolLower = "(c)";
         private static readonly string symbolUpper = "(C)";
-        private StringBuilder builder;
+        private readonly StringBuilder builder;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandLine.Text.CopyrightInfo"/> class.

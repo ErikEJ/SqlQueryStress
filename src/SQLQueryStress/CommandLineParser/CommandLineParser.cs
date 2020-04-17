@@ -88,8 +88,7 @@ namespace CommandLine
             }
             if (ParseHelp(args, pair.Right) || !ParseArgumentList(args, options))
             {
-                string helpText;
-                HelpOptionAttribute.InvokeMethod(options, pair, out helpText);
+                HelpOptionAttribute.InvokeMethod(options, pair, out string helpText);
                 helpWriter.Write(helpText);
                 return false;
             }
