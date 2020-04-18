@@ -46,7 +46,7 @@ namespace CommandLine.Text
         private string copyright;
         private StringBuilder preOptionsHelp;
         private StringBuilder optionsHelp;
-        private static readonly string defaultRequiredWord = "Required.";
+        private const string defaultRequiredWord = "Required.";
         #endregion
 
         private HelpText()
