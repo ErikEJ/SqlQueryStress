@@ -40,9 +40,9 @@ namespace CommandLine.Text
         private readonly bool isSymbolUpper;
         private readonly int[] years;
         private readonly string author;
-        private static readonly string defaultCopyrightWord = "Copyright";
-        private static readonly string symbolLower = "(c)";
-        private static readonly string symbolUpper = "(C)";
+        private const string defaultCopyrightWord = "Copyright";
+        private const string symbolLower = "(c)";
+        private const string symbolUpper = "(C)";
         private StringBuilder builder;
 
         /// <summary>
@@ -88,8 +88,8 @@ namespace CommandLine.Text
         /// <exception cref="System.ArgumentOutOfRangeException">Thrown when parameter <paramref name="years"/> is not supplied.</exception>
         public CopyrightInfo(bool isSymbolUpper, string author, params int[] years)
         {
-            Validator.CheckIsNullOrEmpty(author, "author");
-            Validator.CheckZeroLength(years, "years");
+            Validator.CheckIsNullOrEmpty(author, nameof(author));
+            Validator.CheckZeroLength(years, nameof(years));
 
             const int extraLength = 10;
             this.isSymbolUpper = isSymbolUpper; //this.symbol = symbol;
