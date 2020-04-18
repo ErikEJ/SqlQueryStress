@@ -160,7 +160,7 @@ namespace SQLQueryStress
 
             using (var conn = new SqlConnection(connectionString))
             {
-                var comm = new SqlCommand(sql, conn);
+                SqlCommand comm = new SqlCommand(sql, conn);
 
                 var databases = new List<string>();
 
@@ -174,9 +174,12 @@ namespace SQLQueryStress
                     {
                         databases.Add((string)reader[0]);
                     }
+                    comm.Dispose();
                 }
                 catch (SqlException ex)
                 {
+                    comm.Dispose();
+
                     if (ex.Number == 40615)
                         return;
                     if (ex.Number == 18456) // login failed. This helps with connecting to Azure databases

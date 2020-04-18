@@ -108,7 +108,7 @@ namespace SQLQueryStress
             }
 
             //Initialize the connection pool            
-            var conn = new SqlConnection(_connectionString);
+            SqlConnection conn = new SqlConnection(_connectionString);
             //TODO: use this or not??
             SqlConnection.ClearPool(conn);
             conn.Open();
@@ -127,7 +127,7 @@ namespace SQLQueryStress
 
                 SqlCommand statsComm = null;
 
-                var queryComm = new SqlCommand {CommandTimeout = _commandTimeout, Connection = conn, CommandText = _query};
+                SqlCommand queryComm = new SqlCommand { CommandTimeout = _commandTimeout, Connection = conn, CommandText = _query };
 
                 if (useParams)
                 {
@@ -138,20 +138,27 @@ namespace SQLQueryStress
 
                 if (setStatistics.Length > 0)
                 {
-                    statsComm = new SqlCommand {CommandTimeout = _commandTimeout, Connection = conn, CommandText = setStatistics};
+                    statsComm = new SqlCommand { CommandTimeout = _commandTimeout, Connection = conn, CommandText = setStatistics };
                 }
+
+                conn.Dispose();
 
                 //Queue<queryOutput> queryOutInfo = new Queue<queryOutput>();
 
-                var input = new QueryInput(statsComm, queryComm,
+                QueryInput input = new QueryInput(statsComm, queryComm,
 //                    this.queryOutInfo,
                     _iterations, _forceDataRetrieval, _queryDelay, worker, _killQueriesOnCancel);
+                
+                statsComm.Dispose();
 
                 var theThread = new Thread(input.StartLoadThread) {Priority = ThreadPriority.BelowNormal};
 
                 _threadPool.Add(theThread);
                 _commandPool.Add(queryComm);
                 //queryOutInfoPool.Add(queryOutInfo);
+
+                input.Dispose();
+                queryComm.Dispose();
             }
 
             //Start the load threads
@@ -301,7 +308,7 @@ namespace SQLQueryStress
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
             public static void Initialize(string paramQuery, string connString, Dictionary<string, string> paramMappings)
             {
-                var a = new SqlDataAdapter(paramQuery, connString);
+                SqlDataAdapter a = new SqlDataAdapter(paramQuery, connString);
                 _theParams = new DataTable();
                 a.Fill(_theParams);
 
@@ -324,6 +331,8 @@ namespace SQLQueryStress
 
                     i++;
                 }
+
+                a.Dispose();
             }
         }
 

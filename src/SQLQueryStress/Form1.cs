@@ -28,11 +28,10 @@ namespace SQLQueryStress
 
         //Has this run been cancelled?
         private bool _cancelled;
+
         //Exceptions that occurred
         private Dictionary<string, int> _exceptions;
 
-        //The exception viewer window
-        private DataViewer _exceptionViewer;
         //Exit as soon as cancellation is finished?
         private bool _exitOnComplete;
 
@@ -136,8 +135,9 @@ namespace SQLQueryStress
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var a = new AboutBox();
+            AboutBox a = new AboutBox();
             a.ShowDialog();
+            a.Dispose();
         }
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
@@ -264,8 +264,9 @@ namespace SQLQueryStress
 
         private void database_button_Click(object sender, EventArgs e)
         {
-            var dbselect = new DatabaseSelect(_settings) {StartPosition = FormStartPosition.CenterParent};
+            DatabaseSelect dbselect = new DatabaseSelect(_settings) {StartPosition = FormStartPosition.CenterParent};
             dbselect.ShowDialog();
+            dbselect.Dispose();
         }
 
         private void exceptions_button_Click(object sender, EventArgs e)
@@ -373,8 +374,9 @@ namespace SQLQueryStress
 
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var options = new Options(_settings);
+            Options options = new Options(_settings);
             options.ShowDialog();
+            options.Dispose();
         }
 
         private void param_button_Click(object sender, EventArgs e)
@@ -382,8 +384,9 @@ namespace SQLQueryStress
             var sqlControl = elementHost1.Child as SqlControl;
             if (sqlControl != null)
             {
-                var p = new ParamWindow(_settings, sqlControl.Text) {StartPosition = FormStartPosition.CenterParent};
+                ParamWindow p = new ParamWindow(_settings, sqlControl.Text) {StartPosition = FormStartPosition.CenterParent};
                 p.ShowDialog();
+                p.Dispose();
             }
         }
 
@@ -417,9 +420,9 @@ namespace SQLQueryStress
 
         private void totalExceptions_textBox_Click(object sender, EventArgs e)
         {
-            _exceptionViewer = new DataViewer {StartPosition = FormStartPosition.CenterParent, Text = Resources.Exceptions};
+            DataViewer _exceptionViewer = new DataViewer { StartPosition = FormStartPosition.CenterParent, Text = Resources.Exceptions };
 
-            var dt = new DataTable();
+            DataTable dt = new DataTable();
             dt.Columns.Add("Count");
             dt.Columns.Add("Exception");
 
@@ -436,8 +439,10 @@ namespace SQLQueryStress
             }
 
             _exceptionViewer.DataView = dt;
+            dt.Dispose();
 
             _exceptionViewer.ShowDialog();
+            _exceptionViewer.Dispose();
         }
 
         private void UpdateUi()
@@ -449,9 +454,9 @@ namespace SQLQueryStress
             var avgReads = _totalReadMessages == 0 ? 0.0 : _totalLogicalReads / _totalReadMessages;
 
             avgSeconds_textBox.Text = avgIterations.ToString("0.0000");
-            cpuTime_textBox.Text = _totalTimeMessages == 0 ? "---" : avgCpu.ToString("0.0000");
-            actualSeconds_textBox.Text = _totalTimeMessages == 0 ? "---" : avgActual.ToString("0.0000");
-            logicalReads_textBox.Text = _totalReadMessages == 0 ? "---" : avgReads.ToString("0.0000");
+            cpuTime_textBox.Text = _totalTimeMessages == 0 ? Dashes : avgCpu.ToString("0.0000");
+            actualSeconds_textBox.Text = _totalTimeMessages == 0 ? Dashes : avgActual.ToString("0.0000");
+            logicalReads_textBox.Text = _totalReadMessages == 0 ? Dashes : avgReads.ToString("0.0000");
 
             totalExceptions_textBox.Text = _totalExceptions.ToString();
             progressBar1.Value = Math.Min((int) (_totalIterations / (decimal) _totalExpectedIterations * 100), 100);
@@ -499,23 +504,28 @@ namespace SQLQueryStress
 
         private void toTextToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var saveFileDialog = new SaveFileDialog();
-            saveFileDialog.AddExtension = true;
-            saveFileDialog.OverwritePrompt = false;
-            saveFileDialog.Filter = "Text Files (*.txt)|*.txt";
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                AddExtension = true,
+                OverwritePrompt = false,
+                Filter = "Text Files (*.txt)|*.txt"
+            };
+
             saveFileDialog.ShowDialog();
 
             if (!string.IsNullOrEmpty(saveFileDialog.FileName))
                 ExportBenchMarkToTextFile(saveFileDialog.FileName);
+
+            saveFileDialog.Dispose();
         }
 
         private void ExportBenchMarkToTextFile(string fileName)
         {
             try
             {
-                var textWriter = new StreamWriter(fileName, true);
+                StreamWriter textWriter = new StreamWriter(fileName, true);
                 WriteBenchmarkTextContent(textWriter);
-                textWriter.Close();
+                textWriter.Dispose();
             }
             catch
             {
@@ -560,6 +570,7 @@ namespace SQLQueryStress
                 var textWriter = new StringWriter();
                 WriteBenchmarkTextContent(textWriter);
                 Clipboard.SetText(textWriter.ToString());
+                textWriter.Dispose();
             }
             catch
             {
@@ -571,14 +582,19 @@ namespace SQLQueryStress
 
         private void toCsvToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var saveFileDialog = new SaveFileDialog();
-            saveFileDialog.AddExtension = true;
-            saveFileDialog.OverwritePrompt = false;
-            saveFileDialog.Filter = "Csv Files (*.csv)|*.csv";
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                AddExtension = true,
+                OverwritePrompt = false,
+                Filter = "Csv Files (*.csv)|*.csv"
+            };
+
             saveFileDialog.ShowDialog();
 
             if (!string.IsNullOrEmpty(saveFileDialog.FileName))
                 ExportBenchMarkToCsvFile(saveFileDialog.FileName);
+
+            saveFileDialog.Dispose();
         }
 
         private void ExportBenchMarkToCsvFile(string fileName)

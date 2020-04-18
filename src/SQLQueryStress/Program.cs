@@ -22,7 +22,8 @@ namespace SQLQueryStress
 
             var options = new CommandLineOptions();
             ICommandLineParser parser = new CommandLineParser();
-            var writer = new StringWriter();
+            StringWriter writer = new StringWriter();
+
             parser.ParseArguments(args, options, writer);
             
             if (writer.GetStringBuilder().Length > 0)
@@ -31,12 +32,16 @@ namespace SQLQueryStress
             }
             else
             {
-                var f = new Form1(options)
+                Form1 f = new Form1(options)
                 {
                     StartPosition = FormStartPosition.CenterScreen
                 };
+
                 Application.Run(f);
+
+                f.Dispose();
             }
+            writer.Dispose();
         }
 
         private static Assembly OnResolveAssembly(object sender, ResolveEventArgs args)
