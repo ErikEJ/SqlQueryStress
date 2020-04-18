@@ -80,7 +80,7 @@ namespace SQLQueryStress
 
         private void database_button_Click(object sender, EventArgs e)
         {
-            var dbSelect = new DatabaseSelect(_settings) {StartPosition = FormStartPosition.CenterParent};
+            DatabaseSelect dbSelect = new DatabaseSelect(_settings) { StartPosition = FormStartPosition.CenterParent };
             dbSelect.ShowDialog();
             dbSelect.Dispose();
         }
@@ -163,6 +163,8 @@ namespace SQLQueryStress
                         }
 
                         row.Cells[2] = combo;
+
+                        combo.Dispose();
                     }
                 }
             }

@@ -41,6 +41,7 @@ namespace SQLQueryStress
 
                 f.Dispose();
             }
+
             writer.Dispose();
         }
 
