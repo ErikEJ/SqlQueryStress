@@ -472,6 +472,12 @@ namespace SQLQueryStress
 
         private void btnCleanBuffer_Click(object sender, EventArgs e)
         {
+            if (!_settings.MainDbConnectionInfo.TestConnection())
+            {
+                MessageBox.Show(Resources.MustSetValidDbConnInfo);
+                return;
+            }
+
             MessageBox.Show(LoadEngine.ExecuteCommand(_settings.MainDbConnectionInfo.ConnectionString, "DBCC DROPCLEANBUFFERS")
                 ? "Buffers cleared"
                 : "Errors encountered");
@@ -479,6 +485,12 @@ namespace SQLQueryStress
 
         private void btnFreeCache_Click(object sender, EventArgs e)
         {
+            if (!_settings.MainDbConnectionInfo.TestConnection())
+            {
+                MessageBox.Show(Resources.MustSetValidDbConnInfo);
+                return;
+            }
+
             MessageBox.Show(LoadEngine.ExecuteCommand(_settings.MainDbConnectionInfo.ConnectionString, "DBCC FREEPROCCACHE")
                 ? "Cache freed"
                 : "Errors encountered");
