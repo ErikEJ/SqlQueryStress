@@ -117,7 +117,7 @@ namespace SQLQueryStress
                 {
                     conn.Open();
                 }
-                catch (Exception exc)
+                catch (Exception)
                 {
                     return false;
                 }
