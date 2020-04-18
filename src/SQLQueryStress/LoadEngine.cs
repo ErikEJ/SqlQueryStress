@@ -112,7 +112,6 @@ namespace SQLQueryStress
             //TODO: use this or not??
             SqlConnection.ClearPool(conn);
             conn.Open();
-            conn.Dispose();
 
             //make sure the run cancelled flag is not set
             QueryInput.RunCancelled = false;
@@ -125,8 +124,6 @@ namespace SQLQueryStress
                 //TODO: Figure out how to make this option work (maybe)
                 //conn.FireInfoMessageEventOnUserErrors = true;
 
-                SqlCommand statsComm = null;
-
                 SqlCommand queryComm = new SqlCommand { CommandTimeout = _commandTimeout, Connection = conn, CommandText = _query };
 
                 if (useParams)
@@ -136,20 +133,18 @@ namespace SQLQueryStress
 
                 var setStatistics = (_collectIoStats ? @"SET STATISTICS IO ON;" : "") + (_collectTimeStats ? @"SET STATISTICS TIME ON;" : "");
 
+                SqlCommand statsComm = null;
+
                 if (setStatistics.Length > 0)
                 {
                     statsComm = new SqlCommand { CommandTimeout = _commandTimeout, Connection = conn, CommandText = setStatistics };
                 }
-
-                conn.Dispose();
 
                 //Queue<queryOutput> queryOutInfo = new Queue<queryOutput>();
 
                 QueryInput input = new QueryInput(statsComm, queryComm,
 //                    this.queryOutInfo,
                     _iterations, _forceDataRetrieval, _queryDelay, worker, _killQueriesOnCancel);
-                
-                statsComm.Dispose();
 
                 var theThread = new Thread(input.StartLoadThread) {Priority = ThreadPriority.BelowNormal};
 
@@ -158,6 +153,7 @@ namespace SQLQueryStress
                 //queryOutInfoPool.Add(queryOutInfo);
 
                 input.Dispose();
+                statsComm.Dispose();
                 queryComm.Dispose();
             }
 
@@ -265,8 +261,10 @@ namespace SQLQueryStress
             }
 
             //clear any remaining messages -- these are almost certainly
-            //execeptions due to thread cancellation
+            //exceptions due to thread cancellation
             //queryOutInfo.Clear();
+
+            conn.Dispose();
         }
 
 
@@ -340,7 +338,9 @@ namespace SQLQueryStress
         {
             [ThreadStatic] private static QueryOutput _outInfo;
 
+            //check this to see if user has clicked Cancel button!
             private static bool _runCancelled;
+
             //This regex is used to find the number of logical reads
             //in the messages collection returned in the queryOutput class
             private static readonly Regex FindReads = new Regex(@"(?:Table (\'\w{1,}\'|'#\w{1,}\'|'##\w{1,}\'). Scan count \d{1,}, logical reads )(\d{1,})", RegexOptions.Compiled);
@@ -459,7 +459,7 @@ namespace SQLQueryStress
                                     conn.Open();
 
                                     //set up the statistics gathering
-                                    if (_statsComm != null)
+                                    if (!_runCancelled && _statsComm is object)
                                     {
                                         _statsComm.ExecuteNonQuery();
                                         Thread.Sleep(0);
@@ -485,14 +485,14 @@ namespace SQLQueryStress
                                     {
                                         Thread.Sleep(0);
 
-                                        while (reader.Read())
+                                        while (!_runCancelled && reader.Read())
                                         {
                                             //grab the first column to force the row down the pipe
                                             // ReSharper disable once UnusedVariable
                                             var x = reader[0];
                                             Thread.Sleep(0);
                                         }
-                                    } while (reader.NextResult());
+                                    } while (!_runCancelled && reader.NextResult());
                                 }
                                 else
                                 {
@@ -541,7 +541,7 @@ namespace SQLQueryStress
                                 (infoMessages == null || infoMessages.Count == 0) ? null : infoMessages.ToArray());
                              */
 
-                            _outInfo.E = outException;
+                            _outInfo.Exception = outException;
                             _outInfo.Time = _sw.Elapsed;
                             _outInfo.Finished = finished;
 
@@ -563,7 +563,11 @@ namespace SQLQueryStress
                 }
                 catch
                 {
-                    if (_runCancelled)
+                    if (!(_outInfo is object))
+                    {
+                        throw;
+                    }
+                    else if (_runCancelled)
                     {
                         //queryOutput theout = new queryOutput(null, new TimeSpan(0), true, null);
                         _outInfo.Time = new TimeSpan(0);
@@ -588,25 +592,11 @@ namespace SQLQueryStress
         public class QueryOutput
         {
             public int CpuTime;
-            public Exception E;
+            public Exception Exception;
             public int ElapsedTime;
             public bool Finished;
             public int LogicalReads;
             public TimeSpan Time;
-
-            /*
-            public queryOutput(
-                Exception e, 
-                TimeSpan time, 
-                bool finished,
-                string[] infoMessages)
-            {
-                this.e = e;
-                this.time = time;
-                this.finished = finished;
-                this.infoMessages = infoMessages;
-            }
-             */
         }
 
         private class ThreadKiller
@@ -631,6 +621,8 @@ namespace SQLQueryStress
                     Thread.Sleep(0);
                 }
 
+                // the below is a bit weird and makes the while loop run infinitely
+                // when any thread starts throwing "System.Threading.ThreadAbortException"
                 var keepKilling = true;
 
                 while (keepKilling)

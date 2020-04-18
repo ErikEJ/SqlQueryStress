@@ -167,7 +167,7 @@ namespace SQLQueryStress
 
             _totalTime += output.Time.TotalMilliseconds;
 
-            if (output.E != null)
+            if (output.Exception != null)
             {
                 _totalExceptions++;
                 string theMessage;
@@ -176,13 +176,13 @@ namespace SQLQueryStress
                 //of the exception
                 if (_settings.CollectTimeStats)
                 {
-                    var matchPos = output.E.Message.IndexOf("SQL Server parse and compile time:", StringComparison.Ordinal);
+                    var matchPos = output.Exception.Message.IndexOf("SQL Server parse and compile time:", StringComparison.Ordinal);
 
-                    theMessage = matchPos > -1 ? output.E.Message.Substring(0, matchPos - 2) : output.E.Message;
+                    theMessage = matchPos > -1 ? output.Exception.Message.Substring(0, matchPos - 2) : output.Exception.Message;
                 }
                 else
                 {
-                    theMessage = output.E.Message;
+                    theMessage = output.Exception.Message;
                 }
 
                 if (!_exceptions.ContainsKey(theMessage))
