@@ -1,12 +1,8 @@
-#region
-
+using SQLQueryStress.Properties;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Windows.Forms;
-using SQLQueryStress.Properties;
-
-#endregion
 
 namespace SQLQueryStress
 {
@@ -57,7 +53,6 @@ namespace SQLQueryStress
             {
                 appintent_check.Checked = true;
                 appintent_combo.SelectedItem = _localMainConnectionInfo.ApplicationIntent;
-
             }
 
             if (!settings.ShareDbSettings)
@@ -86,11 +81,12 @@ namespace SQLQueryStress
                 {
                     pm_appintent_check.Checked = true;
                     pm_appintent_combo.SelectedItem = _localParamConnectionInfo.ApplicationIntent;
-
                 }
             }
             else
+            {
                 pm_authentication_comboBox.SelectedIndex = 0;
+            }
 
             shareSettings_checkBox.Checked = settings.ShareDbSettings;
 
@@ -197,6 +193,8 @@ namespace SQLQueryStress
                     else
                     {
                         //Clear the db, try again
+                        db_comboBox.Text = string.Empty;
+                        pm_db_comboBox.Text = string.Empty;
                         dbComboboxParam.Items.Clear();
                         ReloadDatabaseList(dbComboboxParam);
                         return;
