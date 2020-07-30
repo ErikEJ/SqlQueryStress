@@ -1,5 +1,3 @@
-#region
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,8 +6,6 @@ using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading;
-
-#endregion
 
 namespace SQLQueryStress
 {
@@ -147,7 +143,7 @@ namespace SQLQueryStress
 //                    this.queryOutInfo,
                     _iterations, _forceDataRetrieval, _queryDelay, worker, _killQueriesOnCancel);
 
-                var theThread = new Thread(input.StartLoadThread) {Priority = ThreadPriority.BelowNormal};
+                var theThread = new Thread(input.StartLoadThread) {Priority = ThreadPriority.BelowNormal, IsBackground = true };
 
                 _threadPool.Add(theThread);
                 _commandPool.Add(queryComm);
