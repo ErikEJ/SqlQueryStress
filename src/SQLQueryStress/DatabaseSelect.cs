@@ -1,7 +1,7 @@
+using Microsoft.Data.SqlClient;
 using SQLQueryStress.Properties;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Windows.Forms;
 
 namespace SQLQueryStress
@@ -15,15 +15,15 @@ namespace SQLQueryStress
         public DatabaseSelect(QueryStressSettings settings)
         {
             _settings = settings;
-            _localMainConnectionInfo = (ConnectionInfo) settings.MainDbConnectionInfo.Clone();
+            _localMainConnectionInfo = (ConnectionInfo)settings.MainDbConnectionInfo.Clone();
 
             if (settings.ShareDbSettings)
             {
-                _localParamConnectionInfo = (ConnectionInfo) settings.MainDbConnectionInfo.Clone();
+                _localParamConnectionInfo = (ConnectionInfo)settings.MainDbConnectionInfo.Clone();
             }
             else
             {
-                _localParamConnectionInfo = (ConnectionInfo) settings.ParamDbConnectionInfo.Clone();
+                _localParamConnectionInfo = (ConnectionInfo)settings.ParamDbConnectionInfo.Clone();
             }
 
             InitializeComponent();
@@ -98,7 +98,7 @@ namespace SQLQueryStress
 
             pm_db_comboBox.Enter += Db_comboBox_Enter;
             pm_db_comboBox.Leave += Db_comboBox_Leave;
-            
+
             server_textBox.KeyDown += Server_textBox_KeyDown;
             server_textBox.TextChanged += Server_textBox_TextChanged;
 
@@ -314,7 +314,7 @@ namespace SQLQueryStress
                 _localMainConnectionInfo.Password = password_textBox.Text;
             }
 
-            if(appintent_check.Checked)
+            if (appintent_check.Checked)
             {
                 ApplicationIntent applicationIntent;
 

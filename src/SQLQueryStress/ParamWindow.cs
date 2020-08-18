@@ -1,12 +1,12 @@
 #region
 
+using Microsoft.Data.SqlClient;
+using SQLQueryStress.Properties;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using SQLQueryStress.Properties;
 
 #endregion
 
@@ -64,11 +64,11 @@ namespace SQLQueryStress
             if (e.ColumnIndex == 2)
             {
                 var theRow = columnMapGrid.Rows[e.RowIndex];
-                var combo = (DataGridViewComboBoxCell) theRow.Cells[2];
+                var combo = (DataGridViewComboBoxCell)theRow.Cells[2];
 
                 if (combo.Value != null)
                 {
-                    var colType = _paramValues[(string) combo.Value];
+                    var colType = _paramValues[(string)combo.Value];
                     theRow.Cells[1].Value = colType;
                 }
                 else
@@ -80,7 +80,7 @@ namespace SQLQueryStress
 
         private void database_button_Click(object sender, EventArgs e)
         {
-            var dbSelect = new DatabaseSelect(_settings) {StartPosition = FormStartPosition.CenterParent};
+            var dbSelect = new DatabaseSelect(_settings) { StartPosition = FormStartPosition.CenterParent };
             dbSelect.ShowDialog();
         }
 
@@ -201,8 +201,8 @@ namespace SQLQueryStress
             var localParamMappings = new Dictionary<string, string>();
             foreach (DataGridViewRow row in columnMapGrid.Rows)
             {
-                if ((string) row.Cells[2].Value != "")
-                    localParamMappings.Add((string) row.Cells[0].Value, (string) row.Cells[2].Value);
+                if ((string)row.Cells[2].Value != "")
+                    localParamMappings.Add((string)row.Cells[0].Value, (string)row.Cells[2].Value);
             }
 
             _settings.ParamMappings = localParamMappings;

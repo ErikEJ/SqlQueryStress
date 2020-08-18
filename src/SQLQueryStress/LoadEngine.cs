@@ -1,8 +1,8 @@
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -123,7 +123,7 @@ namespace SQLQueryStress
 
                 SqlCommand statsComm = null;
 
-                var queryComm = new SqlCommand {CommandTimeout = _commandTimeout, Connection = conn, CommandText = _query};
+                var queryComm = new SqlCommand { CommandTimeout = _commandTimeout, Connection = conn, CommandText = _query };
 
                 if (useParams)
                 {
@@ -134,16 +134,16 @@ namespace SQLQueryStress
 
                 if (setStatistics.Length > 0)
                 {
-                    statsComm = new SqlCommand {CommandTimeout = _commandTimeout, Connection = conn, CommandText = setStatistics};
+                    statsComm = new SqlCommand { CommandTimeout = _commandTimeout, Connection = conn, CommandText = setStatistics };
                 }
 
                 //Queue<queryOutput> queryOutInfo = new Queue<queryOutput>();
 
                 var input = new QueryInput(statsComm, queryComm,
-//                    this.queryOutInfo,
+                    //                    this.queryOutInfo,
                     _iterations, _forceDataRetrieval, _queryDelay, worker, _killQueriesOnCancel);
 
-                var theThread = new Thread(input.StartLoadThread) {Priority = ThreadPriority.BelowNormal, IsBackground = true };
+                var theThread = new Thread(input.StartLoadThread) { Priority = ThreadPriority.BelowNormal, IsBackground = true };
 
                 _threadPool.Add(theThread);
                 _commandPool.Add(queryComm);
@@ -162,8 +162,8 @@ namespace SQLQueryStress
 
             while (finishedThreads < _threads)
             {
-//                for (int i = 0; i < threads; i++)
-//                {
+                //                for (int i = 0; i < threads; i++)
+                //                {
                 // try
                 // {
                 QueryOutput theOut = null;
@@ -181,7 +181,7 @@ namespace SQLQueryStress
                 if (theOut != null)
                 {
                     //Report output to the UI
-                    worker.ReportProgress((int) (finishedThreads / (decimal) _threads * 100), theOut);
+                    worker.ReportProgress((int)(finishedThreads / (decimal)_threads * 100), theOut);
 
                     //TODO: Make this actually remove the queue from the pool so that it's not checked again -- maintain this with a bitmap, perhaps?
                     if (theOut.Finished)
@@ -288,7 +288,7 @@ namespace SQLQueryStress
 
                 for (var i = 0; i < _outputParams.Length; i++)
                 {
-                    newParam[i] = (SqlParameter) ((ICloneable) _outputParams[i]).Clone();
+                    newParam[i] = (SqlParameter)((ICloneable)_outputParams[i]).Clone();
                 }
 
                 return newParam;
@@ -311,7 +311,7 @@ namespace SQLQueryStress
                 var i = 0;
                 foreach (var parameterName in paramMappings.Keys)
                 {
-                    _outputParams[i] = new SqlParameter {ParameterName = parameterName};
+                    _outputParams[i] = new SqlParameter { ParameterName = parameterName };
                     var paramColumn = paramMappings[parameterName];
 
                     //if there is a param mapped to this column
@@ -354,12 +354,12 @@ namespace SQLQueryStress
             private BackgroundWorker _backgroundWorker;
 
             public QueryInput(SqlCommand statsComm, SqlCommand queryComm,
-//                Queue<queryOutput> queryOutInfo,
+                //                Queue<queryOutput> queryOutInfo,
                 int iterations, bool forceDataRetrieval, int queryDelay, BackgroundWorker _backgroundWorker, bool killQueriesOnCancel)
             {
                 _statsComm = statsComm;
                 _queryComm = queryComm;
-//                this.queryOutInfo = queryOutInfo;
+                //                this.queryOutInfo = queryOutInfo;
                 _iterations = iterations;
                 _forceDataRetrieval = forceDataRetrieval;
                 _queryDelay = queryDelay;
@@ -384,7 +384,8 @@ namespace SQLQueryStress
                 {
                     _queryComm.Cancel();
                     _killTimer.Enabled = false;
-                } else if(_queryComm.Connection == null || _queryComm.Connection.State == ConnectionState.Closed)
+                }
+                else if (_queryComm.Connection == null || _queryComm.Connection.State == ConnectionState.Closed)
                 {
                     _killTimer.Enabled = false;
                 }
@@ -508,9 +509,9 @@ namespace SQLQueryStress
                                 {
                                     if (_statsComm != null)
                                     {
-                                        conn.InfoMessage -= handler;               
+                                        conn.InfoMessage -= handler;
                                     }
-                                    conn.Close();    
+                                    conn.Close();
                                 }
                             }
 
