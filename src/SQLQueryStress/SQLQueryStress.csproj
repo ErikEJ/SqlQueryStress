@@ -1,17 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{02A166A4-EE64-432F-AA6E-08C7984BD7BC}</ProjectGuid>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SQLQueryStress</RootNamespace>
-    <AssemblyName>SQLQueryStress</AssemblyName>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
     <SignManifests>false</SignManifests>
-    <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>sqlQueryStress.snk</AssemblyOriginatorKeyFile>
     <TargetZone>Internet</TargetZone>
     <GenerateManifests>false</GenerateManifests>
@@ -19,13 +12,7 @@
     <ManifestKeyFile>SQLQueryStress_TemporaryKey.pfx</ManifestKeyFile>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <ApplicationIcon>Resources\QueryStressIcon.ico</ApplicationIcon>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
     <OldToolsVersion>2.0</OldToolsVersion>
-    <TargetFrameworkProfile />
     <PublishUrl>c:\testdeploy\querystress\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -42,209 +29,107 @@
     <ApplicationVersion>0.9.0.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRules>
-    </CodeAnalysisRules>
-    <Prefer32Bit>false</Prefer32Bit>
+    <CodeAnalysisRules></CodeAnalysisRules>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
+  <Target Name="IgnoreRunCodeAnalysis" Condition=" '$(RunCodeAnalysis)' == 'true' " BeforeTargets="RunCodeAnalysis">
+    <Message Importance="normal" Text="Set RunCodeAnalysisOnThisProject to false" />
+    <PropertyGroup>
+      <RunCodeAnalysisOnThisProject>false</RunCodeAnalysisOnThisProject>
+    </PropertyGroup>
+  </Target>
   <ItemGroup>
-    <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.1.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\ICSharpCode.AvalonEdit.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml" />
-    <Reference Include="UIAutomationProvider" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="WindowsFormsIntegration" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AboutBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AboutBox.Designer.cs">
+    <Compile Update="AboutBox.cs" />
+    <Compile Update="AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="BlockedBoundedBuffer.cs" />
-    <Compile Include="CommandLineOptions.cs" />
-    <Compile Include="CommandLineParser\Attributes\BaseOptionAttribute.cs" />
-    <Compile Include="CommandLineParser\Attributes\HelpOptionAttribute.cs" />
-    <Compile Include="CommandLineParser\Attributes\OptionAttribute.cs" />
-    <Compile Include="CommandLineParser\Attributes\OptionListAttribute.cs" />
-    <Compile Include="CommandLineParser\Attributes\ValueListAttribute.cs" />
-    <Compile Include="CommandLineParser\CommandLineParser.cs" />
-    <Compile Include="CommandLineParser\Core\ArgumentParser.cs" />
-    <Compile Include="CommandLineParser\Core\CharEnumeratorEx.cs" />
-    <Compile Include="CommandLineParser\Core\IOptionMap.cs" />
-    <Compile Include="CommandLineParser\Core\IStringEnumerator.cs" />
-    <Compile Include="CommandLineParser\Core\LongOptionParser.cs" />
-    <Compile Include="CommandLineParser\Core\OptionGroupParser.cs" />
-    <Compile Include="CommandLineParser\Core\OptionInfo.cs" />
-    <Compile Include="CommandLineParser\Core\OptionMap.cs" />
-    <Compile Include="CommandLineParser\Core\PairT.cs" />
-    <Compile Include="CommandLineParser\Core\ParserState.cs" />
-    <Compile Include="CommandLineParser\Core\StringEnumeratorEx.cs" />
-    <Compile Include="CommandLineParser\Exceptions\IncompatibleTypesException.cs" />
-    <Compile Include="CommandLineParser\Exceptions\ParserException.cs" />
-    <Compile Include="CommandLineParser\ICommandLineParser.cs" />
-    <Compile Include="CommandLineParser\Parser.cs" />
-    <Compile Include="CommandLineParser\Text\CopyrightInfo.cs" />
-    <Compile Include="CommandLineParser\Text\HeadingInfo.cs" />
-    <Compile Include="CommandLineParser\Text\HelpText.cs" />
-    <Compile Include="CommandLineParser\Util\ReflectionUtil.cs" />
-    <Compile Include="CommandLineParser\Util\Validator.cs" />
-    <Compile Include="ConnectionInfo.cs" />
-    <Compile Include="DatabaseSelect.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DatabaseSelect.Designer.cs">
+    <Compile Update="DatabaseSelect.cs" />
+    <Compile Update="DatabaseSelect.Designer.cs">
       <DependentUpon>DatabaseSelect.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.Designer.cs">
+    <Compile Update="Form1.cs" />
+    <Compile Update="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="DataViewer.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DataViewer.Designer.cs">
+    <Compile Update="DataViewer.cs" />
+    <Compile Update="DataViewer.Designer.cs">
       <DependentUpon>DataViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="JsonSerializer.cs" />
-    <Compile Include="LoadEngine.cs" />
-    <Compile Include="Options.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Options.Designer.cs">
+    <Compile Update="Options.cs" />
+    <Compile Update="Options.Designer.cs">
       <DependentUpon>Options.cs</DependentUpon>
     </Compile>
-    <Compile Include="ParamWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ParamWindow.Designer.cs">
+    <Compile Update="ParamWindow.cs" />
+    <Compile Update="ParamWindow.Designer.cs">
       <DependentUpon>ParamWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QueryStressSettings.cs" />
-    <Compile Include="SqlControl.xaml.cs">
+    <Compile Update="SqlControl.xaml.cs">
       <DependentUpon>SqlControl.xaml</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="AboutBox.resx">
+    <EmbeddedResource Update="AboutBox.resx">
       <SubType>Designer</SubType>
       <DependentUpon>AboutBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DatabaseSelect.resx">
+    <EmbeddedResource Update="DatabaseSelect.resx">
       <SubType>Designer</SubType>
       <DependentUpon>DatabaseSelect.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
+    <EmbeddedResource Update="Form1.resx">
       <SubType>Designer</SubType>
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DataViewer.resx">
+    <EmbeddedResource Update="DataViewer.resx">
       <SubType>Designer</SubType>
       <DependentUpon>DataViewer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Options.resx">
+    <EmbeddedResource Update="Options.resx">
       <SubType>Designer</SubType>
       <DependentUpon>Options.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ParamWindow.resx">
+    <EmbeddedResource Update="ParamWindow.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ParamWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
+    <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Update="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="App.config" />
     <BaseApplicationManifest Include="Properties\app.manifest" />
-    <None Include="Properties\Settings.settings">
+    <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <EmbeddedResource Include="Resources\SQL.xshd" />
-    <None Include="sqlQueryStress.snk" />
-    <Compile Include="Properties\Settings.Designer.cs">
+    <Compile Update="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 2.0</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="ICSharpCode.AvalonEdit.dll" />
     <Content Include="Resources\QueryStressIcon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="SqlControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
+    <PackageReference Include="AvalonEdit" Version="6.0.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
