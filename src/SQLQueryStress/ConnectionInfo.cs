@@ -1,5 +1,5 @@
-﻿using System;
-using System.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
+using System;
 using System.Runtime.Serialization;
 
 namespace SQLQueryStress
@@ -27,7 +27,7 @@ namespace SQLQueryStress
         [DataMember]
         public bool EnablePooling;
         [DataMember]
-        public int MaxPoolSize; 
+        public int MaxPoolSize;
 
 
         public ConnectionInfo()
@@ -40,7 +40,7 @@ namespace SQLQueryStress
             Database = "";
             ConnectTimeout = 0;
             MaxPoolSize = 0;
-            EnablePooling = true; 
+            EnablePooling = true;
         }
 
         public ConnectionInfo(int connectTimeout, bool enablePooling, int maxPoolSize) : this()
@@ -64,7 +64,8 @@ namespace SQLQueryStress
                 if (Database.Length > 0)
                     build.InitialCatalog = Database;
 
-                if (ConnectTimeout != 0){
+                if (ConnectTimeout != 0)
+                {
                     build.ConnectTimeout = ConnectTimeout;
                 }
 
