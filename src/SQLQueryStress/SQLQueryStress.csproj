@@ -10,25 +10,9 @@
     <GenerateManifests>false</GenerateManifests>
     <ManifestCertificateThumbprint>2546E8A9F11989C71B0CFBEF57D992392F75EA37</ManifestCertificateThumbprint>
     <ManifestKeyFile>SQLQueryStress_TemporaryKey.pfx</ManifestKeyFile>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <ApplicationIcon>Resources\QueryStressIcon.ico</ApplicationIcon>
-    <OldToolsVersion>2.0</OldToolsVersion>
-    <PublishUrl>c:\testdeploy\querystress\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Background</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>true</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
     <ProductName>SQLQueryStress</ProductName>
     <PublisherName>Adam Machanic</PublisherName>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>0.9.0.0</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
   </PropertyGroup>
