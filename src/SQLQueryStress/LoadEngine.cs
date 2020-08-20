@@ -1,8 +1,9 @@
-using Microsoft.Data.SqlClient;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -11,7 +12,7 @@ namespace SQLQueryStress
 {
     internal class LoadEngine
     {
-        private static readonly Queue<QueryOutput> QueryOutInfo = new Queue<QueryOutput>();
+        private static BlockingCollection<QueryOutput> QueryOutInfo;
         private readonly bool _collectIoStats;
         private readonly bool _collectTimeStats;
         private readonly List<SqlCommand> _commandPool = new List<SqlCommand>();
@@ -28,6 +29,7 @@ namespace SQLQueryStress
         private readonly string _query;
         private readonly List<Thread> _threadPool = new List<Thread>();
         private readonly int _threads;
+        private static int _finishedThreads;
         private int _queryDelay;
 
         public LoadEngine(string connectionString, string query, int threads, int iterations, string paramQuery, Dictionary<string, string> paramMappings,
@@ -41,7 +43,7 @@ namespace SQLQueryStress
                 MaxPoolSize = threads,
                 CurrentLanguage = "English"
             };
-
+            LoadEngine.QueryOutInfo = new BlockingCollection<QueryOutput>();
             _connectionString = builder.ConnectionString;
             _query = query;
             _threads = threads;
@@ -123,7 +125,7 @@ namespace SQLQueryStress
 
                 SqlCommand statsComm = null;
 
-                var queryComm = new SqlCommand { CommandTimeout = _commandTimeout, Connection = conn, CommandText = _query };
+                var queryComm = new SqlCommand {CommandTimeout = _commandTimeout, Connection = conn, CommandText = _query};
 
                 if (useParams)
                 {
@@ -134,22 +136,23 @@ namespace SQLQueryStress
 
                 if (setStatistics.Length > 0)
                 {
-                    statsComm = new SqlCommand { CommandTimeout = _commandTimeout, Connection = conn, CommandText = setStatistics };
+                    statsComm = new SqlCommand {CommandTimeout = _commandTimeout, Connection = conn, CommandText = setStatistics};
                 }
 
                 //Queue<queryOutput> queryOutInfo = new Queue<queryOutput>();
 
                 var input = new QueryInput(statsComm, queryComm,
-                    //                    this.queryOutInfo,
-                    _iterations, _forceDataRetrieval, _queryDelay, worker, _killQueriesOnCancel);
+//                    this.queryOutInfo,
+                    _iterations, _forceDataRetrieval, _queryDelay, worker, _killQueriesOnCancel, _threads);
 
-                var theThread = new Thread(input.StartLoadThread) { Priority = ThreadPriority.BelowNormal, IsBackground = true };
+                var theThread = new Thread(input.StartLoadThread) {Priority = ThreadPriority.BelowNormal, IsBackground = true };
 
                 _threadPool.Add(theThread);
                 _commandPool.Add(queryComm);
                 //queryOutInfoPool.Add(queryOutInfo);
             }
 
+            _finishedThreads = 0;
             //Start the load threads
             for (var i = 0; i < _threads; i++)
             {
@@ -157,51 +160,22 @@ namespace SQLQueryStress
             }
 
             //Start reading the queue...
-            var finishedThreads = 0;
             var cancelled = false;
 
-            while (finishedThreads < _threads)
+            while (!QueryOutInfo.IsCompleted)
             {
-                //                for (int i = 0; i < threads; i++)
-                //                {
-                // try
-                // {
                 QueryOutput theOut = null;
-                //lock (queryOutInfoPool[i])
-                lock (QueryOutInfo)
+                try
                 {
-                    //if (queryOutInfoPool[i].Count > 0)
-                    //theOut = (queryOutput)queryOutInfoPool[i].Dequeue();
-                    if (QueryOutInfo.Count > 0)
-                        theOut = QueryOutInfo.Dequeue();
-                    else
-                        Monitor.Wait(QueryOutInfo);
+                    theOut = QueryOutInfo.Take();
                 }
+                catch (InvalidOperationException) { }
 
                 if (theOut != null)
                 {
                     //Report output to the UI
-                    worker.ReportProgress((int)(finishedThreads / (decimal)_threads * 100), theOut);
-
-                    //TODO: Make this actually remove the queue from the pool so that it's not checked again -- maintain this with a bitmap, perhaps?
-                    if (theOut.Finished)
-                        finishedThreads++;
+                    worker.ReportProgress((int) (_finishedThreads / (decimal) _threads * 100), theOut);
                 }
-                /* }
-                    catch (InvalidOperationException e)
-                    {
-                    }
-                    */
-
-                /*
-                        if (theOut != null)
-                            Thread.Sleep(200);
-                        else
-                            Thread.Sleep(10);
-                     */
-                //               }
-
-                //TODO: Remove this ?
                 GC.Collect();
 
                 if (worker.CancellationPending && !cancelled)
@@ -250,6 +224,8 @@ namespace SQLQueryStress
                     }
 
                     cancelled = true;
+                    // we won't be adding anything more to the queue - threads are all dead
+                    QueryOutInfo.CompleteAdding();
                 }
             }
 
@@ -288,7 +264,7 @@ namespace SQLQueryStress
 
                 for (var i = 0; i < _outputParams.Length; i++)
                 {
-                    newParam[i] = (SqlParameter)((ICloneable)_outputParams[i]).Clone();
+                    newParam[i] = (SqlParameter) ((ICloneable) _outputParams[i]).Clone();
                 }
 
                 return newParam;
@@ -311,7 +287,7 @@ namespace SQLQueryStress
                 var i = 0;
                 foreach (var parameterName in paramMappings.Keys)
                 {
-                    _outputParams[i] = new SqlParameter { ParameterName = parameterName };
+                    _outputParams[i] = new SqlParameter {ParameterName = parameterName};
                     var paramColumn = paramMappings[parameterName];
 
                     //if there is a param mapped to this column
@@ -351,18 +327,20 @@ namespace SQLQueryStress
             //          private readonly Queue<queryOutput> queryOutInfo;
             private readonly int _iterations;
             private readonly int _queryDelay;
+            private readonly int _numWorkerThreads;
             private BackgroundWorker _backgroundWorker;
 
             public QueryInput(SqlCommand statsComm, SqlCommand queryComm,
-                //                Queue<queryOutput> queryOutInfo,
-                int iterations, bool forceDataRetrieval, int queryDelay, BackgroundWorker _backgroundWorker, bool killQueriesOnCancel)
+//                Queue<queryOutput> queryOutInfo,
+                int iterations, bool forceDataRetrieval, int queryDelay, BackgroundWorker _backgroundWorker, bool killQueriesOnCancel, int numWorkerThreads)
             {
                 _statsComm = statsComm;
                 _queryComm = queryComm;
-                //                this.queryOutInfo = queryOutInfo;
+//                this.queryOutInfo = queryOutInfo;
                 _iterations = iterations;
                 _forceDataRetrieval = forceDataRetrieval;
                 _queryDelay = queryDelay;
+                _numWorkerThreads = numWorkerThreads;
 
                 //Prepare the infoMessages collection, if we are collecting statistics
                 //if (stats_comm != null)
@@ -384,8 +362,7 @@ namespace SQLQueryStress
                 {
                     _queryComm.Cancel();
                     _killTimer.Enabled = false;
-                }
-                else if (_queryComm.Connection == null || _queryComm.Connection.State == ConnectionState.Closed)
+                } else if(_queryComm.Connection == null || _queryComm.Connection.State == ConnectionState.Closed)
                 {
                     _killTimer.Enabled = false;
                 }
@@ -509,9 +486,9 @@ namespace SQLQueryStress
                                 {
                                     if (_statsComm != null)
                                     {
-                                        conn.InfoMessage -= handler;
+                                        conn.InfoMessage -= handler;               
                                     }
-                                    conn.Close();
+                                    conn.Close();    
                                 }
                             }
 
@@ -533,11 +510,7 @@ namespace SQLQueryStress
                             _outInfo.Time = _sw.Elapsed;
                             _outInfo.Finished = finished;
 
-                            lock (QueryOutInfo)
-                            {
-                                QueryOutInfo.Enqueue(_outInfo);
-                                Monitor.Pulse(QueryOutInfo);
-                            }
+                            QueryOutInfo.Add(_outInfo);
 
                             //Prep the collection for the next round
                             //if (infoMessages != null && infoMessages.Count > 0)
@@ -556,14 +529,18 @@ namespace SQLQueryStress
                         //queryOutput theout = new queryOutput(null, new TimeSpan(0), true, null);
                         _outInfo.Time = new TimeSpan(0);
                         _outInfo.Finished = true;
-
-                        lock (QueryOutInfo)
-                        {
-                            QueryOutInfo.Enqueue(_outInfo);
-                        }
+                        QueryOutInfo.Add(_outInfo);
                     }
-                    else
-                        throw;
+                    // this would just cause the app to crash, no reason not to let the thread exit
+                    // if there's no exception handler
+                    //else
+                    //    throw; 
+                }
+                Interlocked.Increment(ref _finishedThreads);
+                if(_finishedThreads == _numWorkerThreads)
+                {
+                    // once all of the threads have exited, tell the other side that we're done adding items to the collection
+                    QueryOutInfo.CompleteAdding();
                 }
             }
 
