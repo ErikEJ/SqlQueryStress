@@ -607,7 +607,6 @@ namespace SQLQueryStress
                         if (theThread.IsAlive)
                         {
                             keepKilling = true;
-                            theThread.Abort();
                             Thread.Sleep(0);
                         }
                     }

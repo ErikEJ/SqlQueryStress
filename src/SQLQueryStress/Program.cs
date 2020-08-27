@@ -16,9 +16,9 @@ namespace SQLQueryStress
         private static void Main(string[] args)
         {
             AppDomain.CurrentDomain.AssemblyResolve += OnResolveAssembly;
+            Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
 
             var options = new CommandLineOptions();
             ICommandLineParser parser = new CommandLineParser();
@@ -31,11 +31,7 @@ namespace SQLQueryStress
             }
             else
             {
-                var f = new Form1(options)
-                {
-                    StartPosition = FormStartPosition.CenterScreen
-                };
-                Application.Run(f);
+                Application.Run(new Form1(options));
             }
         }
 

@@ -774,6 +774,7 @@ namespace SQLQueryStress
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
+            this.StartPosition = FormStartPosition.CenterScreen;
             this.ClientSize = new System.Drawing.Size(1112, 668);
             this.Controls.Add(this.tableLayoutPanel3);
             this.Controls.Add(this.db_label);
