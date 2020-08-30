@@ -7,12 +7,14 @@ using System.Data;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace SQLQueryStress
 {
     internal class LoadEngine
     {
         private static BlockingCollection<QueryOutput> QueryOutInfo;
+        private static CancellationTokenSource _backgroundWorkerCTS;
         private readonly bool _collectIoStats;
         private readonly bool _collectTimeStats;
         private readonly List<SqlCommand> _commandPool = new List<SqlCommand>();
@@ -32,8 +34,9 @@ namespace SQLQueryStress
         private static int _finishedThreads;
         private int _queryDelay;
 
-        public LoadEngine(string connectionString, string query, int threads, int iterations, string paramQuery, Dictionary<string, string> paramMappings,
-            string paramConnectionString, int commandTimeout, bool collectIoStats, bool collectTimeStats, bool forceDataRetrieval, bool killQueriesOnCancel)
+        public LoadEngine(string connectionString, string query, int threads, int iterations, string paramQuery,
+            Dictionary<string, string> paramMappings, string paramConnectionString, int commandTimeout,
+            bool collectIoStats, bool collectTimeStats, bool forceDataRetrieval, bool killQueriesOnCancel, CancellationTokenSource cts)
         {
             //Set the min pool size so that the pool does not have
             //to get allocated in real-time
@@ -56,6 +59,7 @@ namespace SQLQueryStress
             _collectTimeStats = collectTimeStats;
             _forceDataRetrieval = forceDataRetrieval;
             _killQueriesOnCancel = killQueriesOnCancel;
+            _backgroundWorkerCTS = cts;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
@@ -112,9 +116,6 @@ namespace SQLQueryStress
             conn.Open();
             conn.Dispose();
 
-            //make sure the run cancelled flag is not set
-            QueryInput.RunCancelled = false;
-
             //Spin up the load threads
             for (var i = 0; i < _threads; i++)
             {
@@ -146,30 +147,50 @@ namespace SQLQueryStress
                     _iterations, _forceDataRetrieval, _queryDelay, worker, _killQueriesOnCancel, _threads);
 
                 var theThread = new Thread(input.StartLoadThread) {Priority = ThreadPriority.BelowNormal, IsBackground = true };
+                theThread.Name = "thread: " + i;
 
                 _threadPool.Add(theThread);
                 _commandPool.Add(queryComm);
                 //queryOutInfoPool.Add(queryOutInfo);
             }
-
+            // create a token source for the workers to be able to listen to a cancel event
+            CancellationTokenSource workerCTS = new System.Threading.CancellationTokenSource();
             _finishedThreads = 0;
-            //Start the load threads
             for (var i = 0; i < _threads; i++)
             {
-                _threadPool[i].Start();
+                _threadPool[i].Start(workerCTS.Token);
             }
 
             //Start reading the queue...
             var cancelled = false;
 
-            while (!QueryOutInfo.IsCompleted)
+            while (!cancelled)
             {
                 QueryOutput theOut = null;
                 try
                 {
-                    theOut = QueryOutInfo.Take();
+                    // wait for OutInfo items in the queue or a user cancel event
+                    theOut = QueryOutInfo.Take(_backgroundWorkerCTS.Token);
                 }
-                catch (InvalidOperationException) { }
+                catch (Exception ex)
+                {
+                    // The exception is InvalidOperationException if the threads are done
+                    // and OperationCanceledException if the user clicked cancel.
+                    // If it's OperationCanceledException, we need to cancel
+                    // the worker threads and wait for them to exit
+                    if (ex is OperationCanceledException)
+                    {
+                        workerCTS.Cancel();
+                        foreach (var theThread in _threadPool)
+                        {
+                            // give the thread max 5 seconds to cancel nicely
+                            if (!theThread.Join(5000))
+                                theThread.Interrupt();
+                        }
+                    }
+                    SqlConnection.ClearAllPools();
+                    cancelled = true;
+                }
 
                 if (theOut != null)
                 {
@@ -177,61 +198,7 @@ namespace SQLQueryStress
                     worker.ReportProgress((int) (_finishedThreads / (decimal) _threads * 100), theOut);
                 }
                 GC.Collect();
-
-                if (worker.CancellationPending && !cancelled)
-                {
-                    QueryInput.RunCancelled = true;
-
-                    //First, kill connections as fast as possible
-                    SqlConnection.ClearAllPools();
-
-                    //for each 20 threads, create a new thread dedicated
-                    //to killing them
-                    var threadNum = _threadPool.Count;
-
-                    var killerThreads = new List<Thread>();
-                    while (threadNum > 0)
-                    {
-                        var i = threadNum <= 20 ? 0 : threadNum - 20;
-
-                        var killThreads = new Thread[threadNum - i < 1 ? threadNum : threadNum - i];
-                        var killCommands = new SqlCommand[threadNum - i < 1 ? threadNum : threadNum - i];
-
-                        _threadPool.CopyTo(i, killThreads, 0, killThreads.Length);
-                        _commandPool.CopyTo(i, killCommands, 0, killCommands.Length);
-
-                        for (var j = threadNum - 1; j >= i; j--)
-                        {
-                            _threadPool.RemoveAt(j);
-                            _commandPool.RemoveAt(j);
-                        }
-
-                        var kill = new ThreadKiller(killThreads, killCommands);
-                        var killer = new Thread(kill.KillEm);
-                        killer.Start();
-                        Thread.Sleep(0);
-
-                        killerThreads.Add(killer);
-
-                        threadNum = i;
-                    }
-
-                    //wait for the kill threads to return
-                    //before exiting...
-                    foreach (var theThread in killerThreads)
-                    {
-                        theThread.Join();
-                    }
-
-                    cancelled = true;
-                    // we won't be adding anything more to the queue - threads are all dead
-                    QueryOutInfo.CompleteAdding();
-                }
             }
-
-            //clear any remaining messages -- these are almost certainly
-            //execeptions due to thread cancellation
-            //queryOutInfo.Clear();
         }
 
 
@@ -303,7 +270,6 @@ namespace SQLQueryStress
         {
             [ThreadStatic] private static QueryOutput _outInfo;
 
-            private static bool _runCancelled;
             //This regex is used to find the number of logical reads
             //in the messages collection returned in the queryOutput class
             private static readonly Regex FindReads = new Regex(@"(?:Table (\'\w{1,}\'|'#\w{1,}\'|'##\w{1,}\'). Scan count \d{1,}, logical reads )(\d{1,})", RegexOptions.Compiled);
@@ -368,11 +334,6 @@ namespace SQLQueryStress
                 }
             }
 
-            public static bool RunCancelled
-            {
-                set { _runCancelled = value; }
-            }
-
             private static void GetInfoMessages(object sender, SqlInfoMessageEventArgs args)
             {
                 foreach (SqlError err in args.Errors)
@@ -398,20 +359,27 @@ namespace SQLQueryStress
             }
 
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
-            public void StartLoadThread()
+            public void StartLoadThread(Object token)
             {
+                bool runCancelled = false;
+
+                CancellationToken ctsToken = (CancellationToken)token;
                 try
                 {
+                    ctsToken.Register(() =>
+                    {
+                        // Cancellation on the token will interrupt and cancel the thread
+                        runCancelled = true;
+                        _statsComm.Cancel();
+                        _queryComm.Cancel();
+                    });
                     //do the work
                     using (var conn = _queryComm.Connection)
                     {
                         SqlInfoMessageEventHandler handler = GetInfoMessages;
 
-                        for (var i = 0; i < _iterations; i++)
+                        for (var i = 0; i < _iterations && !runCancelled; i++)
                         {
-                            if (_runCancelled)
-                                throw new Exception();
-
                             Exception outException = null;
 
                             try
@@ -450,14 +418,14 @@ namespace SQLQueryStress
                                     {
                                         Thread.Sleep(0);
 
-                                        while (reader.Read())
+                                        while (!runCancelled && reader.Read())
                                         {
                                             //grab the first column to force the row down the pipe
                                             // ReSharper disable once UnusedVariable
                                             var x = reader[0];
                                             Thread.Sleep(0);
                                         }
-                                    } while (reader.NextResult());
+                                    } while (!runCancelled && reader.NextResult());
                                 }
                                 else
                                 {
@@ -469,9 +437,7 @@ namespace SQLQueryStress
                             }
                             catch (Exception e)
                             {
-                                if (_runCancelled)
-                                    throw;
-                                else
+                                if (!runCancelled)
                                     outException = e;
 
                                 if (_sw.IsRunning)
@@ -518,23 +484,40 @@ namespace SQLQueryStress
 
                             _sw.Reset();
 
-                            Thread.Sleep(_queryDelay);
+                            if (!runCancelled)
+                            {
+                                try
+                                {
+                                    if(_queryDelay > 0)
+                                        Task.Delay(_queryDelay, ctsToken).Wait();
+                                }
+                                catch (AggregateException ae)
+                                {
+                                    ae.Handle((x) =>
+                                    {
+                                        if (x is TaskCanceledException)
+                                        {
+                                            runCancelled = true;
+                                            return true;
+                                        }
+                                        // if we get here, the exception wasn't a cancel
+                                        // so don't swallow it
+                                        return false;
+                                    });
+                                }
+                            }
                         }
                     }
                 }
                 catch
                 {
-                    if (_runCancelled)
+                    if (runCancelled)
                     {
                         //queryOutput theout = new queryOutput(null, new TimeSpan(0), true, null);
                         _outInfo.Time = new TimeSpan(0);
                         _outInfo.Finished = true;
                         QueryOutInfo.Add(_outInfo);
                     }
-                    // this would just cause the app to crash, no reason not to let the thread exit
-                    // if there's no exception handler
-                    //else
-                    //    throw; 
                 }
                 Interlocked.Increment(ref _finishedThreads);
                 if(_finishedThreads == _numWorkerThreads)
