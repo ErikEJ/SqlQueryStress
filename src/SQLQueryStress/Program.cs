@@ -1,8 +1,10 @@
 using CommandLine;
+using CommandLine.Text;
 using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace SQLQueryStress
@@ -19,23 +21,56 @@ namespace SQLQueryStress
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-
             var options = new CommandLineOptions();
-            ICommandLineParser parser = new CommandLineParser();
-            using var writer = new StringWriter();
-            parser.ParseArguments(args, options, writer);
 
-            if (writer.GetStringBuilder().Length > 0)
+            var parserResult = Parser.Default.ParseArguments<CommandLineOptions>(args);
+
+            parserResult
+                .WithParsed(options => Run(options))
+                .WithNotParsed(errors => DisplayHelp(parserResult, errors));
+        }
+
+        private static void Run(CommandLineOptions options)
+        {
+            using var form1 = new Form1(options)
             {
-                MessageBox.Show(writer.GetStringBuilder().ToString());
+                StartPosition = FormStartPosition.CenterScreen
+            };
+            Application.Run(form1);
+        }
+
+        private static void DisplayHelp<T>(ParserResult<T> result, IEnumerable<Error> errors)
+        {
+            AttachConsole(-1);
+
+            if (errors.IsVersion())
+            {
+                Console.WriteLine(HelpText.AutoBuild(result));
+            }
+            else if (errors.IsHelp())
+            {
+                var helpText = HelpText.AutoBuild(result, help =>
+                {
+                    help.AdditionalNewLineAfterOption = true;
+                    help.AddPreOptionsLine("Check for updates at: https://github.com/ErikEJ/SqlQueryStress");
+                    help.AddPreOptionsLine("Sample usage:");
+                    help.AddPreOptionsLine("SqlQueryStress -c saved.SqlStress -u -t 32 -d sqldb.perfenv.mycompany.com -r results.csv");
+                    return HelpText.DefaultParsingErrorsHandler(result, help);
+                }, e => e);
+
+                Console.WriteLine(helpText);
             }
             else
             {
-                using var form1 = new Form1(options)
+                var builder = SentenceBuilder.Create();
+                var errorMessages = HelpText.RenderParsingErrorsTextAsLines(result, builder.FormatError, builder.FormatMutuallyExclusiveSetErrors, 1);
+
+                var errorList = errorMessages.Select(msg => new ArgumentException(msg)).ToList();
+
+                foreach (var message in errorMessages)
                 {
-                    StartPosition = FormStartPosition.CenterScreen
-                };
-                Application.Run(form1);
+                    Console.WriteLine(message);
+                }
             }
         }
 
@@ -55,5 +90,8 @@ namespace SQLQueryStress
             stream.Read(assemblyData, 0, assemblyData.Length);
             return Assembly.Load(assemblyData);
         }
+
+        [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
+        private static extern bool AttachConsole(int processId);
     }
 }

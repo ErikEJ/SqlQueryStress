@@ -85,7 +85,7 @@ namespace SQLQueryStress
 
         private readonly CommandLineOptions _runParameters;
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "<Pending>")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2213:Disposable fields should be disposed")]
         private System.Threading.CancellationTokenSource _backgroundWorkerCTS;
 
         public Form1(CommandLineOptions runParameters) : this()
