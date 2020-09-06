@@ -9,35 +9,35 @@ namespace SQLQueryStress
     public class ConnectionInfo : ICloneable
     {
         [DataMember]
-        public string Database;
+        public string Database { get; set; }
         [DataMember]
-        public bool IntegratedAuth;
+        public bool IntegratedAuth { get; set; }
         [DataMember]
-        public string Login;
+        public string Login { get; set; }
         [DataMember]
-        public string Password;
+        public string Password { get; set; }
 
         [DataMember]
-        public string Server;
+        public string Server { get; set; }
         [DataMember]
-        public ApplicationIntent ApplicationIntent;
+        public ApplicationIntent ApplicationIntent { get; set; }
 
         [DataMember]
-        public int ConnectTimeout;
+        public int ConnectTimeout { get; set; }
         [DataMember]
-        public bool EnablePooling;
+        public bool EnablePooling { get; set; }
         [DataMember]
-        public int MaxPoolSize;
+        public int MaxPoolSize { get; set; }
 
 
         public ConnectionInfo()
         {
-            Server = "";
+            Server = string.Empty;
             IntegratedAuth = true;
             ApplicationIntent = ApplicationIntent.ReadWrite;
-            Login = "";
-            Password = "";
-            Database = "";
+            Login = string.Empty;
+            Password = string.Empty;
+            Database = string.Empty;
             ConnectTimeout = 0;
             MaxPoolSize = 0;
             EnablePooling = true;
@@ -95,6 +95,11 @@ namespace SQLQueryStress
 
         public void CopyTo(ConnectionInfo to)
         {
+            if (to is null)
+            {
+                throw new ArgumentNullException(nameof(to));
+            }
+
             to.Server = Server;
             to.IntegratedAuth = IntegratedAuth;
             to.Login = Login;
@@ -103,9 +108,10 @@ namespace SQLQueryStress
             to.ApplicationIntent = ApplicationIntent;
         }
 
+      
         public bool TestConnection()
         {
-            if ((Server == "") || ((IntegratedAuth == false) && (Login == "" || Password == "")))
+            if ((string.IsNullOrEmpty(Server)) || ((IntegratedAuth == false) && (string.IsNullOrEmpty(Login) || string.IsNullOrEmpty(Password))))
                 return false;
 
             using (var conn = new SqlConnection(ConnectionString))
@@ -114,7 +120,7 @@ namespace SQLQueryStress
                 {
                     conn.Open();
                 }
-                catch (Exception)
+                catch
                 {
                     return false;
                 }

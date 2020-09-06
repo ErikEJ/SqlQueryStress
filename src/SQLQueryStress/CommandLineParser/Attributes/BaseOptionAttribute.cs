@@ -35,55 +35,34 @@ namespace CommandLine
     /// </summary>
     public abstract class BaseOptionAttribute : Attribute
     {
-        private string shortName;
-        private string longName;
-        private bool required;
-        private string helpText;
-
         /// <summary>
         /// Short name of this command line option. This name is usually a single character.
         /// </summary>
-        public string ShortName
-        {
-            get { return this.shortName; }
-            internal set { this.shortName = value; }
-        }
+        public string ShortName { get; internal set; }
 
         /// <summary>
         /// Long name of this command line option. This name is usually a single english word.
         /// </summary>
-        public string LongName
-        {
-            get { return this.longName; }
-            internal set { this.longName = value; }
-        }
+        public string LongName { get; internal set; }
 
         /// <summary>
         /// True if this command line option is required.
         /// </summary>
-        public virtual bool Required
-        {
-            get { return this.required; }
-            set { this.required = value; }
-        }
+        public virtual bool Required { get; set; }
 
         internal bool HasShortName
         {
-            get { return !string.IsNullOrEmpty(this.shortName); }
+            get { return !string.IsNullOrEmpty(ShortName); }
         }
 
         internal bool HasLongName
         {
-            get { return !string.IsNullOrEmpty(this.longName); }
+            get { return !string.IsNullOrEmpty(LongName); }
         }
 
         /// <summary>
         /// A short description of this command line option. Usually a sentence summary. 
         /// </summary>
-        public string HelpText
-        {
-            get { return this.helpText; }
-            set { this.helpText = value; }
-        }
+        public string HelpText { get; set; }
     }
 }

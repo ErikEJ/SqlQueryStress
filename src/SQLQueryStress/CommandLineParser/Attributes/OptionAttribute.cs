@@ -33,9 +33,9 @@ namespace CommandLine
     /// <summary>
     /// Models an option specification.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field,
-            AllowMultiple=false,
-            Inherited=true)]
+    [AttributeUsage(AttributeTargets.Property,
+            AllowMultiple = false,
+            Inherited = true)]
     public class OptionAttribute : BaseOptionAttribute
     {
         private string uniqueName;

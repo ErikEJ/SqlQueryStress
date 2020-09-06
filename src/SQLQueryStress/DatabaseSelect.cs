@@ -14,7 +14,7 @@ namespace SQLQueryStress
 
         public DatabaseSelect(QueryStressSettings settings)
         {
-            _settings = settings;
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
             _localMainConnectionInfo = (ConnectionInfo)settings.MainDbConnectionInfo.Clone();
 
             if (settings.ShareDbSettings)
@@ -152,63 +152,61 @@ namespace SQLQueryStress
                 connectionString = _localParamConnectionInfo.ConnectionString;
             }
 
-            var sql = "SELECT databases.name FROM sys.databases WHERE databases.state = 0 ORDER BY databases.name";
+            const string sql = "SELECT databases.name FROM sys.databases WHERE databases.state = 0 ORDER BY databases.name";
 
-            using (var conn = new SqlConnection(connectionString))
+            using var conn = new SqlConnection(connectionString);
+            using var comm = new SqlCommand(sql, conn);
+
+            var databases = new List<string>();
+
+            try
             {
-                var comm = new SqlCommand(sql, conn);
+                conn.Open();
 
-                var databases = new List<string>();
+                var reader = comm.ExecuteReader();
 
-                try
+                while (reader.Read())
                 {
-                    conn.Open();
-
-                    var reader = comm.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        databases.Add((string)reader[0]);
-                    }
+                    databases.Add((string)reader[0]);
                 }
-                catch (SqlException ex)
+            }
+            catch (SqlException ex)
+            {
+                if (ex.Number == 40615)
+                    return;
+                if (ex.Number == 18456) // login failed. This helps with connecting to Azure databases
+                    return;
+                if (ex.Number != 4060)
                 {
-                    if (ex.Number == 40615)
-                        return;
-                    if (ex.Number == 18456) // login failed. This helps with connecting to Azure databases
-                        return;
-                    if (ex.Number != 4060)
-                    {
-                        MessageBox.Show(Resources.ConnFail);
+                    MessageBox.Show(Resources.ConnFail);
 
-                        if (dbComboboxParam == db_comboBox)
-                        {
-                            server_textBox.Focus();
-                        }
-                        else
-                        {
-                            pm_server_textBox.Focus();
-                        }
+                    if (dbComboboxParam == db_comboBox)
+                    {
+                        server_textBox.Focus();
                     }
                     else
                     {
-                        //Clear the db, try again
-                        db_comboBox.Text = string.Empty;
-                        pm_db_comboBox.Text = string.Empty;
-                        dbComboboxParam.Items.Clear();
-                        ReloadDatabaseList(dbComboboxParam);
-                        return;
+                        pm_server_textBox.Focus();
                     }
                 }
-
-                dbComboboxParam.DataSource = databases.ToArray();
-
-                if (selectedComboBoxItem != null)
+                else
                 {
-                    if (dbComboboxParam.Items.Contains(selectedComboBoxItem))
-                    {
-                        dbComboboxParam.SelectedItem = selectedComboBoxItem;
-                    }
+                    //Clear the db, try again
+                    db_comboBox.Text = string.Empty;
+                    pm_db_comboBox.Text = string.Empty;
+                    dbComboboxParam.Items.Clear();
+                    ReloadDatabaseList(dbComboboxParam);
+                    return;
+                }
+            }
+
+            dbComboboxParam.DataSource = databases.ToArray();
+
+            if (selectedComboBoxItem != null)
+            {
+                if (dbComboboxParam.Items.Contains(selectedComboBoxItem))
+                {
+                    dbComboboxParam.SelectedItem = selectedComboBoxItem;
                 }
             }
         }
@@ -267,8 +265,8 @@ namespace SQLQueryStress
 
                 if (_localParamConnectionInfo.IntegratedAuth)
                 {
-                    _localParamConnectionInfo.Login = "";
-                    _localParamConnectionInfo.Password = "";
+                    _localParamConnectionInfo.Login = string.Empty;
+                    _localParamConnectionInfo.Password = string.Empty;
                 }
                 else
                 {
@@ -280,9 +278,8 @@ namespace SQLQueryStress
 
                 if (pm_appintent_check.Checked)
                 {
-                    ApplicationIntent applicationIntent;
 
-                    _ = Enum.TryParse<ApplicationIntent>(pm_appintent_combo.Text, out applicationIntent);
+                    _ = Enum.TryParse(pm_appintent_combo.Text, out ApplicationIntent applicationIntent);
 
                     _localParamConnectionInfo.ApplicationIntent = applicationIntent;
                 }
@@ -305,8 +302,8 @@ namespace SQLQueryStress
 
             if (_localMainConnectionInfo.IntegratedAuth)
             {
-                _localMainConnectionInfo.Login = "";
-                _localMainConnectionInfo.Password = "";
+                _localMainConnectionInfo.Login = string.Empty;
+                _localMainConnectionInfo.Password = string.Empty;
             }
             else
             {
@@ -316,9 +313,8 @@ namespace SQLQueryStress
 
             if (appintent_check.Checked)
             {
-                ApplicationIntent applicationIntent;
 
-                _ = Enum.TryParse<ApplicationIntent>(appintent_combo.Text, out applicationIntent);
+                _ = Enum.TryParse(appintent_combo.Text, out ApplicationIntent applicationIntent);
 
                 _localMainConnectionInfo.ApplicationIntent = applicationIntent;
             }

@@ -37,13 +37,13 @@ namespace CommandLine.Text
     /// </summary>
     public class CopyrightInfo
     {
-        private readonly bool isSymbolUpper;
-        private readonly int[] years;
-        private readonly string author;
-        private const string defaultCopyrightWord = "Copyright";
-        private const string symbolLower = "(c)";
-        private const string symbolUpper = "(C)";
-        private StringBuilder builder;
+        private readonly bool _isSymbolUpper;
+        private readonly int[] _years;
+        private readonly string _author;
+        private const string _defaultCopyrightWord = "Copyright";
+        private const string _symbolLower = "(c)";
+        private const string _symbolUpper = "(C)";
+        private readonly StringBuilder _builder;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandLine.Text.CopyrightInfo"/> class.
@@ -92,10 +92,10 @@ namespace CommandLine.Text
             Validator.CheckZeroLength(years, nameof(years));
 
             const int extraLength = 10;
-            this.isSymbolUpper = isSymbolUpper; //this.symbol = symbol;
-            this.author = author;
-            this.years = years;
-            this.builder = new StringBuilder
+            _isSymbolUpper = isSymbolUpper; //this.symbol = symbol;
+            _author = author;
+            _years = years;
+            _builder = new StringBuilder
                     (CopyrightWord.Length + author.Length + (4 * years.Length) + extraLength);
         }
 
@@ -105,28 +105,30 @@ namespace CommandLine.Text
         /// <returns>The <see cref="System.String"/> that contains the copyright informations.</returns>
         public override string ToString()
         {
-            builder.Append(this.CopyrightWord);
-            builder.Append(' ');
-            if (this.isSymbolUpper)
+            _builder.Append(CopyrightWord);
+            _builder.Append(' ');
+            if (_isSymbolUpper)
             {
-                builder.Append(symbolUpper);
+                _builder.Append(_symbolUpper);
             }
             else
             {
-                builder.Append(symbolLower);
+                _builder.Append(_symbolLower);
             }
-            builder.Append(' ');
-            builder.Append(this.FormatYears(years));
-            builder.Append(' ');
-            builder.Append(this.author);
-            return builder.ToString();
+            _builder.Append(' ');
+            _builder.Append(FormatYears(_years));
+            _builder.Append(' ');
+            _builder.Append(_author);
+            return _builder.ToString();
         }
+
 
         /// <summary>
         /// Converts the copyright informations to a <see cref="System.String"/>.
         /// </summary>
         /// <param name="info">This <see cref="CommandLine.Text.CopyrightInfo"/> instance.</param>
         /// <returns>The <see cref="System.String"/> that contains the copyright informations.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods")]
         public static implicit operator string(CopyrightInfo info)
         {
             return info.ToString();
@@ -137,7 +139,7 @@ namespace CommandLine.Text
         /// </summary>
         protected virtual string CopyrightWord
         {
-            get { return defaultCopyrightWord; }
+            get { return _defaultCopyrightWord; }
         }
 
         /// <summary>
@@ -148,6 +150,11 @@ namespace CommandLine.Text
         /// <returns>A <see cref="System.String"/> instance with copyright years.</returns>
         protected virtual string FormatYears(int[] years)
         {
+            if (years is null)
+            {
+                throw new System.ArgumentNullException(nameof(years));
+            }
+
             if (years.Length == 1)
             {
                 return years[0].ToString(CultureInfo.InvariantCulture);

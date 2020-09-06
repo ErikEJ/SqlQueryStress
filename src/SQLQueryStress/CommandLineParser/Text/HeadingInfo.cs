@@ -37,8 +37,8 @@ namespace CommandLine.Text
     /// </summary>
     public class HeadingInfo
     {
-        private readonly string programName;
-        private readonly string version;
+        private readonly string _programName;
+        private readonly string _version;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandLine.Text.HeadingInfo"/> class
@@ -60,10 +60,10 @@ namespace CommandLine.Text
         /// <exception cref="System.ArgumentException">Thrown when parameter <paramref name="programName"/> is null or empty string.</exception>
         public HeadingInfo(string programName, string version)
         {
-            Validator.CheckIsNullOrEmpty(programName, "programName");
+            Validator.CheckIsNullOrEmpty(programName, nameof(programName));
 
-            this.programName = programName;
-            this.version = version;
+            _programName = programName;
+            _version = version;
         }
 
         /// <summary>
@@ -72,23 +72,25 @@ namespace CommandLine.Text
         /// <returns>The <see cref="System.String"/> that contains the heading informations.</returns>
         public override string ToString()
         {
-            bool isVersionNull = string.IsNullOrEmpty(this.version);
-            StringBuilder builder = new StringBuilder(this.programName.Length +
-                                (!isVersionNull ? version.Length + 1: 0));
-            builder.Append(this.programName);
+            bool isVersionNull = string.IsNullOrEmpty(_version);
+            StringBuilder builder = new StringBuilder(_programName.Length +
+                                (!isVersionNull ? _version.Length + 1 : 0));
+            builder.Append(_programName);
             if (!isVersionNull)
             {
                 builder.Append(' ');
-                builder.Append(this.version);
+                builder.Append(_version);
             }
             return builder.ToString();
         }
+
 
         /// <summary>
         /// Converts the heading informations to a <see cref="System.String"/>.
         /// </summary>
         /// <param name="info">This <see cref="CommandLine.Text.HeadingInfo"/> instance.</param>
         /// <returns>The <see cref="System.String"/> that contains the heading informations.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "<Pending>")]
         public static implicit operator string(HeadingInfo info)
         {
             return info.ToString();
@@ -104,11 +106,11 @@ namespace CommandLine.Text
         /// <exception cref="System.ArgumentNullException">Thrown when parameter <paramref name="writer"/> is null.</exception>
         public void WriteMessage(string message, TextWriter writer)
         {
-            Validator.CheckIsNullOrEmpty(message, "message");
-            Validator.CheckIsNull(writer, "writer");
+            Validator.CheckIsNullOrEmpty(message, nameof(message));
+            Validator.CheckIsNull(writer, nameof(writer));
 
-            StringBuilder builder = new StringBuilder(this.programName.Length + message.Length + 2);
-            builder.Append(this.programName);
+            StringBuilder builder = new StringBuilder(_programName.Length + message.Length + 2);
+            builder.Append(_programName);
             builder.Append(": ");
             builder.Append(message);
             writer.WriteLine(builder.ToString());
@@ -122,7 +124,7 @@ namespace CommandLine.Text
         /// <exception cref="System.ArgumentException">Thrown when parameter <paramref name="message"/> is null or empty string.</exception>
         public void WriteMessage(string message)
         {
-            this.WriteMessage(message, System.Console.Out);
+            WriteMessage(message, System.Console.Out);
         }
 
         /// <summary>
@@ -133,7 +135,7 @@ namespace CommandLine.Text
         /// <exception cref="System.ArgumentException">Thrown when parameter <paramref name="message"/> is null or empty string.</exception>
         public void WriteError(string message)
         {
-            this.WriteMessage(message, System.Console.Error);
+            WriteMessage(message, System.Console.Error);
         }
     }
 }

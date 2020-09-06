@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -84,6 +85,7 @@ namespace SQLQueryStress
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void StartLoad(BackgroundWorker worker)
         {
             var useParams = false;
@@ -126,27 +128,27 @@ namespace SQLQueryStress
 
                 SqlCommand statsComm = null;
 
-                var queryComm = new SqlCommand {CommandTimeout = _commandTimeout, Connection = conn, CommandText = _query};
+                var queryComm = new SqlCommand { CommandTimeout = _commandTimeout, Connection = conn, CommandText = _query };
 
                 if (useParams)
                 {
                     queryComm.Parameters.AddRange(ParamServer.GetParams());
                 }
 
-                var setStatistics = (_collectIoStats ? @"SET STATISTICS IO ON;" : "") + (_collectTimeStats ? @"SET STATISTICS TIME ON;" : "");
+                var setStatistics = (_collectIoStats ? @"SET STATISTICS IO ON;" : string.Empty) + (_collectTimeStats ? @"SET STATISTICS TIME ON;" : string.Empty);
 
                 if (setStatistics.Length > 0)
                 {
-                    statsComm = new SqlCommand {CommandTimeout = _commandTimeout, Connection = conn, CommandText = setStatistics};
+                    statsComm = new SqlCommand { CommandTimeout = _commandTimeout, Connection = conn, CommandText = setStatistics };
                 }
 
                 //Queue<queryOutput> queryOutInfo = new Queue<queryOutput>();
 
                 var input = new QueryInput(statsComm, queryComm,
-//                    this.queryOutInfo,
+                    //                    this.queryOutInfo,
                     _iterations, _forceDataRetrieval, _queryDelay, worker, _killQueriesOnCancel, _threads);
 
-                var theThread = new Thread(input.StartLoadThread) {Priority = ThreadPriority.BelowNormal, IsBackground = true };
+                var theThread = new Thread(input.StartLoadThread) { Priority = ThreadPriority.BelowNormal, IsBackground = true };
                 theThread.Name = "thread: " + i;
 
                 _threadPool.Add(theThread);
@@ -195,7 +197,7 @@ namespace SQLQueryStress
                 if (theOut != null)
                 {
                     //Report output to the UI
-                    worker.ReportProgress((int) (_finishedThreads / (decimal) _threads * 100), theOut);
+                    worker.ReportProgress((int)(_finishedThreads / (decimal)_threads * 100), theOut);
                 }
                 GC.Collect();
             }
@@ -231,7 +233,7 @@ namespace SQLQueryStress
 
                 for (var i = 0; i < _outputParams.Length; i++)
                 {
-                    newParam[i] = (SqlParameter) ((ICloneable) _outputParams[i]).Clone();
+                    newParam[i] = (SqlParameter)((ICloneable)_outputParams[i]).Clone();
                 }
 
                 return newParam;
@@ -240,10 +242,11 @@ namespace SQLQueryStress
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
             public static void Initialize(string paramQuery, string connString, Dictionary<string, string> paramMappings)
             {
-                var a = new SqlDataAdapter(paramQuery, connString);
-                _theParams = new DataTable();
-                a.Fill(_theParams);
-
+                using (var sqlDataAdapter = new SqlDataAdapter(paramQuery, connString))
+                {
+                    _theParams = new DataTable();
+                    sqlDataAdapter.Fill(_theParams);
+                }
                 _numRows = _theParams.Rows.Count;
 
                 _outputParams = new SqlParameter[paramMappings.Keys.Count];
@@ -254,7 +257,7 @@ namespace SQLQueryStress
                 var i = 0;
                 foreach (var parameterName in paramMappings.Keys)
                 {
-                    _outputParams[i] = new SqlParameter {ParameterName = parameterName};
+                    _outputParams[i] = new SqlParameter { ParameterName = parameterName };
                     var paramColumn = paramMappings[parameterName];
 
                     //if there is a param mapped to this column
@@ -288,21 +291,21 @@ namespace SQLQueryStress
             //private static Dictionary<int, List<string>> theInfoMessages = new Dictionary<int, List<string>>();
 
             private readonly Stopwatch _sw = new Stopwatch();
-            private System.Timers.Timer _killTimer = new System.Timers.Timer();
+            private readonly System.Timers.Timer _killTimer = new System.Timers.Timer();
             private readonly bool _forceDataRetrieval;
             //          private readonly Queue<queryOutput> queryOutInfo;
             private readonly int _iterations;
             private readonly int _queryDelay;
             private readonly int _numWorkerThreads;
-            private BackgroundWorker _backgroundWorker;
+            private readonly BackgroundWorker _backgroundWorker;
 
             public QueryInput(SqlCommand statsComm, SqlCommand queryComm,
-//                Queue<queryOutput> queryOutInfo,
+                //                Queue<queryOutput> queryOutInfo,
                 int iterations, bool forceDataRetrieval, int queryDelay, BackgroundWorker _backgroundWorker, bool killQueriesOnCancel, int numWorkerThreads)
             {
                 _statsComm = statsComm;
                 _queryComm = queryComm;
-//                this.queryOutInfo = queryOutInfo;
+                //                this.queryOutInfo = queryOutInfo;
                 _iterations = iterations;
                 _forceDataRetrieval = forceDataRetrieval;
                 _queryDelay = queryDelay;
@@ -328,7 +331,8 @@ namespace SQLQueryStress
                 {
                     _queryComm.Cancel();
                     _killTimer.Enabled = false;
-                } else if(_queryComm.Connection == null || _queryComm.Connection.State == ConnectionState.Closed)
+                }
+                else if (_queryComm.Connection == null || _queryComm.Connection.State == ConnectionState.Closed)
                 {
                     _killTimer.Enabled = false;
                 }
@@ -343,7 +347,7 @@ namespace SQLQueryStress
                     //we have a read
                     if (matches.Length > 1)
                     {
-                        _outInfo.LogicalReads += Convert.ToInt32(matches[2]);
+                        _outInfo.LogicalReads += Convert.ToInt32(matches[2], CultureInfo.InvariantCulture);
                         continue;
                     }
 
@@ -352,14 +356,14 @@ namespace SQLQueryStress
                     //we have times
                     if (matches.Length > 1)
                     {
-                        _outInfo.CpuTime += Convert.ToInt32(matches[1]);
-                        _outInfo.ElapsedTime += Convert.ToInt32(matches[2]);
+                        _outInfo.CpuTime += Convert.ToInt32(matches[1], CultureInfo.InvariantCulture);
+                        _outInfo.ElapsedTime += Convert.ToInt32(matches[2], CultureInfo.InvariantCulture);
                     }
                 }
             }
 
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
-            public void StartLoadThread(Object token)
+            public void StartLoadThread(object token)
             {
                 bool runCancelled = false;
 
@@ -452,9 +456,9 @@ namespace SQLQueryStress
                                 {
                                     if (_statsComm != null)
                                     {
-                                        conn.InfoMessage -= handler;               
+                                        conn.InfoMessage -= handler;
                                     }
-                                    conn.Close();    
+                                    conn.Close();
                                 }
                             }
 
@@ -488,7 +492,7 @@ namespace SQLQueryStress
                             {
                                 try
                                 {
-                                    if(_queryDelay > 0)
+                                    if (_queryDelay > 0)
                                         Task.Delay(_queryDelay, ctsToken).Wait();
                                 }
                                 catch (AggregateException ae)
@@ -520,7 +524,7 @@ namespace SQLQueryStress
                     }
                 }
                 Interlocked.Increment(ref _finishedThreads);
-                if(_finishedThreads == _numWorkerThreads)
+                if (_finishedThreads == _numWorkerThreads)
                 {
                     // once all of the threads have exited, tell the other side that we're done adding items to the collection
                     QueryOutInfo.CompleteAdding();
@@ -555,47 +559,6 @@ namespace SQLQueryStress
                 this.infoMessages = infoMessages;
             }
              */
-        }
-
-        private class ThreadKiller
-        {
-            private readonly SqlCommand[] _theCommands;
-            private readonly Thread[] _theThreads;
-
-            public ThreadKiller(Thread[] theThreads, SqlCommand[] theCommands)
-            {
-                _theThreads = theThreads;
-                _theCommands = theCommands;
-            }
-
-            public void KillEm()
-            {
-                foreach (var comm in _theCommands)
-                {
-                    comm.Cancel();
-                    comm.Connection.Dispose();
-                    comm.Connection = null;
-                    comm.Dispose();
-                    Thread.Sleep(0);
-                }
-
-                var keepKilling = true;
-
-                while (keepKilling)
-                {
-                    keepKilling = false;
-
-                    foreach (var theThread in _theThreads)
-                    {
-                        if (theThread.IsAlive)
-                        {
-                            keepKilling = true;
-                            theThread.Abort();
-                            Thread.Sleep(0);
-                        }
-                    }
-                }
-            }
         }
     }
 }

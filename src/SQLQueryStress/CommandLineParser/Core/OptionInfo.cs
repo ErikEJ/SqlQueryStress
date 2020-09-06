@@ -35,31 +35,25 @@ namespace CommandLine
 
     sealed class OptionInfo
     {
-        private readonly OptionAttribute attribute;
-        private readonly FieldInfo field;
-        private bool required;
-        private string helpText;
-        private bool isDefined;
-        private string shortName;
-        private string longName;
-        
-        private object setValueLock = new object();
+        private readonly OptionAttribute _attribute;
+        private readonly FieldInfo _field;
+        private readonly object setValueLock = new object();
 
         public OptionInfo(OptionAttribute attribute, FieldInfo field)
         {
-            this.required = attribute.Required;
-            this.helpText = attribute.HelpText;
-            this.shortName = attribute.ShortName;
-            this.longName = attribute.LongName;
-            this.field = field;
-            this.attribute = attribute;
+            Required = attribute.Required;
+            HelpText = attribute.HelpText;
+            ShortName = attribute.ShortName;
+            LongName = attribute.LongName;
+            _field = field;
+            _attribute = attribute;
         }
 
 #if UNIT_TESTS
         internal OptionInfo(string shortName, string longName)
         {
-            this.shortName = shortName;
-            this.longName = longName;
+            ShortName = shortName;
+            LongName = longName;
         }
 #endif
         public static IOptionMap CreateMap(object target)
@@ -75,13 +69,13 @@ namespace CommandLine
 
         public bool SetValue(string value, object options)
         {
-            if (attribute is OptionListAttribute)
+            if (_attribute is OptionListAttribute)
             {
-                return this.SetValueList(value, options);
+                return SetValueList(value, options);
             }
             else
             {
-                return this.SetValueScalar(value, options);
+                return SetValueScalar(value, options);
             }
         }
 
@@ -89,18 +83,18 @@ namespace CommandLine
         {
             try
             {
-                if (this.field.FieldType.IsEnum)
+                if (_field.FieldType.IsEnum)
                 {
-                    lock (this.setValueLock)
+                    lock (setValueLock)
                     {
-                        this.field.SetValue(options, Enum.Parse(this.field.FieldType, value, true));
+                        _field.SetValue(options, Enum.Parse(_field.FieldType, value, true));
                     }
                 }
                 else
                 {
-                    lock (this.setValueLock)
+                    lock (setValueLock)
                     {
-                        this.field.SetValue(options, Convert.ChangeType(value, this.field.FieldType, CultureInfo.InvariantCulture));
+                        _field.SetValue(options, Convert.ChangeType(value, _field.FieldType, CultureInfo.InvariantCulture));
                     }
                 }
             }
@@ -121,20 +115,20 @@ namespace CommandLine
 
         public bool SetValue(bool value, object options)
         {
-            lock (this.setValueLock)
+            lock (setValueLock)
             {
-                this.field.SetValue(options, value);
+                _field.SetValue(options, value);
                 return true;
             }
         }
 
         public bool SetValueList(string value, object options)
         {
-            lock (this.setValueLock)
+            lock (setValueLock)
             {
-                field.SetValue(options, new List<string>());
-                IList<string> fieldRef = (IList<string>)field.GetValue(options);
-                string[] values = value.Split(((OptionListAttribute)this.attribute).Separator);
+                _field.SetValue(options, new List<string>());
+                IList<string> fieldRef = (IList<string>)_field.GetValue(options);
+                string[] values = value.Split(((OptionListAttribute)_attribute).Separator);
                 for (int i = 0; i < values.Length; i++)
                 {
                     fieldRef.Add(values[i]);
@@ -143,40 +137,24 @@ namespace CommandLine
             }
         }
 
-        public string ShortName
-        {
-            get { return this.shortName; }
-        }
+        public string ShortName { get; }
 
-        public string LongName
-        {
-            get { return this.longName; }
-        }
+        public string LongName { get; }
 
-        public bool Required
-        {
-            get { return this.required; }
-        }
+        public bool Required { get; }
 
-        public string HelpText
-        {
-            get { return this.helpText; }
-        }
+        public string HelpText { get; }
 
         public bool IsBoolean
         {
-            get { return this.field.FieldType == typeof(bool); }
+            get { return _field.FieldType == typeof(bool); }
         }
 
-        public bool IsDefined
-        {
-            get { return this.isDefined; }
-            set { this.isDefined = value; }
-        }
+        public bool IsDefined { get; set; }
 
         public bool HasBothNames
         {
-            get { return (this.shortName != null && this.longName != null); }
+            get { return ShortName != null && LongName != null; }
         }
     }
 }

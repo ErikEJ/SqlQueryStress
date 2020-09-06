@@ -41,17 +41,17 @@ namespace CommandLine.Text
     public class HelpText
     {
         #region Private Members
-        private const int builderCapacity = 128;
-        private readonly string heading;
-        private string copyright;
-        private StringBuilder preOptionsHelp;
-        private StringBuilder optionsHelp;
-        private const string defaultRequiredWord = "Required.";
+        private const int _builderCapacity = 128;
+        private readonly string _heading;
+        private string _copyright;
+        private readonly StringBuilder _preOptionsHelp;
+        private StringBuilder _optionsHelp;
+        private const string _defaultRequiredWord = "Required.";
         #endregion
 
         private HelpText()
         {
-            this.preOptionsHelp = new StringBuilder(builderCapacity);
+            _preOptionsHelp = new StringBuilder(_builderCapacity);
         }
 
         /// <summary>
@@ -64,9 +64,9 @@ namespace CommandLine.Text
         public HelpText(string heading)
             : this()
         {
-            Validator.CheckIsNullOrEmpty(heading, "heading");
+            Validator.CheckIsNullOrEmpty(heading, nameof(heading));
 
-            this.heading = heading;
+            _heading = heading;
         }
 
         /// <summary>
@@ -75,10 +75,11 @@ namespace CommandLine.Text
         /// </summary>
         public string Copyright
         {
+            get => _copyright;
             set
             {
-                Validator.CheckIsNullOrEmpty(value, "value");
-                this.copyright = value;
+                Validator.CheckIsNullOrEmpty(value, nameof(value));
+                _copyright = value;
             }
         }
 
@@ -89,7 +90,7 @@ namespace CommandLine.Text
         /// <exception cref="System.ArgumentNullException">Thrown when parameter <paramref name="value"/> is null or empty string.</exception>
         public void AddPreOptionsLine(string value)
         {
-            AddLine(this.preOptionsHelp, value);
+            AddLine(_preOptionsHelp, value);
         }
 
         /// <summary>
@@ -99,7 +100,7 @@ namespace CommandLine.Text
         /// <exception cref="System.ArgumentNullException">Thrown when parameter <paramref name="options"/> is null.</exception>
         public void AddOptions(object options)
         {
-            AddOptions(options, defaultRequiredWord);
+            AddOptions(options, _defaultRequiredWord);
         }
 
         /// <summary>
@@ -111,8 +112,8 @@ namespace CommandLine.Text
         /// <exception cref="System.ArgumentNullException">Thrown when parameter <paramref name="requiredWord"/> is null or empty string.</exception>
         public void AddOptions(object options, string requiredWord)
         {
-            Validator.CheckIsNull(options, "options");
-            Validator.CheckIsNullOrEmpty(requiredWord, "requiredWord");
+            Validator.CheckIsNull(options, nameof(options));
+            Validator.CheckIsNullOrEmpty(requiredWord, nameof(requiredWord));
 
             IList<BaseOptionAttribute> optionList =
                                 ReflectionUtil.RetrieveFieldAttributeList<BaseOptionAttribute>(options);
@@ -130,11 +131,11 @@ namespace CommandLine.Text
             }
 
             int maxLength = GetMaxLength(optionList);
-            this.optionsHelp = new StringBuilder(builderCapacity);
+            _optionsHelp = new StringBuilder(_builderCapacity);
 
             foreach (BaseOptionAttribute option in optionList)
             {
-                this.optionsHelp.Append("  ");
+                this._optionsHelp.Append("  ");
                 StringBuilder optionName = new StringBuilder(maxLength);
                 if (option.HasShortName)
                 {
@@ -150,20 +151,20 @@ namespace CommandLine.Text
                 }
                 if (optionName.Length < maxLength)
                 {
-                    this.optionsHelp.Append(optionName.ToString().PadRight(maxLength));
+                    _optionsHelp.Append(optionName.ToString().PadRight(maxLength));
                 }
                 else
                 {
-                    this.optionsHelp.Append(optionName.ToString());
+                    _optionsHelp.Append(optionName);
                 }
-                this.optionsHelp.Append("\t");
+                _optionsHelp.Append('\t');
                 if (option.Required)
                 {
-                    this.optionsHelp.Append(requiredWord);
-                    this.optionsHelp.Append(' ');
+                    _optionsHelp.Append(requiredWord);
+                    _optionsHelp.Append(' ');
                 }
-                this.optionsHelp.Append(option.HelpText);
-                this.optionsHelp.Append(Environment.NewLine);
+                _optionsHelp.Append(option.HelpText);
+                _optionsHelp.Append(Environment.NewLine);
             }
         }
 
@@ -174,36 +175,38 @@ namespace CommandLine.Text
         public override string ToString()
         {
             const int extraLength = 10;
-            StringBuilder builder = new StringBuilder(this.heading.Length +
-                                GetLength(this.copyright) + GetLength(this.preOptionsHelp) +
-                                GetLength(this.optionsHelp) + extraLength);
+            StringBuilder builder = new StringBuilder(_heading.Length +
+                                GetLength(_copyright) + GetLength(_preOptionsHelp) +
+                                GetLength(_optionsHelp) + extraLength);
 
-            builder.Append(this.heading);
-            if (!string.IsNullOrEmpty(this.copyright))
+            builder.Append(_heading);
+            if (!string.IsNullOrEmpty(_copyright))
             {
                 builder.Append(Environment.NewLine);
-                builder.Append(this.copyright);
+                builder.Append(this._copyright);
             }
-            if (this.preOptionsHelp.Length > 0)
+            if (_preOptionsHelp.Length > 0)
             {
                 builder.Append(Environment.NewLine);
-                builder.Append(this.preOptionsHelp.ToString());
+                builder.Append(_preOptionsHelp);
             }
-            if (this.optionsHelp != null && this.optionsHelp.Length > 0)
+            if (_optionsHelp != null && _optionsHelp.Length > 0)
             {
                 builder.Append(Environment.NewLine);
                 builder.Append(Environment.NewLine);
-                builder.Append(this.optionsHelp.ToString());
+                builder.Append(_optionsHelp);
             }
 
             return builder.ToString();
         }
+
 
         /// <summary>
         /// Converts the help informations to a <see cref="System.String"/>.
         /// </summary>
         /// <param name="info">This <see cref="CommandLine.Text.HelpText"/> instance.</param>
         /// <returns>The <see cref="System.String"/> that contains the help informations.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "<Pending>")]
         public static implicit operator string(HelpText info)
         {
             return info.ToString();
@@ -212,7 +215,7 @@ namespace CommandLine.Text
         private static void AddLine(StringBuilder builder, string value)
         {
             //Validator.CheckIsNullOrEmpty(value, "value");
-            Validator.CheckIsNull(value, "value");
+            Validator.CheckIsNull(value, nameof(value));
 
             if (builder.Length > 0)
             {

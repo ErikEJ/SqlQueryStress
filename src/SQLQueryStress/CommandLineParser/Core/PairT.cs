@@ -30,23 +30,14 @@ namespace CommandLine
 {
     sealed class Pair<TLeft, TRight>
     {
-        private readonly TLeft left;
-        private readonly TRight right;
-
         public Pair(TLeft left, TRight right)
         {
-            this.left = left;
-            this.right = right;
+            Left = left;
+            Right = right;
         }
 
-        public TLeft Left
-        {
-            get { return this.left; }
-        }
+        public TLeft Left { get; }
 
-        public TRight Right
-        {
-            get { return this.right; }
-        }
+        public TRight Right { get; }
     }
 }

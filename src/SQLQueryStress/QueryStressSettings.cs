@@ -15,104 +15,104 @@ namespace SQLQueryStress
         ///     Collect I/O stats?
         /// </summary>
         [DataMember]
-        public bool CollectIoStats;
+        public bool CollectIoStats { get; set; }
 
         /// <summary>
         ///     Collect time stats?
         /// </summary>
         [DataMember]
-        public bool CollectTimeStats;
+        public bool CollectTimeStats { get; set; }
 
         /// <summary>
         ///     command timeout
         /// </summary>
         [DataMember]
-        public int CommandTimeout;
+        public int CommandTimeout { get; set; }
 
         /// <summary>
         ///     Connection Timeout
         /// </summary>
         [DataMember]
-        public int ConnectionTimeout;
+        public int ConnectionTimeout { get; set; }
 
         /// <summary>
         ///     Enable pooling?
         /// </summary>
         [DataMember]
-        public bool EnableConnectionPooling;
+        public bool EnableConnectionPooling { get; set; }
 
         /// <summary>
         ///     Force the client to retrieve all data?
         /// </summary>
         [DataMember]
-        public bool ForceDataRetrieval;
+        public bool ForceDataRetrieval { get; set; }
 
         /// <summary>
         ///     Cancel active SqlCommands on Cancel? (do not wait for completion)
         /// </summary>
         [DataMember]
-        public bool KillQueriesOnCancel;
+        public bool KillQueriesOnCancel { get; set; }
 
         /// <summary>
         ///     Connection info for the DB in which to run the test
         /// </summary>
         [DataMember]
-        public ConnectionInfo MainDbConnectionInfo;
+        public ConnectionInfo MainDbConnectionInfo { get; set; }
 
         /// <summary>
         ///     main query to test
         /// </summary>
         [DataMember]
-        public string MainQuery;
+        public string MainQuery { get; set; }
 
         /// <summary>
         ///     Number of iterations to run per thread
         /// </summary>
         [DataMember]
-        public int NumIterations;
+        public int NumIterations { get; set; }
 
         /// <summary>
         ///     Number of threads to test with
         /// </summary>
         [DataMember]
-        public int NumThreads;
+        public int NumThreads { get; set; }
 
         /// <summary>
         /// Delay
         /// </summary>
         [DataMember]
-        public int DelayBetweenQueries;
+        public int DelayBetweenQueries { get; set; }
 
         /// <summary>
         ///     Connection info for the DB from which to get the paramaters
         /// </summary>
         [DataMember]
-        public ConnectionInfo ParamDbConnectionInfo;
+        public ConnectionInfo ParamDbConnectionInfo { get; set; }
 
         /// <summary>
         ///     mapped parameters
         /// </summary>
         [DataMember]
-        public Dictionary<string, string> ParamMappings;
+        public Dictionary<string, string> ParamMappings { get; set; }
 
         /// <summary>
         ///     query from which to take parameters
         /// </summary>
         [DataMember]
-        public string ParamQuery;
+        public string ParamQuery { get; set; }
 
         /// <summary>
         ///     Should the main db and param db share the same settings?
         ///     If so, use main db settings for the params
         /// </summary>
         [DataMember]
-        public bool ShareDbSettings;
+        public bool ShareDbSettings { get; set; }
 
         public QueryStressSettings()
         {
             ShareDbSettings = true;
-            MainQuery = "";
-            ParamQuery = "";
+            MainQuery = string.Empty;
+            ParamQuery = string.Empty;
             NumThreads = 1;
             NumIterations = 1;
             ParamMappings = new Dictionary<string, string>();

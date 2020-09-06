@@ -38,7 +38,7 @@ namespace CommandLine
 
         public StringEnumeratorEx(string[] value)
         {
-            Validator.CheckIsNull(value, "value");
+            Validator.CheckIsNull(value, nameof(value));
 
             this.data = value;
             this.index = -1;

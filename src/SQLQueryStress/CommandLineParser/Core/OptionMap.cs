@@ -32,13 +32,13 @@ namespace CommandLine
 
     sealed class OptionMap : IOptionMap
     {
-        private Dictionary<string, string> names;
-        private Dictionary<string, OptionInfo> map;
+        private readonly Dictionary<string, string> _names;
+        private readonly Dictionary<string, OptionInfo> _map;
 
         public OptionMap(int capacity)
         {
-            this.names = new Dictionary<string, string>(capacity);
-            this.map = new Dictionary<string, OptionInfo>(capacity * 2);
+            _names = new Dictionary<string, string>(capacity);
+            _map = new Dictionary<string, OptionInfo>(capacity * 2);
         }
 
         public OptionInfo this[string key]
@@ -46,34 +46,33 @@ namespace CommandLine
             get
             {
                 OptionInfo option = null;
-                if (this.map.ContainsKey(key))
+                if (_map.ContainsKey(key))
                 {
-                    option = this.map[key];
+                    option = _map[key];
                 }
                 else
                 {
-                    string optionKey = null;
-                    if (this.names.ContainsKey(key))
+                    if (_names.ContainsKey(key))
                     {
-                        optionKey = this.names[key];
-                        option = this.map[optionKey];
+                        string optionKey = _names[key];
+                        option = _map[optionKey];
                     }
                 }
                 return option;
             }
             set
             {
-                this.map[key] = value;
+                _map[key] = value;
                 if (value.HasBothNames)
                 {
-                    this.names[value.LongName] = value.ShortName;
+                    _names[value.LongName] = value.ShortName;
                 }
             }
         }
 
         public bool EnforceRules()
         {
-            foreach (OptionInfo option in this.map.Values)
+            foreach (OptionInfo option in _map.Values)
             {
                 if (option.Required && !option.IsDefined)
                 {
