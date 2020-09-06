@@ -81,7 +81,9 @@ namespace SQLQueryStress
 
         private Guid _testGuid;
 
-        private CommandLineOptions _runParameters; 
+        private CommandLineOptions _runParameters;
+
+        private System.Threading.CancellationTokenSource _backgroundWorkerCTS;
 
         public Form1(CommandLineOptions runParameters) : this()
         {
@@ -251,7 +253,7 @@ namespace SQLQueryStress
         private void cancel_button_Click(object sender, EventArgs e)
         {
             cancel_button.Enabled = false;
-
+            _backgroundWorkerCTS.Cancel();
             backgroundWorker1.CancelAsync();
 
             _cancelled = true;
@@ -290,6 +292,7 @@ namespace SQLQueryStress
             _testGuid = Guid.NewGuid();
             _cancelled = false;
             _exitOnComplete = false;
+            _backgroundWorkerCTS = new System.Threading.CancellationTokenSource();
 
             _exceptions = new Dictionary<string, int>();
 
@@ -325,7 +328,7 @@ namespace SQLQueryStress
 
             var engine = new LoadEngine(_settings.MainDbConnectionInfo.ConnectionString, _settings.MainQuery, _settings.NumThreads, _settings.NumIterations,
                 _settings.ParamQuery, _settings.ParamMappings, paramConnectionInfo.ConnectionString, _settings.CommandTimeout, _settings.CollectIoStats,
-                _settings.CollectTimeStats, _settings.ForceDataRetrieval, _settings.KillQueriesOnCancel);
+                _settings.CollectTimeStats, _settings.ForceDataRetrieval, _settings.KillQueriesOnCancel, _backgroundWorkerCTS);
 
             backgroundWorker1.RunWorkerAsync(engine);
 
