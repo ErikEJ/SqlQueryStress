@@ -9,35 +9,41 @@ namespace SQLQueryStress
     public class ConnectionInfo : ICloneable
     {
         [DataMember]
-        public string Database;
-        [DataMember]
-        public bool IntegratedAuth;
-        [DataMember]
-        public string Login;
-        [DataMember]
-        public string Password;
+        public string Database { get; set; }
 
         [DataMember]
-        public string Server;
-        [DataMember]
-        public ApplicationIntent ApplicationIntent;
+        public bool IntegratedAuth { get; set; }
 
         [DataMember]
-        public int ConnectTimeout;
+        public string Login { get; set; }
+
         [DataMember]
-        public bool EnablePooling;
+        public string Password { get; set; }
+
         [DataMember]
-        public int MaxPoolSize;
+        public string Server { get; set; }
+
+        [DataMember]
+        public ApplicationIntent ApplicationIntent { get; set; }
+
+        [DataMember]
+        public int ConnectTimeout { get; set; }
+
+        [DataMember]
+        public bool EnablePooling { get; set; }
+
+        [DataMember]
+        public int MaxPoolSize { get; set; }
 
 
         public ConnectionInfo()
         {
-            Server = "";
+            Server = string.Empty;
             IntegratedAuth = true;
             ApplicationIntent = ApplicationIntent.ReadWrite;
-            Login = "";
-            Password = "";
-            Database = "";
+            Login = string.Empty;
+            Password = string.Empty;
+            Database = string.Empty;
             ConnectTimeout = 0;
             MaxPoolSize = 0;
             EnablePooling = true;
@@ -105,7 +111,7 @@ namespace SQLQueryStress
 
         public bool TestConnection()
         {
-            if ((Server == "") || ((IntegratedAuth == false) && (Login == "" || Password == "")))
+            if ((string.IsNullOrEmpty(Server)) || ((IntegratedAuth == false) && (string.IsNullOrEmpty(Login) || string.IsNullOrEmpty(Password))))
                 return false;
 
             using (var conn = new SqlConnection(ConnectionString))
