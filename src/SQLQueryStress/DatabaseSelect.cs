@@ -154,61 +154,59 @@ namespace SQLQueryStress
 
             var sql = "SELECT databases.name FROM sys.databases WHERE databases.state = 0 ORDER BY databases.name";
 
-            using (var conn = new SqlConnection(connectionString))
+            using var conn = new SqlConnection(connectionString);
+            using var sqlCommand = new SqlCommand(sql, conn);
+
+            var databases = new List<string>();
+
+            try
             {
-                var comm = new SqlCommand(sql, conn);
+                conn.Open();
 
-                var databases = new List<string>();
+                var reader = sqlCommand.ExecuteReader();
 
-                try
+                while (reader.Read())
                 {
-                    conn.Open();
-
-                    var reader = comm.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        databases.Add((string)reader[0]);
-                    }
+                    databases.Add((string)reader[0]);
                 }
-                catch (SqlException ex)
+            }
+            catch (SqlException ex)
+            {
+                if (ex.Number == 40615)
+                    return;
+                if (ex.Number == 18456) // login failed. This helps with connecting to Azure databases
+                    return;
+                if (ex.Number != 4060)
                 {
-                    if (ex.Number == 40615)
-                        return;
-                    if (ex.Number == 18456) // login failed. This helps with connecting to Azure databases
-                        return;
-                    if (ex.Number != 4060)
-                    {
-                        MessageBox.Show(Resources.ConnFail);
+                    MessageBox.Show(Resources.ConnFail);
 
-                        if (dbComboboxParam == db_comboBox)
-                        {
-                            server_textBox.Focus();
-                        }
-                        else
-                        {
-                            pm_server_textBox.Focus();
-                        }
+                    if (dbComboboxParam == db_comboBox)
+                    {
+                        server_textBox.Focus();
                     }
                     else
                     {
-                        //Clear the db, try again
-                        db_comboBox.Text = string.Empty;
-                        pm_db_comboBox.Text = string.Empty;
-                        dbComboboxParam.Items.Clear();
-                        ReloadDatabaseList(dbComboboxParam);
-                        return;
+                        pm_server_textBox.Focus();
                     }
                 }
-
-                dbComboboxParam.DataSource = databases.ToArray();
-
-                if (selectedComboBoxItem != null)
+                else
                 {
-                    if (dbComboboxParam.Items.Contains(selectedComboBoxItem))
-                    {
-                        dbComboboxParam.SelectedItem = selectedComboBoxItem;
-                    }
+                    //Clear the db, try again
+                    db_comboBox.Text = string.Empty;
+                    pm_db_comboBox.Text = string.Empty;
+                    dbComboboxParam.Items.Clear();
+                    ReloadDatabaseList(dbComboboxParam);
+                    return;
+                }
+            }
+
+            dbComboboxParam.DataSource = databases.ToArray();
+
+            if (selectedComboBoxItem != null)
+            {
+                if (dbComboboxParam.Items.Contains(selectedComboBoxItem))
+                {
+                    dbComboboxParam.SelectedItem = selectedComboBoxItem;
                 }
             }
         }
