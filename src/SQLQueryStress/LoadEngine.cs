@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -344,7 +345,7 @@ namespace SQLQueryStress
                     //we have a read
                     if (matches.Length > 1)
                     {
-                        _outInfo.LogicalReads += Convert.ToInt32(matches[2]);
+                        _outInfo.LogicalReads += Convert.ToInt32(matches[2], CultureInfo.InvariantCulture);
                         continue;
                     }
 
@@ -353,8 +354,8 @@ namespace SQLQueryStress
                     //we have times
                     if (matches.Length > 1)
                     {
-                        _outInfo.CpuTime += Convert.ToInt32(matches[1]);
-                        _outInfo.ElapsedTime += Convert.ToInt32(matches[2]);
+                        _outInfo.CpuTime += Convert.ToInt32(matches[1], CultureInfo.InvariantCulture);
+                        _outInfo.ElapsedTime += Convert.ToInt32(matches[2], CultureInfo.InvariantCulture);
                     }
                 }
             }
