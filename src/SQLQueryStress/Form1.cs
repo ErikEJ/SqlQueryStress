@@ -222,9 +222,9 @@ namespace SQLQueryStress
 
             ((BackgroundWorker)sender).Dispose();
 
-            db_label.Text = "";
+            db_label.Text = string.Empty;
 
-            if (string.IsNullOrEmpty(_runParameters.ResultsAutoSaveFileName) == false)
+            if (!string.IsNullOrEmpty(_runParameters.ResultsAutoSaveFileName))
             {
                 AutoSaveResults(_runParameters.ResultsAutoSaveFileName);
             }
@@ -238,8 +238,8 @@ namespace SQLQueryStress
 
         private void AutoSaveResults(string resultsAutoSaveFileName)
         {
-            string extension = Path.GetExtension(resultsAutoSaveFileName).ToLower();
-            if (extension == ".csv")
+            string extension = Path.GetExtension(resultsAutoSaveFileName).ToUpperInvariant();
+            if (extension.Equals(".csv", StringComparison.InvariantCultureIgnoreCase))
             {
                 ExportBenchMarkToCsvFile(resultsAutoSaveFileName);
             }
@@ -322,8 +322,7 @@ namespace SQLQueryStress
             _totalExpectedIterations = _settings.NumThreads * _settings.NumIterations;
 
             var paramConnectionInfo = _settings.ShareDbSettings ? _settings.MainDbConnectionInfo : _settings.ParamDbConnectionInfo;
-            db_label.Text = "" + @"Server: " + paramConnectionInfo.Server +
-                            (paramConnectionInfo.Database.Length > 0 ? "  //  Database: " + paramConnectionInfo.Database : "");
+            db_label.Text = $@"Server: {paramConnectionInfo.Server}{(paramConnectionInfo.Database.Length > 0 ? "  //  Database: " + paramConnectionInfo.Database : string.Empty)}";
 
             var engine = new LoadEngine(_settings.MainDbConnectionInfo.ConnectionString, _settings.MainQuery, _settings.NumThreads, _settings.NumIterations,
                 _settings.ParamQuery, _settings.ParamMappings, paramConnectionInfo.ConnectionString, _settings.CommandTimeout, _settings.CollectIoStats,
@@ -615,7 +614,6 @@ namespace SQLQueryStress
                 logicalReads_textBox.Text
                 );
         }
-
 
     }
 }

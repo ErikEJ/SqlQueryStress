@@ -141,7 +141,9 @@ namespace SQLQueryStress
 
                         combo.Items.Add(string.Empty);
 
-                        bool checkParam = sender is string s && s == "constructor" && _settings.ParamMappings.ContainsKey(variable);
+                        bool checkParam = sender is string s &&
+                                          s.Equals("constructor", StringComparison.OrdinalIgnoreCase) &&
+                                          _settings.ParamMappings.ContainsKey(variable);
 
                         foreach (var paramName in _paramValues.Keys)
                         {
@@ -163,6 +165,7 @@ namespace SQLQueryStress
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase")]
         private string[] GetParams()
         {
             //Find all SQL variables:
@@ -176,9 +179,9 @@ namespace SQLQueryStress
 
             foreach (Match m in r.Matches(_outerQuery))
             {
-                var lowerVal = m.Value.ToLower();
+                var lowerVal = m.Value.ToLowerInvariant();
                 if (!output.Contains(lowerVal))
-                    output.Add(m.Value.ToLower());
+                    output.Add(lowerVal);
             }
 
             if (output.Count == 0)

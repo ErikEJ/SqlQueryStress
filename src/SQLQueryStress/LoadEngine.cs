@@ -47,7 +47,7 @@ namespace SQLQueryStress
                 MaxPoolSize = threads,
                 CurrentLanguage = "English"
             };
-            LoadEngine.QueryOutInfo = new BlockingCollection<QueryOutput>();
+            QueryOutInfo = new BlockingCollection<QueryOutput>();
             _connectionString = builder.ConnectionString;
             _query = query;
             _threads = threads;
@@ -134,7 +134,7 @@ namespace SQLQueryStress
                     queryComm.Parameters.AddRange(ParamServer.GetParams());
                 }
 
-                var setStatistics = (_collectIoStats ? @"SET STATISTICS IO ON;" : "") + (_collectTimeStats ? @"SET STATISTICS TIME ON;" : "");
+                var setStatistics = (_collectIoStats ? @"SET STATISTICS IO ON;" : string.Empty) + (_collectTimeStats ? @"SET STATISTICS TIME ON;" : string.Empty);
 
                 if (setStatistics.Length > 0)
                 {
@@ -361,7 +361,7 @@ namespace SQLQueryStress
             }
 
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
-            public void StartLoadThread(Object token)
+            public void StartLoadThread(object token)
             {
                 bool runCancelled = false;
 
@@ -376,137 +376,135 @@ namespace SQLQueryStress
                         _queryComm.Cancel();
                     });
                     //do the work
-                    using (var conn = _queryComm.Connection)
+                    using var conn = _queryComm.Connection;
+                    SqlInfoMessageEventHandler handler = GetInfoMessages;
+
+                    for (var i = 0; i < _iterations && !runCancelled; i++)
                     {
-                        SqlInfoMessageEventHandler handler = GetInfoMessages;
+                        Exception outException = null;
 
-                        for (var i = 0; i < _iterations && !runCancelled; i++)
+                        try
                         {
-                            Exception outException = null;
+                            //initialize the outInfo structure
+                            _outInfo = new QueryOutput();
 
-                            try
+                            if (conn != null)
                             {
-                                //initialize the outInfo structure
-                                _outInfo = new QueryOutput();
+                                conn.Open();
 
-                                if (conn != null)
+                                //set up the statistics gathering
+                                if (_statsComm != null)
                                 {
-                                    conn.Open();
+                                    _statsComm.ExecuteNonQuery();
+                                    Thread.Sleep(0);
+                                    conn.InfoMessage += handler;
+                                }
+                            }
 
-                                    //set up the statistics gathering
-                                    if (_statsComm != null)
+                            //Params are assigned only once -- after that, their values are dynamically retrieved
+                            if (_queryComm.Parameters.Count > 0)
+                            {
+                                ParamServer.GetNextRow_Values(_queryComm.Parameters);
+                            }
+
+                            _sw.Start();
+
+                            //TODO: This could be made better
+                            if (_forceDataRetrieval)
+                            {
+                                var reader = _queryComm.ExecuteReader();
+                                Thread.Sleep(0);
+
+                                do
+                                {
+                                    Thread.Sleep(0);
+
+                                    while (!runCancelled && reader.Read())
                                     {
-                                        _statsComm.ExecuteNonQuery();
+                                        //grab the first column to force the row down the pipe
+                                        // ReSharper disable once UnusedVariable
+                                        var x = reader[0];
                                         Thread.Sleep(0);
-                                        conn.InfoMessage += handler;
                                     }
-                                }
+                                } while (!runCancelled && reader.NextResult());
+                            }
+                            else
+                            {
+                                _queryComm.ExecuteNonQuery();
+                                Thread.Sleep(0);
+                            }
 
-                                //Params are assigned only once -- after that, their values are dynamically retrieved
-                                if (_queryComm.Parameters.Count > 0)
-                                {
-                                    ParamServer.GetNextRow_Values(_queryComm.Parameters);
-                                }
+                            _sw.Stop();
+                        }
+                        catch (Exception e)
+                        {
+                            if (!runCancelled)
+                                outException = e;
 
-                                _sw.Start();
-
-                                //TODO: This could be made better
-                                if (_forceDataRetrieval)
-                                {
-                                    var reader = _queryComm.ExecuteReader();
-                                    Thread.Sleep(0);
-
-                                    do
-                                    {
-                                        Thread.Sleep(0);
-
-                                        while (!runCancelled && reader.Read())
-                                        {
-                                            //grab the first column to force the row down the pipe
-                                            // ReSharper disable once UnusedVariable
-                                            var x = reader[0];
-                                            Thread.Sleep(0);
-                                        }
-                                    } while (!runCancelled && reader.NextResult());
-                                }
-                                else
-                                {
-                                    _queryComm.ExecuteNonQuery();
-                                    Thread.Sleep(0);
-                                }
-
+                            if (_sw.IsRunning)
+                            {
                                 _sw.Stop();
                             }
-                            catch (Exception e)
+                        }
+                        finally
+                        {
+                            //Clean up the connection
+                            if (conn != null)
                             {
-                                if (!runCancelled)
-                                    outException = e;
-
-                                if (_sw.IsRunning)
+                                if (_statsComm != null)
                                 {
-                                    _sw.Stop();
+                                    conn.InfoMessage -= handler;
                                 }
+                                conn.Close();
                             }
-                            finally
+                        }
+
+                        var finished = i == _iterations - 1;
+
+                        //List<string> infoMessages = null;
+
+                        //infoMessages = (stats_comm != null) ? theInfoMessages[connectionHashCode] : null;
+
+                        /*
+                        queryOutput theout = new queryOutput(
+                            outException,
+                            sw.Elapsed,
+                            finished,
+                            (infoMessages == null || infoMessages.Count == 0) ? null : infoMessages.ToArray());
+                         */
+
+                        _outInfo.E = outException;
+                        _outInfo.Time = _sw.Elapsed;
+                        _outInfo.Finished = finished;
+
+                        QueryOutInfo.Add(_outInfo);
+
+                        //Prep the collection for the next round
+                        //if (infoMessages != null && infoMessages.Count > 0)
+                        //    infoMessages.Clear();
+
+                        _sw.Reset();
+
+                        if (!runCancelled)
+                        {
+                            try
                             {
-                                //Clean up the connection
-                                if (conn != null)
+                                if (_queryDelay > 0)
+                                    Task.Delay(_queryDelay, ctsToken).Wait();
+                            }
+                            catch (AggregateException ae)
+                            {
+                                ae.Handle((x) =>
                                 {
-                                    if (_statsComm != null)
+                                    if (x is TaskCanceledException)
                                     {
-                                        conn.InfoMessage -= handler;
+                                        runCancelled = true;
+                                        return true;
                                     }
-                                    conn.Close();
-                                }
-                            }
-
-                            var finished = i == _iterations - 1;
-
-                            //List<string> infoMessages = null;
-
-                            //infoMessages = (stats_comm != null) ? theInfoMessages[connectionHashCode] : null;
-
-                            /*
-                            queryOutput theout = new queryOutput(
-                                outException,
-                                sw.Elapsed,
-                                finished,
-                                (infoMessages == null || infoMessages.Count == 0) ? null : infoMessages.ToArray());
-                             */
-
-                            _outInfo.E = outException;
-                            _outInfo.Time = _sw.Elapsed;
-                            _outInfo.Finished = finished;
-
-                            QueryOutInfo.Add(_outInfo);
-
-                            //Prep the collection for the next round
-                            //if (infoMessages != null && infoMessages.Count > 0)
-                            //    infoMessages.Clear();
-
-                            _sw.Reset();
-
-                            if (!runCancelled)
-                            {
-                                try
-                                {
-                                    if (_queryDelay > 0)
-                                        Task.Delay(_queryDelay, ctsToken).Wait();
-                                }
-                                catch (AggregateException ae)
-                                {
-                                    ae.Handle((x) =>
-                                    {
-                                        if (x is TaskCanceledException)
-                                        {
-                                            runCancelled = true;
-                                            return true;
-                                        }
-                                        // if we get here, the exception wasn't a cancel
-                                        // so don't swallow it
-                                        return false;
-                                    });
-                                }
+                                    // if we get here, the exception wasn't a cancel
+                                    // so don't swallow it
+                                    return false;
+                                });
                             }
                         }
                     }
