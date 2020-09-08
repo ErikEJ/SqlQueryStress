@@ -13,7 +13,7 @@ namespace SQLQueryStress
 
         public Options(QueryStressSettings settings)
         {
-            _settings = settings;
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
 
             InitializeComponent();
 

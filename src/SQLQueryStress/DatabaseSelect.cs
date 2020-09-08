@@ -14,7 +14,7 @@ namespace SQLQueryStress
 
         public DatabaseSelect(QueryStressSettings settings)
         {
-            _settings = settings;
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
             _localMainConnectionInfo = (ConnectionInfo)settings.MainDbConnectionInfo.Clone();
 
             if (settings.ShareDbSettings)
