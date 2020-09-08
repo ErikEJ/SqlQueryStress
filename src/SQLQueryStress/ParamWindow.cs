@@ -80,7 +80,7 @@ namespace SQLQueryStress
 
         private void database_button_Click(object sender, EventArgs e)
         {
-            var dbSelect = new DatabaseSelect(_settings) { StartPosition = FormStartPosition.CenterParent };
+            using var dbSelect = new DatabaseSelect(_settings) { StartPosition = FormStartPosition.CenterParent };
             dbSelect.ShowDialog();
         }
 
@@ -103,12 +103,11 @@ namespace SQLQueryStress
             {
                 try
                 {
-                    var sqlControl = elementHost1.Child as SqlControl;
-                    if (sqlControl != null)
+                    if (elementHost1.Child is SqlControl sqlControl)
                     {
-                        var comm = new SqlCommand(sqlControl.Text, conn);
+                        using var sqlCommand = new SqlCommand(sqlControl.Text, conn);
                         conn.Open();
-                        reader = comm.ExecuteReader(CommandBehavior.SchemaOnly);
+                        reader = sqlCommand.ExecuteReader(CommandBehavior.SchemaOnly);
                     }
                 }
                 catch (Exception ex)
