@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 
@@ -101,7 +102,7 @@ namespace SQLQueryStress
                 }
                 else
                 {
-                    throw new ArgumentException(string.Format("Settings file could not be found: {0}", _runParameters.SettingsFile));
+                    throw new ArgumentException($"Settings file could not be found: {_runParameters.SettingsFile}");
                 }
             }
 
@@ -354,17 +355,16 @@ namespace SQLQueryStress
             }
             catch (Exception exc)
             {
-                MessageBox.Show(string.Format("{0}: {1}", Resources.ErrLoadingSettings, exc.Message));
+                MessageBox.Show($"{Resources.ErrLoadingSettings}: {exc.Message}");
             }
 
-            var sqlControl = elementHost1.Child as SqlControl;
-            if (sqlControl != null)
+            if (elementHost1.Child is SqlControl sqlControl)
             {
                 sqlControl.Text = _settings.MainQuery;
             }
             threads_numericUpDown.Value = _settings.NumThreads;
             iterations_numericUpDown.Value = _settings.NumIterations;
-            queryDelay_textBox.Text = _settings.DelayBetweenQueries.ToString();
+            queryDelay_textBox.Text = _settings.DelayBetweenQueries.ToString(CultureInfo.CurrentCulture);
         }
 
         private void loadSettingsFileDialog_FileOk(object sender, EventArgs e)
@@ -396,17 +396,16 @@ namespace SQLQueryStress
             }
             catch (Exception exc)
             {
-                MessageBox.Show(string.Format("{0}: {1}", Resources.ErrorSavingSettings, exc.Message));
+                MessageBox.Show($"{Resources.ErrorSavingSettings}: {exc.Message}");
             }
         }
 
         private void SaveSettingsFromForm1()
         {
-            var sqlControl = elementHost1.Child as SqlControl;
-            if (sqlControl != null) _settings.MainQuery = sqlControl.Text;
+            if (elementHost1.Child is SqlControl sqlControl) _settings.MainQuery = sqlControl.Text;
             _settings.NumThreads = (int)threads_numericUpDown.Value;
             _settings.NumIterations = (int)iterations_numericUpDown.Value;
-            _settings.DelayBetweenQueries = int.Parse(queryDelay_textBox.Text);
+            _settings.DelayBetweenQueries = int.Parse(queryDelay_textBox.Text, CultureInfo.InvariantCulture);
         }
 
         private void saveSettingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -442,18 +441,18 @@ namespace SQLQueryStress
 
         private void UpdateUi()
         {
-            iterationsSecond_textBox.Text = _totalIterations.ToString();
+            iterationsSecond_textBox.Text = _totalIterations.ToString(CultureInfo.CurrentCulture);
             var avgIterations = _totalIterations == 0 ? 0.0 : _totalTime / _totalIterations / 1000;
             var avgCpu = _totalTimeMessages == 0 ? 0.0 : _totalCpuTime / _totalTimeMessages / 1000;
             var avgActual = _totalTimeMessages == 0 ? 0.0 : _totalElapsedTime / _totalTimeMessages / 1000;
             var avgReads = _totalReadMessages == 0 ? 0.0 : _totalLogicalReads / _totalReadMessages;
 
-            avgSeconds_textBox.Text = avgIterations.ToString("0.0000");
-            cpuTime_textBox.Text = _totalTimeMessages == 0 ? "---" : avgCpu.ToString("0.0000");
-            actualSeconds_textBox.Text = _totalTimeMessages == 0 ? "---" : avgActual.ToString("0.0000");
-            logicalReads_textBox.Text = _totalReadMessages == 0 ? "---" : avgReads.ToString("0.0000");
+            avgSeconds_textBox.Text = avgIterations.ToString("0.0000", CultureInfo.CurrentCulture);
+            cpuTime_textBox.Text = _totalTimeMessages == 0 ? "---" : avgCpu.ToString("0.0000", CultureInfo.CurrentCulture);
+            actualSeconds_textBox.Text = _totalTimeMessages == 0 ? "---" : avgActual.ToString("0.0000", CultureInfo.CurrentCulture);
+            logicalReads_textBox.Text = _totalReadMessages == 0 ? "---" : avgReads.ToString("0.0000", CultureInfo.CurrentCulture);
 
-            totalExceptions_textBox.Text = _totalExceptions.ToString();
+            totalExceptions_textBox.Text = _totalExceptions.ToString(CultureInfo.CurrentCulture);
             progressBar1.Value = Math.Min((int)(_totalIterations / (decimal)_totalExpectedIterations * 100), 100);
 
             var end = new TimeSpan(DateTime.Now.Ticks);
@@ -523,35 +522,24 @@ namespace SQLQueryStress
             {
                 MessageBox
                     .Show("Error While Saving BenchMark",
-                    string.Format("There was an error saving the benchmark to '{0}', make sure you have write privileges to that path", fileName));
+                    $"There was an error saving the benchmark to '{fileName}', make sure you have write privileges to that path");
             }
         }
 
         private void WriteBenchmarkTextContent(TextWriter tw)
         {
-            tw.WriteLine(string.Format("Test ID: {0}",
-                                _testGuid));
-            tw.WriteLine(string.Format("Test TimeStamp: {0}",
-                                _testStartTime));
-            tw.WriteLine(string.Format("Elapsed Time: {0}",
-                elapsedTime_textBox.Text));
-            tw.WriteLine(string.Format("Number of Iterations: {0}",
-                (int)iterations_numericUpDown.Value));
-            tw.WriteLine(string.Format("Number of Threads: {0}",
-                (int)threads_numericUpDown.Value));
-            tw.WriteLine(string.Format("Delay Between Queries (ms): {0}",
-                int.Parse(queryDelay_textBox.Text)));
-            tw.WriteLine(string.Format("CPU Seconds/Iteration (Avg): {0}",
-                cpuTime_textBox.Text));
-            tw.WriteLine(string.Format("Actual Seconds/Iteration (Avg): {0}",
-                actualSeconds_textBox.Text));
-            tw.WriteLine(string.Format("Iterations Completed: {0}",
-                iterationsSecond_textBox.Text));
-            tw.WriteLine(string.Format("Client Seconds/Iteration (Avg): {0}",
-                avgSeconds_textBox.Text));
-            tw.WriteLine(string.Format("Logical Reads/Iteration (Avg): {0}",
-                logicalReads_textBox.Text));
-            tw.WriteLine("");
+            tw.WriteLine($"Test ID: {_testGuid}");
+            tw.WriteLine($"Test TimeStamp: {_testStartTime}");
+            tw.WriteLine($"Elapsed Time: {elapsedTime_textBox.Text}");
+            tw.WriteLine($"Number of Iterations: {(int)iterations_numericUpDown.Value}");
+            tw.WriteLine($"Number of Threads: {(int)threads_numericUpDown.Value}");
+            tw.WriteLine($"Delay Between Queries (ms): {int.Parse(queryDelay_textBox.Text, CultureInfo.CurrentCulture)}");
+            tw.WriteLine($"CPU Seconds/Iteration (Avg): {cpuTime_textBox.Text}");
+            tw.WriteLine($"Actual Seconds/Iteration (Avg): {actualSeconds_textBox.Text}");
+            tw.WriteLine($"Iterations Completed: {iterationsSecond_textBox.Text}");
+            tw.WriteLine($"Client Seconds/Iteration (Avg): {avgSeconds_textBox.Text}");
+            tw.WriteLine($"Logical Reads/Iteration (Avg): {logicalReads_textBox.Text}");
+            tw.WriteLine(string.Empty);
         }
 
 
@@ -602,7 +590,7 @@ namespace SQLQueryStress
             {
                 MessageBox
                     .Show("Error While Saving BenchMark",
-                    string.Format("There was an error saving the benchmark to '{0}', make sure you have write privileges to that path", fileName));
+                    $"There was an error saving the benchmark to '{fileName}', make sure you have write privileges to that path");
             }
         }
 
@@ -619,7 +607,7 @@ namespace SQLQueryStress
                 elapsedTime_textBox.Text,
                 (int)iterations_numericUpDown.Value,
                 (int)threads_numericUpDown.Value,
-                int.Parse(queryDelay_textBox.Text),
+                int.Parse(queryDelay_textBox.Text, CultureInfo.CurrentCulture),
                 iterationsSecond_textBox.Text,
                 cpuTime_textBox.Text,
                 actualSeconds_textBox.Text,
