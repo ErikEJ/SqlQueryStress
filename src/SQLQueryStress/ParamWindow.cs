@@ -73,7 +73,7 @@ namespace SQLQueryStress
                 }
                 else
                 {
-                    theRow.Cells[1].Value = "";
+                    theRow.Cells[1].Value = string.Empty;
                 }
             }
         }
@@ -135,15 +135,14 @@ namespace SQLQueryStress
                         row.Cells[0].ReadOnly = true;
 
                         //placeholder for columntype
-                        row.Cells[1].Value = "";
+                        row.Cells[1].Value = string.Empty;
                         row.Cells[1].ReadOnly = true;
 
                         var combo = new DataGridViewComboBoxCell();
 
-                        combo.Items.Add("");
+                        combo.Items.Add(string.Empty);
 
-                        string s = sender as string;
-                        bool checkParam = s != null && s == "constructor" && _settings.ParamMappings.ContainsKey(variable);
+                        bool checkParam = sender is string s && s == "constructor" && _settings.ParamMappings.ContainsKey(variable);
 
                         foreach (var paramName in _paramValues.Keys)
                         {
@@ -191,8 +190,7 @@ namespace SQLQueryStress
 
         private void okButton_Click(object sender, EventArgs e)
         {
-            var sqlControl = elementHost1.Child as SqlControl;
-            if (sqlControl != null)
+            if (elementHost1.Child is SqlControl sqlControl)
             {
                 _settings.ParamQuery = sqlControl.Text;
             }
@@ -200,7 +198,7 @@ namespace SQLQueryStress
             var localParamMappings = new Dictionary<string, string>();
             foreach (DataGridViewRow row in columnMapGrid.Rows)
             {
-                if ((string)row.Cells[2].Value != "")
+                if (!string.IsNullOrEmpty((string)row.Cells[2].Value))
                     localParamMappings.Add((string)row.Cells[0].Value, (string)row.Cells[2].Value);
             }
 
