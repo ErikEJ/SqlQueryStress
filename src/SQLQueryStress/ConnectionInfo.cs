@@ -101,6 +101,11 @@ namespace SQLQueryStress
 
         public void CopyTo(ConnectionInfo to)
         {
+            if (to is null)
+            {
+                throw new ArgumentNullException(nameof(to));
+            }
+
             to.Server = Server;
             to.IntegratedAuth = IntegratedAuth;
             to.Login = Login;

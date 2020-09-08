@@ -30,9 +30,8 @@ namespace SQLQueryStress
         {
             InitializeComponent();
 
-            _settings = settings;
-
-            _outerQuery = outerQuery;
+            _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+            _outerQuery = outerQuery ?? throw new ArgumentNullException(nameof(outerQuery));
 
             var sqlControl = elementHost1.Child as SqlControl;
             if (sqlControl != null)
@@ -47,7 +46,7 @@ namespace SQLQueryStress
             //TODO: Which event to handle?!?!
             columnMapGrid.CellEndEdit += columnMapGrid_CellValueChanged;
 
-            if (sqlControl != null && ((outerQuery.Length > 0) && (sqlControl.Text.Length > 0)))
+            if (sqlControl != null && (outerQuery.Length > 0) && (sqlControl.Text.Length > 0))
             {
                 getColumnsButton_Click("constructor", null);
             }

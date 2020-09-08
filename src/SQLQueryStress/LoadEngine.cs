@@ -558,46 +558,5 @@ namespace SQLQueryStress
             }
              */
         }
-
-        private class ThreadKiller
-        {
-            private readonly SqlCommand[] _theCommands;
-            private readonly Thread[] _theThreads;
-
-            public ThreadKiller(Thread[] theThreads, SqlCommand[] theCommands)
-            {
-                _theThreads = theThreads;
-                _theCommands = theCommands;
-            }
-
-            public void KillEm()
-            {
-                foreach (var comm in _theCommands)
-                {
-                    comm.Cancel();
-                    comm.Connection.Dispose();
-                    comm.Connection = null;
-                    comm.Dispose();
-                    Thread.Sleep(0);
-                }
-
-                var keepKilling = true;
-
-                while (keepKilling)
-                {
-                    keepKilling = false;
-
-                    foreach (var theThread in _theThreads)
-                    {
-                        if (theThread.IsAlive)
-                        {
-                            keepKilling = true;
-                            theThread.Abort();
-                            Thread.Sleep(0);
-                        }
-                    }
-                }
-            }
-        }
     }
 }
