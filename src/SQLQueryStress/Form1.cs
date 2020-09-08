@@ -364,7 +364,7 @@ namespace SQLQueryStress
             }
             threads_numericUpDown.Value = _settings.NumThreads;
             iterations_numericUpDown.Value = _settings.NumIterations;
-            queryDelay_textBox.Text = _settings.DelayBetweenQueries.ToString(CultureInfo.CurrentCulture);
+            queryDelay_textBox.Text = _settings.DelayBetweenQueries.ToString(CultureInfo.InvariantCulture);
         }
 
         private void loadSettingsFileDialog_FileOk(object sender, EventArgs e)
@@ -533,7 +533,7 @@ namespace SQLQueryStress
             tw.WriteLine($"Elapsed Time: {elapsedTime_textBox.Text}");
             tw.WriteLine($"Number of Iterations: {(int)iterations_numericUpDown.Value}");
             tw.WriteLine($"Number of Threads: {(int)threads_numericUpDown.Value}");
-            tw.WriteLine($"Delay Between Queries (ms): {int.Parse(queryDelay_textBox.Text, CultureInfo.CurrentCulture)}");
+            tw.WriteLine($"Delay Between Queries (ms): {int.Parse(queryDelay_textBox.Text, CultureInfo.InvariantCulture)}");
             tw.WriteLine($"CPU Seconds/Iteration (Avg): {cpuTime_textBox.Text}");
             tw.WriteLine($"Actual Seconds/Iteration (Avg): {actualSeconds_textBox.Text}");
             tw.WriteLine($"Iterations Completed: {iterationsSecond_textBox.Text}");
@@ -607,7 +607,7 @@ namespace SQLQueryStress
                 elapsedTime_textBox.Text,
                 (int)iterations_numericUpDown.Value,
                 (int)threads_numericUpDown.Value,
-                int.Parse(queryDelay_textBox.Text, CultureInfo.CurrentCulture),
+                int.Parse(queryDelay_textBox.Text, CultureInfo.InvariantCulture),
                 iterationsSecond_textBox.Text,
                 cpuTime_textBox.Text,
                 actualSeconds_textBox.Text,
