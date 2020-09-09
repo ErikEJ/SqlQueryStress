@@ -1,5 +1,6 @@
 using CommandLine;
 using CommandLine.Text;
+using SQLQueryStress.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,7 +64,7 @@ namespace SQLQueryStress
                 Console.WriteLine(HelpText.AutoBuild(result));
             }
 
-            Console.WriteLine("Press Enter to continue"); //TODO It might be replaced with send enter key, but it needs implementing more native methods
+            Console.WriteLine(Resources.EnterToContinue); //TODO It might be replaced with send enter key, but it needs implementing more native methods
         }
 
         private static Assembly OnResolveAssembly(object sender, ResolveEventArgs args)
