@@ -265,8 +265,8 @@ namespace SQLQueryStress
 
                 if (_localParamConnectionInfo.IntegratedAuth)
                 {
-                    _localParamConnectionInfo.Login = "";
-                    _localParamConnectionInfo.Password = "";
+                    _localParamConnectionInfo.Login = string.Empty;
+                    _localParamConnectionInfo.Password = string.Empty;
                 }
                 else
                 {
@@ -278,9 +278,8 @@ namespace SQLQueryStress
 
                 if (pm_appintent_check.Checked)
                 {
-                    ApplicationIntent applicationIntent;
 
-                    _ = Enum.TryParse<ApplicationIntent>(pm_appintent_combo.Text, out applicationIntent);
+                    _ = Enum.TryParse(pm_appintent_combo.Text, out ApplicationIntent applicationIntent);
 
                     _localParamConnectionInfo.ApplicationIntent = applicationIntent;
                 }
@@ -303,8 +302,8 @@ namespace SQLQueryStress
 
             if (_localMainConnectionInfo.IntegratedAuth)
             {
-                _localMainConnectionInfo.Login = "";
-                _localMainConnectionInfo.Password = "";
+                _localMainConnectionInfo.Login = string.Empty;
+                _localMainConnectionInfo.Password = string.Empty;
             }
             else
             {
@@ -314,9 +313,8 @@ namespace SQLQueryStress
 
             if (appintent_check.Checked)
             {
-                ApplicationIntent applicationIntent;
 
-                _ = Enum.TryParse<ApplicationIntent>(appintent_combo.Text, out applicationIntent);
+                _ = Enum.TryParse(appintent_combo.Text, out ApplicationIntent applicationIntent);
 
                 _localMainConnectionInfo.ApplicationIntent = applicationIntent;
             }

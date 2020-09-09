@@ -31,8 +31,6 @@ namespace SQLQueryStress
         //Exceptions that occurred
         private Dictionary<string, int> _exceptions;
 
-        //The exception viewer window
-        private DataViewer _exceptionViewer;
         //Exit as soon as cancellation is finished?
         private bool _exitOnComplete;
 
@@ -81,7 +79,7 @@ namespace SQLQueryStress
 
         private Guid _testGuid;
 
-        private CommandLineOptions _runParameters;
+        private readonly CommandLineOptions _runParameters;
 
         private System.Threading.CancellationTokenSource _backgroundWorkerCTS;
 
@@ -112,7 +110,7 @@ namespace SQLQueryStress
                 threads_numericUpDown.Value = _settings.NumThreads = _runParameters.NumberOfThreads;
             }
 
-            if (string.IsNullOrWhiteSpace(_runParameters.DbServer) == false)
+            if (!string.IsNullOrWhiteSpace(_runParameters.DbServer))
             {
                 _settings.MainDbConnectionInfo.Server = _runParameters.DbServer;
             }
@@ -221,10 +219,11 @@ namespace SQLQueryStress
                 progressBar1.Value = 100;
 
             ((BackgroundWorker)sender).Dispose();
+            _backgroundWorkerCTS?.Dispose();
 
-            db_label.Text = "";
+            db_label.Text = string.Empty;
 
-            if (string.IsNullOrEmpty(_runParameters.ResultsAutoSaveFileName) == false)
+            if (!string.IsNullOrEmpty(_runParameters.ResultsAutoSaveFileName))
             {
                 AutoSaveResults(_runParameters.ResultsAutoSaveFileName);
             }
@@ -238,8 +237,8 @@ namespace SQLQueryStress
 
         private void AutoSaveResults(string resultsAutoSaveFileName)
         {
-            string extension = Path.GetExtension(resultsAutoSaveFileName).ToLower();
-            if (extension == ".csv")
+            string extension = Path.GetExtension(resultsAutoSaveFileName).ToUpperInvariant();
+            if (extension.Equals(".csv", StringComparison.InvariantCultureIgnoreCase))
             {
                 ExportBenchMarkToCsvFile(resultsAutoSaveFileName);
             }
@@ -252,7 +251,10 @@ namespace SQLQueryStress
         private void cancel_button_Click(object sender, EventArgs e)
         {
             cancel_button.Enabled = false;
-            _backgroundWorkerCTS.Cancel();
+
+            _backgroundWorkerCTS?.Cancel();
+            _backgroundWorkerCTS?.Dispose();
+
             backgroundWorker1.CancelAsync();
 
             _cancelled = true;
@@ -322,8 +324,7 @@ namespace SQLQueryStress
             _totalExpectedIterations = _settings.NumThreads * _settings.NumIterations;
 
             var paramConnectionInfo = _settings.ShareDbSettings ? _settings.MainDbConnectionInfo : _settings.ParamDbConnectionInfo;
-            db_label.Text = "" + @"Server: " + paramConnectionInfo.Server +
-                            (paramConnectionInfo.Database.Length > 0 ? "  //  Database: " + paramConnectionInfo.Database : "");
+            db_label.Text = $@"Server: {paramConnectionInfo.Server}{(paramConnectionInfo.Database.Length > 0 ? "  //  Database: " + paramConnectionInfo.Database : string.Empty)}";
 
             var engine = new LoadEngine(_settings.MainDbConnectionInfo.ConnectionString, _settings.MainQuery, _settings.NumThreads, _settings.NumIterations,
                 _settings.ParamQuery, _settings.ParamMappings, paramConnectionInfo.ConnectionString, _settings.CommandTimeout, _settings.CollectIoStats,
@@ -416,7 +417,7 @@ namespace SQLQueryStress
 
         private void totalExceptions_textBox_Click(object sender, EventArgs e)
         {
-            _exceptionViewer = new DataViewer { StartPosition = FormStartPosition.CenterParent, Text = Resources.Exceptions };
+            using var exceptionViewer = new DataViewer { StartPosition = FormStartPosition.CenterParent, Text = Resources.Exceptions };
 
             var dt = new DataTable();
             dt.Columns.Add("Count");
@@ -434,9 +435,8 @@ namespace SQLQueryStress
                 }
             }
 
-            _exceptionViewer.DataView = dt;
-
-            _exceptionViewer.ShowDialog();
+            exceptionViewer.DataView = dt;
+            exceptionViewer.ShowDialog();
         }
 
         private void UpdateUi()
@@ -615,7 +615,5 @@ namespace SQLQueryStress
                 logicalReads_textBox.Text
                 );
         }
-
-
     }
 }
