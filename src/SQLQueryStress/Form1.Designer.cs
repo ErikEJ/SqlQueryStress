@@ -30,11 +30,9 @@ namespace SQLQueryStress
             }
             else
             {
-                if (disposing)
+                if (disposing && (components != null))
                 {
-                    _backgroundWorkerCTS?.Dispose();
-                    _exceptionViewer?.Dispose();
-                    components?.Dispose();
+                    components.Dispose();
                 }
                 base.Dispose(disposing);
             }
