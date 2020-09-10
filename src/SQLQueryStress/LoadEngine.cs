@@ -47,7 +47,7 @@ namespace SQLQueryStress
                 MaxPoolSize = threads,
                 CurrentLanguage = "English"
             };
-            LoadEngine.QueryOutInfo = new BlockingCollection<QueryOutput>();
+            QueryOutInfo = new BlockingCollection<QueryOutput>();
             _connectionString = builder.ConnectionString;
             _query = query;
             _threads = threads;
@@ -66,15 +66,11 @@ namespace SQLQueryStress
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public static bool ExecuteCommand(string connectionString, string sql)
         {
-            using (var conn = new SqlConnection(connectionString))
-            {
-                conn.Open();
-                using (var cmd = new SqlCommand(sql, conn))
-                {
-                    cmd.ExecuteNonQuery();
-                    return true;
-                }
-            }
+            using var conn = new SqlConnection(connectionString);
+            conn.Open();
+            using var cmd = new SqlCommand(sql, conn);
+            cmd.ExecuteNonQuery();
+            return true;
         }
 
         public void StartLoad(BackgroundWorker worker, int queryDelay)
@@ -85,6 +81,7 @@ namespace SQLQueryStress
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         private void StartLoad(BackgroundWorker worker)
         {
             var useParams = false;
@@ -134,7 +131,7 @@ namespace SQLQueryStress
                     queryComm.Parameters.AddRange(ParamServer.GetParams());
                 }
 
-                var setStatistics = (_collectIoStats ? @"SET STATISTICS IO ON;" : "") + (_collectTimeStats ? @"SET STATISTICS TIME ON;" : "");
+                var setStatistics = (_collectIoStats ? @"SET STATISTICS IO ON;" : string.Empty) + (_collectTimeStats ? @"SET STATISTICS TIME ON;" : string.Empty);
 
                 if (setStatistics.Length > 0)
                 {
@@ -289,7 +286,7 @@ namespace SQLQueryStress
             //private static Dictionary<int, List<string>> theInfoMessages = new Dictionary<int, List<string>>();
 
             private readonly Stopwatch _sw = new Stopwatch();
-            private System.Timers.Timer _killTimer = new System.Timers.Timer();
+            private readonly System.Timers.Timer _killTimer = new System.Timers.Timer();
             private readonly bool _forceDataRetrieval;
             //          private readonly Queue<queryOutput> queryOutInfo;
             private readonly int _iterations;
@@ -361,6 +358,7 @@ namespace SQLQueryStress
             }
 
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]
             public void StartLoadThread(Object token)
             {
                 bool runCancelled = false;
@@ -437,10 +435,10 @@ namespace SQLQueryStress
 
                                 _sw.Stop();
                             }
-                            catch (Exception e)
+                            catch (Exception ex)
                             {
                                 if (!runCancelled)
-                                    outException = e;
+                                    outException = ex;
 
                                 if (_sw.IsRunning)
                                 {
@@ -511,7 +509,7 @@ namespace SQLQueryStress
                         }
                     }
                 }
-                catch
+                catch (Exception)
                 {
                     if (runCancelled)
                     {

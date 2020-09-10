@@ -348,6 +348,7 @@ namespace SQLQueryStress
             UpdateUi();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         private void OpenConfigFile(string fileName)
         {
             try
@@ -355,9 +356,9 @@ namespace SQLQueryStress
                 var contents = File.ReadAllText(fileName);
                 _settings = JsonSerializer.ReadToObject<QueryStressSettings>(contents);
             }
-            catch (Exception exc)
+            catch (Exception ex)
             {
-                MessageBox.Show($"{Resources.ErrLoadingSettings}: {exc.Message}");
+                MessageBox.Show($"{Resources.ErrLoadingSettings}: {ex.Message}");
             }
 
             if (elementHost1.Child is SqlControl sqlControl)
@@ -389,6 +390,7 @@ namespace SQLQueryStress
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         private void saveSettingsFileDialog_FileOk(object sender, EventArgs e)
         {
             try
@@ -396,9 +398,9 @@ namespace SQLQueryStress
                 var jsonContent = JsonSerializer.WriteFromObject(_settings);
                 File.WriteAllText(saveSettingsFileDialog.FileName, jsonContent);
             }
-            catch (Exception exc)
+            catch (Exception ex)
             {
-                MessageBox.Show($"{Resources.ErrorSavingSettings}: {exc.Message}");
+                MessageBox.Show($"{Resources.ErrorSavingSettings}: {ex.Message}");
             }
         }
 
@@ -511,15 +513,15 @@ namespace SQLQueryStress
                 ExportBenchMarkToTextFile(saveFileDialog.FileName);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         private void ExportBenchMarkToTextFile(string fileName)
         {
             try
             {
-                var textWriter = new StreamWriter(fileName, true);
+                using var textWriter = new StreamWriter(fileName, true);
                 WriteBenchmarkTextContent(textWriter);
-                textWriter.Close();
             }
-            catch
+            catch (Exception)
             {
                 MessageBox
                     .Show("Error While Saving BenchMark",
@@ -543,7 +545,7 @@ namespace SQLQueryStress
             tw.WriteLine(string.Empty);
         }
 
-
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         private void toClipboardToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
@@ -552,7 +554,7 @@ namespace SQLQueryStress
                 WriteBenchmarkTextContent(textWriter);
                 Clipboard.SetText(textWriter.ToString());
             }
-            catch
+            catch (Exception)
             {
                 MessageBox
                     .Show("Error While Copying BenchMark to Clipboard", "There was an error copying the benchmark to clipboard");
@@ -573,21 +575,21 @@ namespace SQLQueryStress
                 ExportBenchMarkToCsvFile(saveFileDialog.FileName);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         private void ExportBenchMarkToCsvFile(string fileName)
         {
             try
             {
                 var fileExists = File.Exists(fileName);
-                var textWriter = new StreamWriter(fileName, true);
+                using var textWriter = new StreamWriter(fileName, true);
                 // we do not write the header line if we are appending to an existing file 
                 if (fileExists == false)
                 {
                     WriteBenchmarkCsvHeader(textWriter);
                 }
                 WriteBenchmarkCsvText(textWriter);
-                textWriter.Close();
             }
-            catch
+            catch (Exception)
             {
                 MessageBox
                     .Show("Error While Saving BenchMark",
