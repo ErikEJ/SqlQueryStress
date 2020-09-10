@@ -121,15 +121,15 @@ namespace SQLQueryStress
             InitializeComponent();
 
             saveSettingsFileDialog.DefaultExt = "json";
-            saveSettingsFileDialog.Filter = @"SQLQueryStress Configuration Files|*.json";
+            saveSettingsFileDialog.Filter = Resources.ConfigFiles;
             saveSettingsFileDialog.FileOk += saveSettingsFileDialog_FileOk;
 
             loadSettingsFileDialog.DefaultExt = "json";
-            loadSettingsFileDialog.Filter = @"SQLQueryStress Configuration Files|*.json";
+            loadSettingsFileDialog.Filter = Resources.ConfigFiles;
             loadSettingsFileDialog.FileOk += loadSettingsFileDialog_FileOk;
         }
 
-        private void StartProcessing(Object sender, EventArgs e)
+        private void StartProcessing(object sender, EventArgs e)
         {
             go_button.PerformClick();
         }
@@ -281,6 +281,7 @@ namespace SQLQueryStress
             Dispose();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters")]
         private void go_button_Click(object sender, EventArgs e)
         {
             if (!_settings.MainDbConnectionInfo.TestConnection())
@@ -502,7 +503,7 @@ namespace SQLQueryStress
             {
                 AddExtension = true,
                 OverwritePrompt = false,
-                Filter = "Text Files (*.txt)|*.txt"
+                Filter = Resources.TextFiles
             };
             saveFileDialog.ShowDialog();
 
@@ -564,7 +565,7 @@ namespace SQLQueryStress
             {
                 AddExtension = true,
                 OverwritePrompt = false,
-                Filter = "Csv Files (*.csv)|*.csv"
+                Filter = Resources.CsvFiles
             };
             saveFileDialog.ShowDialog();
 

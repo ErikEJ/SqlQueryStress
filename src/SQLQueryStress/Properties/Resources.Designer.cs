@@ -61,6 +61,15 @@ namespace SQLQueryStress.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to SQLQueryStress Configuration Files|*.json.
+        /// </summary>
+        internal static string ConfigFiles {
+            get {
+                return ResourceManager.GetString("ConfigFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connection Failed.
         /// </summary>
         internal static string ConnFail {
@@ -75,6 +84,24 @@ namespace SQLQueryStress.Properties {
         internal static string ConnSucc {
             get {
                 return ResourceManager.GetString("ConnSucc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Csv Files (*.csv)|*.csv.
+        /// </summary>
+        internal static string CsvFiles {
+            get {
+                return ResourceManager.GetString("CsvFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Press Enter to continue.
+        /// </summary>
+        internal static string EnterToContinue {
+            get {
+                return ResourceManager.GetString("EnterToContinue", resourceCulture);
             }
         }
         
@@ -139,6 +166,15 @@ namespace SQLQueryStress.Properties {
             get {
                 object obj = ResourceManager.GetObject("QueryStressIcon", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Text Files (*.txt)|*.txt.
+        /// </summary>
+        internal static string TextFiles {
+            get {
+                return ResourceManager.GetString("TextFiles", resourceCulture);
             }
         }
     }
