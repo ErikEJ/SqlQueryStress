@@ -84,6 +84,7 @@ namespace SQLQueryStress
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         private void getColumnsButton_Click(object sender, EventArgs e)
         {
             _queryVariables = GetParams();
@@ -98,69 +99,67 @@ namespace SQLQueryStress
                 return;
             }
 
-            using (var conn = new SqlConnection(dbInfo.ConnectionString))
+            using var conn = new SqlConnection(dbInfo.ConnectionString);
+            try
             {
-                try
+                if (elementHost1.Child is SqlControl sqlControl)
                 {
-                    if (elementHost1.Child is SqlControl sqlControl)
-                    {
-                        using var sqlCommand = new SqlCommand(sqlControl.Text, conn);
-                        conn.Open();
-                        reader = sqlCommand.ExecuteReader(CommandBehavior.SchemaOnly);
-                    }
+                    using var sqlCommand = new SqlCommand(sqlControl.Text, conn);
+                    conn.Open();
+                    reader = sqlCommand.ExecuteReader(CommandBehavior.SchemaOnly);
                 }
-                catch (Exception ex)
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            if (reader != null)
+            {
+                columnMapGrid.Rows.Clear();
+                _paramValues.Clear();
+
+                for (var i = 0; i < reader.FieldCount; i++)
                 {
-                    MessageBox.Show(ex.Message);
+                    _paramValues.Add(reader.GetName(i), reader.GetDataTypeName(i));
                 }
 
-                if (reader != null)
+                reader.Dispose();
+
+                foreach (var variable in _queryVariables)
                 {
-                    columnMapGrid.Rows.Clear();
-                    _paramValues.Clear();
+                    var colOrdinal = columnMapGrid.Rows.Add();
+                    var row = columnMapGrid.Rows[colOrdinal];
+                    row.Cells[0].Value = variable;
+                    row.Cells[0].ReadOnly = true;
 
-                    for (var i = 0; i < reader.FieldCount; i++)
+                    //placeholder for columntype
+                    row.Cells[1].Value = string.Empty;
+                    row.Cells[1].ReadOnly = true;
+
+                    var combo = new DataGridViewComboBoxCell();
+
+                    combo.Items.Add(string.Empty);
+
+                    bool checkParam = sender is string s &&
+                                      s.Equals("constructor", StringComparison.OrdinalIgnoreCase) &&
+                                      _settings.ParamMappings.ContainsKey(variable);
+
+                    foreach (var paramName in _paramValues.Keys)
                     {
-                        _paramValues.Add(reader.GetName(i), reader.GetDataTypeName(i));
-                    }
+                        combo.Items.Add(paramName);
 
-                    reader.Dispose();
-
-                    foreach (var variable in _queryVariables)
-                    {
-                        var colOrdinal = columnMapGrid.Rows.Add();
-                        var row = columnMapGrid.Rows[colOrdinal];
-                        row.Cells[0].Value = variable;
-                        row.Cells[0].ReadOnly = true;
-
-                        //placeholder for columntype
-                        row.Cells[1].Value = string.Empty;
-                        row.Cells[1].ReadOnly = true;
-
-                        var combo = new DataGridViewComboBoxCell();
-
-                        combo.Items.Add(string.Empty);
-
-                        bool checkParam = sender is string s &&
-                                          s.Equals("constructor", StringComparison.OrdinalIgnoreCase) &&
-                                          _settings.ParamMappings.ContainsKey(variable);
-
-                        foreach (var paramName in _paramValues.Keys)
+                        if (checkParam)
                         {
-                            combo.Items.Add(paramName);
-
-                            if (checkParam)
+                            if (_settings.ParamMappings[variable] == paramName)
                             {
-                                if (_settings.ParamMappings[variable] == paramName)
-                                {
-                                    combo.Value = paramName;
-                                    row.Cells[1].Value = _paramValues[paramName];
-                                }
+                                combo.Value = paramName;
+                                row.Cells[1].Value = _paramValues[paramName];
                             }
                         }
-
-                        row.Cells[2] = combo;
                     }
+
+                    row.Cells[2] = combo;
                 }
             }
         }

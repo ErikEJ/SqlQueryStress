@@ -22,8 +22,5 @@ namespace SQLQueryStress
             byte[] json = memoryStream.ToArray();
             return Encoding.UTF8.GetString(json, 0, json.Length);
         }
-
-
-
     }
 }

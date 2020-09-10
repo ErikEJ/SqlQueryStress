@@ -114,6 +114,7 @@ namespace SQLQueryStress
             to.ApplicationIntent = ApplicationIntent;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         public bool TestConnection()
         {
             if ((string.IsNullOrEmpty(Server)) || ((IntegratedAuth == false) && (string.IsNullOrEmpty(Login) || string.IsNullOrEmpty(Password))))
