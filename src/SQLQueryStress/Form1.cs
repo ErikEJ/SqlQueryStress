@@ -281,7 +281,6 @@ namespace SQLQueryStress
             Dispose();
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters")]
         private void go_button_Click(object sender, EventArgs e)
         {
             if (!_settings.MainDbConnectionInfo.TestConnection())
@@ -348,7 +347,6 @@ namespace SQLQueryStress
             UpdateUi();
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         private void OpenConfigFile(string fileName)
         {
             try
@@ -390,7 +388,6 @@ namespace SQLQueryStress
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         private void saveSettingsFileDialog_FileOk(object sender, EventArgs e)
         {
             try
@@ -513,7 +510,6 @@ namespace SQLQueryStress
                 ExportBenchMarkToTextFile(saveFileDialog.FileName);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         private void ExportBenchMarkToTextFile(string fileName)
         {
             try
@@ -545,7 +541,6 @@ namespace SQLQueryStress
             tw.WriteLine(string.Empty);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         private void toClipboardToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
@@ -575,7 +570,6 @@ namespace SQLQueryStress
                 ExportBenchMarkToCsvFile(saveFileDialog.FileName);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         private void ExportBenchMarkToCsvFile(string fileName)
         {
             try

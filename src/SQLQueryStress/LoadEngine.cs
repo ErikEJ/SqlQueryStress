@@ -63,7 +63,6 @@ namespace SQLQueryStress
             _backgroundWorkerCTS = cts;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public static bool ExecuteCommand(string connectionString, string sql)
         {
             using var conn = new SqlConnection(connectionString);
@@ -80,8 +79,6 @@ namespace SQLQueryStress
             StartLoad(worker);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         private void StartLoad(BackgroundWorker worker)
         {
             var useParams = false;
@@ -235,7 +232,6 @@ namespace SQLQueryStress
                 return newParam;
             }
 
-            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
             public static void Initialize(string paramQuery, string connString, Dictionary<string, string> paramMappings)
             {
                 using var sqlDataAdapter = new SqlDataAdapter(paramQuery, connString);
@@ -292,7 +288,7 @@ namespace SQLQueryStress
             private readonly int _iterations;
             private readonly int _queryDelay;
             private readonly int _numWorkerThreads;
-            private BackgroundWorker _backgroundWorker;
+            private readonly BackgroundWorker _backgroundWorker;
 
             public QueryInput(SqlCommand statsComm, SqlCommand queryComm,
                 //                Queue<queryOutput> queryOutInfo,
@@ -315,12 +311,12 @@ namespace SQLQueryStress
                 if (killQueriesOnCancel)
                 {
                     _killTimer.Interval = 2000;
-                    _killTimer.Elapsed += _killTimer_Elapsed;
+                    _killTimer.Elapsed += KillTimer_Elapsed;
                     _killTimer.Enabled = true;
                 }
             }
 
-            private void _killTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+            private void KillTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
             {
                 if (_backgroundWorker.CancellationPending)
                 {
@@ -357,8 +353,6 @@ namespace SQLQueryStress
                 }
             }
 
-            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
-            [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]
             public void StartLoadThread(Object token)
             {
                 bool runCancelled = false;
