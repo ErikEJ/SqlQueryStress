@@ -1,6 +1,6 @@
-MainPackage=C:\Code\SqlQueryStress\src\Packaging\bin\x86\Release\Upload\Packaging_1.0.9.0_x86.msix
-SymbolPackage=C:\Code\SqlQueryStress\src\Packaging\bin\x86\Release\Upload\Packaging_1.0.9.0\Packaging_1.0.9.0_x86.appxsym
-ResourcePack=C:\Code\SqlQueryStress\src\Packaging\bin\x86\Release\Upload\Packaging_1.0.9.0_scale-100.msix
-ResourcePack=C:\Code\SqlQueryStress\src\Packaging\bin\x86\Release\Upload\Packaging_1.0.9.0_scale-125.msix
-ResourcePack=C:\Code\SqlQueryStress\src\Packaging\bin\x86\Release\Upload\Packaging_1.0.9.0_scale-150.msix
-ResourcePack=C:\Code\SqlQueryStress\src\Packaging\bin\x86\Release\Upload\Packaging_1.0.9.0_scale-400.msix
+MainPackage=C:\Code\SqlQueryStress\src\Packaging\bin\x86\Release\Upload\Packaging_1.0.10.0_x86.msix
+SymbolPackage=C:\Code\SqlQueryStress\src\Packaging\bin\x86\Release\Upload\Packaging_1.0.10.0\Packaging_1.0.10.0_x86.appxsym
+ResourcePack=C:\Code\SqlQueryStress\src\Packaging\bin\x86\Release\Upload\Packaging_1.0.10.0_scale-100.msix
+ResourcePack=C:\Code\SqlQueryStress\src\Packaging\bin\x86\Release\Upload\Packaging_1.0.10.0_scale-125.msix
+ResourcePack=C:\Code\SqlQueryStress\src\Packaging\bin\x86\Release\Upload\Packaging_1.0.10.0_scale-150.msix
+ResourcePack=C:\Code\SqlQueryStress\src\Packaging\bin\x86\Release\Upload\Packaging_1.0.10.0_scale-400.msix

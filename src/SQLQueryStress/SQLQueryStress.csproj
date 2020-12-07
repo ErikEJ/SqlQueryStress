@@ -6,10 +6,6 @@
     <UseWPF>true</UseWPF>
     <SignManifests>false</SignManifests>
     <AssemblyOriginatorKeyFile>sqlQueryStress.snk</AssemblyOriginatorKeyFile>
-    <TargetZone>Internet</TargetZone>
-    <GenerateManifests>false</GenerateManifests>
-    <ManifestCertificateThumbprint>2546E8A9F11989C71B0CFBEF57D992392F75EA37</ManifestCertificateThumbprint>
-    <ManifestKeyFile>SQLQueryStress_TemporaryKey.pfx</ManifestKeyFile>
     <ApplicationIcon>Resources\QueryStressIcon.ico</ApplicationIcon>
     <ProductName>SQLQueryStress</ProductName>
     <PublisherName>Adam Machanic</PublisherName>
@@ -111,6 +107,6 @@
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.0.1" />
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.0" />
   </ItemGroup>
 </Project>
