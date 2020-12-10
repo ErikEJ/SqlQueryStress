@@ -82,6 +82,8 @@ namespace SQLQueryStress
             this.perfCounterTimer = new System.Windows.Forms.Timer(this.components);
             this.database_button = new System.Windows.Forms.Button();
             this.iterationsSecond_textBox = new System.Windows.Forms.Label();
+            this.activeThreads_textBox = new System.Windows.Forms.Label();
+            this.activeThreads_label = new System.Windows.Forms.Label();
             this.exceptions_button = new System.Windows.Forms.Button();
             this.saveSettingsFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.loadSettingsFileDialog = new System.Windows.Forms.OpenFileDialog();
@@ -486,6 +488,20 @@ namespace SQLQueryStress
             this.iterationsSecond_textBox.TabIndex = 11;
             this.iterationsSecond_textBox.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // activeThreads_textBox
+            // 
+            this.activeThreads_textBox.BackColor = System.Drawing.Color.Black;
+            this.activeThreads_textBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.activeThreads_textBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.activeThreads_textBox.Font = new System.Drawing.Font("Courier New", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.activeThreads_textBox.ForeColor = System.Drawing.Color.Lime;
+            this.activeThreads_textBox.Location = new System.Drawing.Point(307, 261);
+            this.activeThreads_textBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.activeThreads_textBox.Name = "activeThreads_textBox";
+            this.activeThreads_textBox.Size = new System.Drawing.Size(295, 45);
+            this.activeThreads_textBox.TabIndex = 30;
+            this.activeThreads_textBox.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // exceptions_button
             // 
             this.exceptions_button.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -566,6 +582,8 @@ namespace SQLQueryStress
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 303F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 303F));
             this.tableLayoutPanel1.Controls.Add(this.logicalReads_textBox, 1, 12);
+            this.tableLayoutPanel1.Controls.Add(this.activeThreads_label, 1, 13);
+            this.tableLayoutPanel1.Controls.Add(this.activeThreads_textBox, 1, 14);
             this.tableLayoutPanel1.Controls.Add(this.label12, 1, 11);
             this.tableLayoutPanel1.Controls.Add(this.label2, 0, 5);
             this.tableLayoutPanel1.Controls.Add(this.iterations_numericUpDown, 0, 6);
@@ -608,9 +626,9 @@ namespace SQLQueryStress
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 55F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 55F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 31F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(606, 622);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(606, 613);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // label10
@@ -624,6 +642,18 @@ namespace SQLQueryStress
             this.label10.Size = new System.Drawing.Size(295, 31);
             this.label10.TabIndex = 28;
             this.label10.Text = "Actual Seconds/Iteration (Avg)";
+            // 
+            // activeThreads_label
+            // 
+            this.activeThreads_label.AutoSize = true;
+            this.activeThreads_label.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.activeThreads_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.activeThreads_label.Location = new System.Drawing.Point(4, 465);
+            this.activeThreads_label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.activeThreads_label.Name = "activeThreads_label";
+            this.activeThreads_label.Size = new System.Drawing.Size(295, 22);
+            this.activeThreads_label.TabIndex = 29;
+            this.activeThreads_label.Text = "Active Threads";
             // 
             // flowLayoutPanel1
             // 
@@ -857,6 +887,8 @@ namespace SQLQueryStress
         private ToolStripMenuItem toCsvToolStripMenuItem;
         private ToolStripMenuItem toTextToolStripMenuItem;
         private ToolStripMenuItem toClipboardToolStripMenuItem;
+        private System.Windows.Forms.Label activeThreads_label;
+        private System.Windows.Forms.Label activeThreads_textBox;
     }
 }
 
