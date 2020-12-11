@@ -190,6 +190,8 @@ namespace SQLQueryStress
                 if (theOut != null)
                 {
                     //Report output to the UI
+                    int finishedThreads = Interlocked.CompareExchange(ref _finishedThreads, 0, 0);
+                    theOut.ActiveThreads = _threads - finishedThreads;
                     worker.ReportProgress((int)(_finishedThreads / (decimal)_threads * 100), theOut);
                 }
                 GC.Collect();
@@ -535,6 +537,9 @@ namespace SQLQueryStress
             public bool Finished;
             public int LogicalReads;
             public TimeSpan Time;
+
+            // Remaining active threads for the load
+            public int ActiveThreads;
 
             /*
             public queryOutput(
