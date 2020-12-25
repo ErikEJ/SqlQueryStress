@@ -55,6 +55,9 @@ namespace SQLQueryStress
         //total iterations that have run
         private int _totalIterations;
 
+        //number of active threads running
+        private int _activeThreads;
+
         //Same comments as above for these two...
         private double _totalLogicalReads;
         private int _totalReadMessages;
@@ -201,6 +204,8 @@ namespace SQLQueryStress
                 }
                  */
             }
+
+            _activeThreads = output.ActiveThreads;
         }
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -222,6 +227,7 @@ namespace SQLQueryStress
             _backgroundWorkerCTS?.Dispose();
 
             db_label.Text = string.Empty;
+            activeThreads_textBox.Text = "0";
 
             if (!string.IsNullOrEmpty(_runParameters.ResultsAutoSaveFileName))
             {
@@ -298,6 +304,7 @@ namespace SQLQueryStress
             _exceptions = new Dictionary<string, int>();
 
             _totalIterations = 0;
+            _activeThreads = 0;
             _totalTime = 0;
             _totalCpuTime = 0;
             _totalElapsedTime = 0;
@@ -442,6 +449,7 @@ namespace SQLQueryStress
         private void UpdateUi()
         {
             iterationsSecond_textBox.Text = _totalIterations.ToString(CultureInfo.CurrentCulture);
+            activeThreads_textBox.Text = _activeThreads.ToString(CultureInfo.CurrentCulture);
             var avgIterations = _totalIterations == 0 ? 0.0 : _totalTime / _totalIterations / 1000;
             var avgCpu = _totalTimeMessages == 0 ? 0.0 : _totalCpuTime / _totalTimeMessages / 1000;
             var avgActual = _totalTimeMessages == 0 ? 0.0 : _totalElapsedTime / _totalTimeMessages / 1000;
