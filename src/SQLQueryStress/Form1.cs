@@ -86,6 +86,8 @@ namespace SQLQueryStress
 
         private System.Threading.CancellationTokenSource _backgroundWorkerCTS;
 
+        private SqlControl sqlControl1;
+
         public Form1(CommandLineOptions runParameters) : this()
         {
             _runParameters = runParameters;
@@ -366,10 +368,8 @@ namespace SQLQueryStress
                 MessageBox.Show($"{Resources.ErrLoadingSettings}: {ex.Message}");
             }
 
-            if (elementHost1.Child is SqlControl sqlControl)
-            {
-                sqlControl.Text = _settings.MainQuery;
-            }
+            sqlControl1.Text = _settings.MainQuery;
+            
             threads_numericUpDown.Value = _settings.NumThreads;
             iterations_numericUpDown.Value = _settings.NumIterations;
             queryDelay_textBox.Text = _settings.DelayBetweenQueries.ToString(CultureInfo.InvariantCulture);
@@ -388,11 +388,8 @@ namespace SQLQueryStress
 
         private void param_button_Click(object sender, EventArgs e)
         {
-            if (elementHost1.Child is SqlControl sqlControl)
-            {
-                using var paramWindow = new ParamWindow(_settings, sqlControl.Text) { StartPosition = FormStartPosition.CenterParent };
-                paramWindow.ShowDialog();
-            }
+            using var paramWindow = new ParamWindow(_settings, sqlControl1.Text) { StartPosition = FormStartPosition.CenterParent };
+            paramWindow.ShowDialog();
         }
 
         private void saveSettingsFileDialog_FileOk(object sender, EventArgs e)
@@ -410,7 +407,7 @@ namespace SQLQueryStress
 
         private void SaveSettingsFromForm1()
         {
-            if (elementHost1.Child is SqlControl sqlControl) _settings.MainQuery = sqlControl.Text;
+            _settings.MainQuery = sqlControl1.Text;
             _settings.NumThreads = (int)threads_numericUpDown.Value;
             _settings.NumIterations = (int)iterations_numericUpDown.Value;
             _settings.DelayBetweenQueries = int.Parse(queryDelay_textBox.Text, CultureInfo.InvariantCulture);
@@ -620,5 +617,18 @@ namespace SQLQueryStress
                 logicalReads_textBox.Text
                 );
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            var elemHost = new System.Windows.Forms.Integration.ElementHost();
+            sqlControl1 = new SqlControl();
+            elemHost.Dock = DockStyle.Fill;
+            elemHost.Location = new System.Drawing.Point(4, 5);
+            elemHost.Margin = new Padding(4, 5, 4, 5);
+            elemHost.Size = new System.Drawing.Size(490, 623);
+            elemHost.Child = sqlControl1;
+            tableLayoutPanel3.Controls.Add(elemHost, 0, 0);
+        }
+
     }
 }
