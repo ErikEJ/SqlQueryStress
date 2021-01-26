@@ -367,7 +367,7 @@ namespace SQLQueryStress
             {
                 MessageBox.Show($"{Resources.ErrLoadingSettings}: {ex.Message}");
             }
-
+            sqlControl1 = new SqlControl();
             sqlControl1.Text = _settings.MainQuery;
             
             threads_numericUpDown.Value = _settings.NumThreads;
