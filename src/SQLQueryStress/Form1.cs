@@ -367,7 +367,6 @@ namespace SQLQueryStress
             {
                 MessageBox.Show($"{Resources.ErrLoadingSettings}: {ex.Message}");
             }
-            //sqlControl1 = new SqlControl();
             sqlControl1.Text = _settings.MainQuery;
             
             threads_numericUpDown.Value = _settings.NumThreads;
@@ -621,7 +620,6 @@ namespace SQLQueryStress
         private void Form1_Load(object sender, EventArgs e)
         {
             var elemHost = new System.Windows.Forms.Integration.ElementHost();
-            //sqlControl1 = new SqlControl();
             elemHost.Dock = DockStyle.Fill;
             elemHost.Location = new System.Drawing.Point(4, 5);
             elemHost.Margin = new Padding(4, 5, 4, 5);
