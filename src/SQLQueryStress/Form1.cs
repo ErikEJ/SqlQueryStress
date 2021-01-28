@@ -598,7 +598,7 @@ namespace SQLQueryStress
 
         private static void WriteBenchmarkCsvHeader(StreamWriter tw)
         {
-            tw.WriteLine("TestId,TestStartTime,ElapsedTime,Iterations,Threads,Delay,CompletedIterations,AvgCPUSeconds,AvgActualSeconds,AvgClientSeconds,AvgLogicalReads");
+            tw.WriteLine("TestId,TestStartTime,ElapsedTime,Iterations,Threads,Delay,CompletedIterations,AvgCPUSeconds,AvgActualSeconds,AvgClientSeconds,AvgLogicalReads,HostMachine");
         }
 
         private void WriteBenchmarkCsvText(TextWriter tw)
