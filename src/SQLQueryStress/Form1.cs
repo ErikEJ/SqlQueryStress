@@ -532,6 +532,7 @@ namespace SQLQueryStress
         private void WriteBenchmarkTextContent(TextWriter tw)
         {
             tw.WriteLine($"Test ID: {_testGuid}");
+            tw.WriteLine($"Host Machine : {Environment.MachineName.ToString()}");
             tw.WriteLine($"Test TimeStamp: {_testStartTime}");
             tw.WriteLine($"Elapsed Time: {elapsedTime_textBox.Text}");
             tw.WriteLine($"Number of Iterations: {(int)iterations_numericUpDown.Value}");
@@ -602,7 +603,7 @@ namespace SQLQueryStress
 
         private void WriteBenchmarkCsvText(TextWriter tw)
         {
-            tw.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}",
+            tw.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}",
                 _testGuid,
                 _testStartTime,
                 elapsedTime_textBox.Text,
@@ -613,7 +614,8 @@ namespace SQLQueryStress
                 cpuTime_textBox.Text,
                 actualSeconds_textBox.Text,
                 avgSeconds_textBox.Text,
-                logicalReads_textBox.Text
+                logicalReads_textBox.Text,
+                Environment.MachineName.ToString()
                 );
         }
 
