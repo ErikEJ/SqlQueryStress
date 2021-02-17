@@ -194,7 +194,6 @@ namespace SQLQueryStress
                     theOut.ActiveThreads = _threads - finishedThreads;
                     worker.ReportProgress((int)(_finishedThreads / (decimal)_threads * 100), theOut);
                 }
-                GC.Collect();
             }
         }
 
