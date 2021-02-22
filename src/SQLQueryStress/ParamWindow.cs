@@ -43,8 +43,8 @@ namespace SQLQueryStress
             columnMapGrid.Columns[1].SortMode = DataGridViewColumnSortMode.NotSortable;
             columnMapGrid.Columns[2].SortMode = DataGridViewColumnSortMode.NotSortable;
 
-            //TODO: Which event to handle?!?!
-            columnMapGrid.CellEndEdit += columnMapGrid_CellValueChanged;
+            columnMapGrid.CurrentCellDirtyStateChanged += columnMapGrid_CurrentCellDirtyStateChanged;
+            columnMapGrid.CellClick += columnMapGrid_CellClick;
 
             if (sqlControl != null && (outerQuery.Length > 0) && (sqlControl.Text.Length > 0))
             {
@@ -57,12 +57,23 @@ namespace SQLQueryStress
             Dispose();
         }
 
-        private void columnMapGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void columnMapGrid_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (columnMapGrid.CurrentCell.ColumnIndex == 2)
+            { 
+                var editingControl = columnMapGrid.EditingControl as
+                    DataGridViewComboBoxEditingControl;
+                if (editingControl != null)
+                    editingControl.DroppedDown = true;
+            }
+        }
+
+        private void columnMapGrid_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
             //handle changes to the parameter column
-            if (e.ColumnIndex == 2)
+            if (columnMapGrid.CurrentCell.ColumnIndex == 2)
             {
-                var theRow = columnMapGrid.Rows[e.RowIndex];
+                var theRow = columnMapGrid.Rows[columnMapGrid.CurrentCell.RowIndex];
                 var combo = (DataGridViewComboBoxCell)theRow.Cells[2];
 
                 if (combo.Value != null)
@@ -74,6 +85,8 @@ namespace SQLQueryStress
                 {
                     theRow.Cells[1].Value = string.Empty;
                 }
+
+                columnMapGrid.CommitEdit(DataGridViewDataErrorContexts.Commit);
             }
         }
 
