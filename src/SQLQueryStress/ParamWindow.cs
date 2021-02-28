@@ -59,7 +59,7 @@ namespace SQLQueryStress
 
         private void columnMapGrid_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (columnMapGrid.CurrentCell.ColumnIndex == 2)
+            if (columnMapGrid.CurrentCell != null && columnMapGrid.CurrentCell.ColumnIndex == 2)
             { 
                 var editingControl = columnMapGrid.EditingControl as
                     DataGridViewComboBoxEditingControl;
@@ -71,7 +71,7 @@ namespace SQLQueryStress
         private void columnMapGrid_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
             //handle changes to the parameter column
-            if (columnMapGrid.CurrentCell.ColumnIndex == 2)
+            if (columnMapGrid.CurrentCell != null && columnMapGrid.CurrentCell.ColumnIndex == 2)
             {
                 var theRow = columnMapGrid.Rows[columnMapGrid.CurrentCell.RowIndex];
                 var combo = (DataGridViewComboBoxCell)theRow.Cells[2];
