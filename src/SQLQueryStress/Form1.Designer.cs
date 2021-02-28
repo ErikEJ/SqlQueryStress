@@ -102,7 +102,7 @@ namespace SQLQueryStress
             this.btnFreeCache = new System.Windows.Forms.Button();
             this.btnCleanBuffer = new System.Windows.Forms.Button();
             this.label11 = new System.Windows.Forms.Label();
-            this.queryDelay_textBox = new System.Windows.Forms.TextBox();
+            this.queryDelay_numericUpDown = new System.Windows.Forms.NumericUpDown();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.iterations_numericUpDown)).BeginInit();
@@ -111,6 +111,7 @@ namespace SQLQueryStress
             this.flowLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.queryDelay_numericUpDown)).BeginInit();
             this.tableLayoutPanel3.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -606,7 +607,7 @@ namespace SQLQueryStress
             this.tableLayoutPanel1.Controls.Add(this.param_button, 0, 4);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel4, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.label11, 0, 9);
-            this.tableLayoutPanel1.Controls.Add(this.queryDelay_textBox, 0, 10);
+            this.tableLayoutPanel1.Controls.Add(this.queryDelay_numericUpDown, 0, 10);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(391, 4);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -746,15 +747,19 @@ namespace SQLQueryStress
             this.label11.TabIndex = 34;
             this.label11.Text = "Delay between queries (ms)";
             // 
-            // queryDelay_textBox
+            // queryDelay_numericUpDown
             // 
-            this.queryDelay_textBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.queryDelay_textBox.Location = new System.Drawing.Point(3, 308);
-            this.queryDelay_textBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.queryDelay_textBox.Name = "queryDelay_textBox";
-            this.queryDelay_textBox.Size = new System.Drawing.Size(230, 23);
-            this.queryDelay_textBox.TabIndex = 5;
-            this.queryDelay_textBox.Text = "0";
+            this.queryDelay_numericUpDown.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.queryDelay_numericUpDown.Location = new System.Drawing.Point(3, 308);
+            this.queryDelay_numericUpDown.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.queryDelay_numericUpDown.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
+            this.queryDelay_numericUpDown.Name = "queryDelay_numericUpDown";
+            this.queryDelay_numericUpDown.Size = new System.Drawing.Size(230, 23);
+            this.queryDelay_numericUpDown.TabIndex = 5;
             // 
             // tableLayoutPanel3
             // 
@@ -797,6 +802,7 @@ namespace SQLQueryStress
             this.flowLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.queryDelay_numericUpDown)).EndInit();
             this.tableLayoutPanel3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -853,7 +859,7 @@ namespace SQLQueryStress
         private Label actualSeconds_textBox;
         private Label label10;
         private Label label11;
-        private TextBox queryDelay_textBox;
+        private NumericUpDown queryDelay_numericUpDown;
         private ToolStripMenuItem saveBenchMarkToolStripMenuItem;
         private ToolStripMenuItem toCsvToolStripMenuItem;
         private ToolStripMenuItem toTextToolStripMenuItem;

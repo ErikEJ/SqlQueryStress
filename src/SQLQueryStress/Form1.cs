@@ -147,7 +147,7 @@ namespace SQLQueryStress
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            ((LoadEngine)e.Argument).StartLoad(backgroundWorker1, (int.TryParse(queryDelay_textBox.Text, out int tmp) ? tmp : 0));
+            ((LoadEngine)e.Argument).StartLoad(backgroundWorker1, (int.TryParse(queryDelay_numericUpDown.Text, out int tmp) ? tmp : 0));
         }
 
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -220,7 +220,7 @@ namespace SQLQueryStress
             cancel_button.Enabled = false;
             threads_numericUpDown.Enabled = true;
             iterations_numericUpDown.Enabled = true;
-            queryDelay_textBox.Enabled = true;
+            queryDelay_numericUpDown.Enabled = true;
 
             if (!_cancelled)
                 progressBar1.Value = 100;
@@ -324,7 +324,7 @@ namespace SQLQueryStress
             cancel_button.Enabled = true;
             iterations_numericUpDown.Enabled = false;
             threads_numericUpDown.Enabled = false;
-            queryDelay_textBox.Enabled = false;
+            queryDelay_numericUpDown.Enabled = false;
 
             progressBar1.Value = 0;
 
@@ -372,7 +372,7 @@ namespace SQLQueryStress
             
             threads_numericUpDown.Value = _settings.NumThreads;
             iterations_numericUpDown.Value = _settings.NumIterations;
-            queryDelay_textBox.Text = _settings.DelayBetweenQueries.ToString(CultureInfo.InvariantCulture);
+            queryDelay_numericUpDown.Text = _settings.DelayBetweenQueries.ToString(CultureInfo.InvariantCulture);
         }
 
         private void loadSettingsFileDialog_FileOk(object sender, EventArgs e)
@@ -410,7 +410,7 @@ namespace SQLQueryStress
             _settings.MainQuery = sqlControl1.Text;
             _settings.NumThreads = (int)threads_numericUpDown.Value;
             _settings.NumIterations = (int)iterations_numericUpDown.Value;
-            _settings.DelayBetweenQueries = int.Parse(queryDelay_textBox.Text, CultureInfo.InvariantCulture);
+            _settings.DelayBetweenQueries = (int)queryDelay_numericUpDown.Value;
         }
 
         private void saveSettingsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -537,7 +537,7 @@ namespace SQLQueryStress
             tw.WriteLine($"Elapsed Time: {elapsedTime_textBox.Text}");
             tw.WriteLine($"Number of Iterations: {(int)iterations_numericUpDown.Value}");
             tw.WriteLine($"Number of Threads: {(int)threads_numericUpDown.Value}");
-            tw.WriteLine($"Delay Between Queries (ms): {int.Parse(queryDelay_textBox.Text, CultureInfo.InvariantCulture)}");
+            tw.WriteLine($"Delay Between Queries (ms): {int.Parse(queryDelay_numericUpDown.Text, CultureInfo.InvariantCulture)}");
             tw.WriteLine($"CPU Seconds/Iteration (Avg): {cpuTime_textBox.Text}");
             tw.WriteLine($"Actual Seconds/Iteration (Avg): {actualSeconds_textBox.Text}");
             tw.WriteLine($"Iterations Completed: {iterationsSecond_textBox.Text}");
@@ -609,7 +609,7 @@ namespace SQLQueryStress
                 elapsedTime_textBox.Text,
                 (int)iterations_numericUpDown.Value,
                 (int)threads_numericUpDown.Value,
-                int.Parse(queryDelay_textBox.Text, CultureInfo.InvariantCulture),
+                int.Parse(queryDelay_numericUpDown.Text, CultureInfo.InvariantCulture),
                 iterationsSecond_textBox.Text,
                 cpuTime_textBox.Text,
                 actualSeconds_textBox.Text,

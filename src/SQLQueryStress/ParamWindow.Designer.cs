@@ -59,6 +59,7 @@ namespace SQLQueryStress
             this.columnMapGrid.ShowEditingIcon = false;
             this.columnMapGrid.Size = new System.Drawing.Size(438, 185);
             this.columnMapGrid.TabIndex = 3;
+            this.columnMapGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             // 
             // Column
             // 
