@@ -8,7 +8,7 @@ SQL query stress simulator created by Adam Machanic
 ## Download
 Install from the [Microsoft Store](https://www.microsoft.com/en-us/p/sqlquerystress/9n46qj5sbgkb?activetab=pivot:overviewtab)
 
-You can download a .zip file with the [latest build of the master branch from AppVeyor](https://ci.appveyor.com/api/projects/ErikEJ/SqlQueryStress/artifacts/SqlQueryStress.zip?branch=master)
+You can download a .zip file with the [latest daily build from GitHub releases](https://github.com/ErikEJ/SqlQueryStress/releases)
 
 Notice that you must have the [.NET Core Windows runtime](https://dotnet.microsoft.com/download) installed.
 
