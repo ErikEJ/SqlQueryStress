@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\SQLQueryStress\ConnectionInfo.cs" Link="ConnectionInfo.cs" />
+    <Compile Include="..\SQLQueryStress\JsonSerializer.cs" Link="JsonSerializer.cs" />
+    <Compile Include="..\SQLQueryStress\LoadEngine.cs" Link="LoadEngine.cs" />
+    <Compile Include="..\SQLQueryStress\QueryStressSettings.cs" Link="QueryStressSettings.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.8.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="2.1.4" />
+    <PackageReference Include="Spectre.Console" Version="0.43.0" />
+  </ItemGroup>
+  
+</Project>

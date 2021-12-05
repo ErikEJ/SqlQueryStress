@@ -94,8 +94,7 @@ namespace SQLQueryStress
 
             if (string.IsNullOrWhiteSpace(_runParameters.SettingsFile) == false)
             {
-                var isConfigFileExists = File.Exists(_runParameters.SettingsFile);
-                if (isConfigFileExists)
+                if (File.Exists(_runParameters.SettingsFile))
                 {
                     OpenConfigFile(_runParameters.SettingsFile);
                     if (_runParameters.Unattended)

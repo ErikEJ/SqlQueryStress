@@ -1,0 +1,39 @@
+{
+  "CollectIoStats": true,
+  "CollectTimeStats": true,
+  "CommandTimeout": 0,
+  "ConnectionTimeout": 15,
+  "DelayBetweenQueries": 0,
+  "EnableConnectionPooling": true,
+  "ForceDataRetrieval": false,
+  "KillQueriesOnCancel": true,
+  "MainDbConnectionInfo": {
+    "ApplicationIntent": 0,
+    "ConnectTimeout": 15,
+    "Database": "Northwind",
+    "EnablePooling": true,
+    "IntegratedAuth": true,
+    "Login": "",
+    "MaxPoolSize": 2,
+    "Password": "",
+    "Server": ".\\SQLEXPRESS"
+  },
+  "MainQuery": "SELECT * FROM Customers",
+  "NumIterations": 10,
+  "NumThreads": 1,
+  "ParamDbConnectionInfo": {
+    "ApplicationIntent": 0,
+    "ConnectTimeout": 0,
+    "Database": "",
+    "EnablePooling": true,
+    "IntegratedAuth": true,
+    "Login": "",
+    "MaxPoolSize": 0,
+    "Password": "",
+    "Server": ""
+  },
+  "ParamMappings": [
+  ],
+  "ParamQuery": "",
+  "ShareDbSettings": true
+}

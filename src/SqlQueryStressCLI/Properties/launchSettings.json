@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SqlQueryStressCLI": {
+      "commandName": "Project",
+      "commandLineArgs": "-s C:\\Code\\SqlQueryStress\\src\\SqlQueryStressCLI\\sample.json"
+    }
+  }
+}
