@@ -4,7 +4,15 @@ Cross platform SQL query stress simulator command line tool (early preview)
 
 ## Getting started guide
 
-1. Download and extract the .zip file with the tool - future plan is to make a dotnet global tool. See download link below.
+1. Install/update the tool
+
+```bash
+dotnet tool install -g sqlstresscmd
+```
+
+```bash
+dotnet tool update -g sqlstresscmd
+```
 
 2. Create a json config file similar to [this one](https://github.com/ErikEJ/SqlQueryStress/blob/master/src/SqlQueryStressCLI/sample.json)  
 
