@@ -14,6 +14,10 @@ Notice that you must have the [.NET Core Windows runtime](https://dotnet.microso
 
 [Release notes](https://github.com/ErikEJ/SqlQueryStress/wiki/Release-notes)
 
+## sqlstresscmd
+
+Cross platform command line tool using the same load engine, [see dedicated readme](https://github.com/ErikEJ/SqlQueryStress/blob/master/src/SqlQueryStressCLI/readme.md)
+
 ## Contributing
 
 Any and all contributions are welcome! Please see the full [contributing guide](CONTRIBUTING.md) for more details.  

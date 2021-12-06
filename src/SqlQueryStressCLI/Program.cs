@@ -63,7 +63,7 @@ namespace SqlQueryStressCLI
                     help.AdditionalNewLineAfterOption = true;
                     help.AddPreOptionsLine("Check for updates at: https://github.com/ErikEJ/SqlQueryStress");
                     help.AddPreOptionsLine("Sample usage:");
-                    help.AddPreOptionsLine("SqlQueryStress -c saved.SqlStress -u -t 32 -d sqldb.perfenv.mycompany.com -r results.csv");
+                    help.AddPreOptionsLine("sqlstresscmd -s saved.json -t 32");
                     return HelpText.DefaultParsingErrorsHandler(result, help);
                 }, e => e);
 
