@@ -13,13 +13,8 @@ namespace SqlQueryStressCLI
     {
         private System.ComponentModel.BackgroundWorker backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
 
-        //Has this run been cancelled?
-        private bool _cancelled;
         //Exceptions that occurred
         private Dictionary<string, int> _exceptions;
-
-        //Exit as soon as cancellation is finished?
-        private bool _exitOnComplete;
 
         private readonly QueryStressSettings _settings;
 
@@ -70,6 +65,8 @@ namespace SqlQueryStressCLI
 
         private System.Threading.CancellationTokenSource _backgroundWorkerCTS;
 
+        private System.Timers.Timer timer = new System.Timers.Timer(100);
+
         private readonly CommandLineOptions _runParameters;
 
         public LoadRunner(QueryStressSettings settings, CommandLineOptions options)
@@ -88,8 +85,6 @@ namespace SqlQueryStressCLI
 
             _testStartTime = DateTime.Now;
             _testGuid = Guid.NewGuid();
-            _cancelled = false;
-            _exitOnComplete = false;
             _backgroundWorkerCTS = new System.Threading.CancellationTokenSource();
 
             _exceptions = new Dictionary<string, int>();
@@ -108,7 +103,7 @@ namespace SqlQueryStressCLI
 
             var paramConnectionInfo = _settings.ShareDbSettings ? _settings.MainDbConnectionInfo : _settings.ParamDbConnectionInfo;
 
-            var engine = new LoadEngine(_settings.MainDbConnectionInfo.ConnectionString, _settings.MainQuery, _settings.NumThreads, _settings.NumIterations,
+            var engine = new LoadEngine(_settings.MainDbConnectionInfo.ConnectionString, _settings.MainQuery, _runParameters.NumberOfThreads, _settings.NumIterations,
                 _settings.ParamQuery, _settings.ParamMappings, paramConnectionInfo.ConnectionString, _settings.CommandTimeout, _settings.CollectIoStats,
                 _settings.CollectTimeStats, _settings.ForceDataRetrieval, _settings.KillQueriesOnCancel, _backgroundWorkerCTS);
 
@@ -120,12 +115,21 @@ namespace SqlQueryStressCLI
 
             backgroundWorker1.RunWorkerAsync(engine);
 
+            //timer.Elapsed += Timer_Elapsed;
+            //timer.AutoReset = true;
+            //timer.Enabled = true;
+
             _start = new TimeSpan(DateTime.Now.Ticks);
 
             while (backgroundWorker1.IsBusy)
             {
                 Thread.Sleep(1000);
             }
+        }
+
+        private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            UpdateUi();
         }
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
@@ -208,36 +212,40 @@ namespace SqlQueryStressCLI
 
         private void UpdateUi()
         {
-            //iterationsSecond_textBox.Text = _totalIterations.ToString(CultureInfo.CurrentCulture);
-            //activeThreads_textBox.Text = _activeThreads.ToString(CultureInfo.CurrentCulture);
+            var iterationsSecond_text = _totalIterations.ToString(CultureInfo.CurrentCulture);
             var avgIterations = _totalIterations == 0 ? 0.0 : _totalTime / _totalIterations / 1000;
             var avgCpu = _totalTimeMessages == 0 ? 0.0 : _totalCpuTime / _totalTimeMessages / 1000;
             var avgActual = _totalTimeMessages == 0 ? 0.0 : _totalElapsedTime / _totalTimeMessages / 1000;
             var avgReads = _totalReadMessages == 0 ? 0.0 : _totalLogicalReads / _totalReadMessages;
 
-            //avgSeconds_textBox.Text = avgIterations.ToString("0.0000", CultureInfo.CurrentCulture);
-            //cpuTime_textBox.Text = _totalTimeMessages == 0 ? "---" : avgCpu.ToString("0.0000", CultureInfo.CurrentCulture);
-            //actualSeconds_textBox.Text = _totalTimeMessages == 0 ? "---" : avgActual.ToString("0.0000", CultureInfo.CurrentCulture);
-            //logicalReads_textBox.Text = _totalReadMessages == 0 ? "---" : avgReads.ToString("0.0000", CultureInfo.CurrentCulture);
-            //totalExceptions_textBox.Text = _totalExceptions.ToString(CultureInfo.CurrentCulture);
+            var avgSeconds_text = avgIterations.ToString("0.0000", CultureInfo.CurrentCulture);
+            var cpuTime_text = _totalTimeMessages == 0 ? "---" : avgCpu.ToString("0.0000", CultureInfo.CurrentCulture);
+            var actualSeconds_text = _totalTimeMessages == 0 ? "---" : avgActual.ToString("0.0000", CultureInfo.CurrentCulture);
+            var logicalReads_text = _totalReadMessages == 0 ? "---" : avgReads.ToString("0.0000", CultureInfo.CurrentCulture);
 
             var end = new TimeSpan(DateTime.Now.Ticks);
             end = end.Subtract(_start);
             var theTime = end.ToString();
 
-            AnsiConsole.Clear();
-            AnsiConsole.MarkupLine($"[lime on black]Test ID: {_testGuid}[/]");
-            AnsiConsole.MarkupLine($"[lime on black]Test TimeStamp: {_testStartTime}[/]");
+            var color = "[lime on black]";
 
-            Console.WriteLine($"Elapsed Time: {theTime}");
-            Console.WriteLine($"Number of Iterations: {_totalIterations}");
-            //tw.WriteLine($"Number of Threads: {(int)threads_numericUpDown.Value}");
-            //tw.WriteLine($"Delay Between Queries (ms): {int.Parse(queryDelay_numericUpDown.Text, CultureInfo.InvariantCulture)}");
-            //tw.WriteLine($"CPU Seconds/Iteration (Avg): {cpuTime_textBox.Text}");
-            //tw.WriteLine($"Actual Seconds/Iteration (Avg): {actualSeconds_textBox.Text}");
-            //tw.WriteLine($"Iterations Completed: {iterationsSecond_textBox.Text}");
-            //tw.WriteLine($"Client Seconds/Iteration (Avg): {avgSeconds_textBox.Text}");
-            //tw.WriteLine($"Logical Reads/Iteration (Avg): {logicalReads_textBox.Text}");
+            //TODO Render in table?
+
+            AnsiConsole.WriteLine(string.Empty);
+            AnsiConsole.MarkupLine($"{color}Test ID: {_testGuid}[/]");
+            AnsiConsole.MarkupLine($"{color}Test TimeStamp: {_testStartTime}[/]");
+            AnsiConsole.MarkupLine($"{color}Elapsed Time: {theTime}[/]");
+            AnsiConsole.MarkupLine($"{color}Number of Iterations: {_totalIterations}[/]");
+            AnsiConsole.MarkupLine($"{color}Number of Threads: {_runParameters.NumberOfThreads}[/]");
+            AnsiConsole.MarkupLine($"{color}Total Exceptions: {_totalExceptions}[/]");
+            AnsiConsole.MarkupLine($"{color}Active Threads: {_activeThreads}[/]");
+            AnsiConsole.MarkupLine($"{color}Total Exceptions: {_totalExceptions}[/]");
+            AnsiConsole.MarkupLine($"{color}Delay Between Queries (ms): {_settings.DelayBetweenQueries}[/]");
+            AnsiConsole.MarkupLine($"{color}CPU Seconds/Iteration (Avg): {cpuTime_text}[/]");
+            AnsiConsole.MarkupLine($"{color}Actual Seconds/Iteration (Avg): {actualSeconds_text}[/]");
+            AnsiConsole.MarkupLine($"{color}Iterations Completed: {iterationsSecond_text}[/]");
+            AnsiConsole.MarkupLine($"{color}Client Seconds/Iteration (Avg): {avgSeconds_text}[/]");
+            AnsiConsole.MarkupLine($"{color}Logical Reads/Iteration (Avg): {logicalReads_text}[/]");
         }
 
         private void AutoSaveResults(string resultsAutoSaveFileName)
@@ -293,6 +301,5 @@ namespace SqlQueryStressCLI
             //    logicalReads_textBox.Text
             //    );
         }
-
     }
 }

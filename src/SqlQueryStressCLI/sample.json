@@ -19,8 +19,8 @@
     "Server": ".\\SQLEXPRESS"
   },
   "MainQuery": "SELECT * FROM Customers",
-  "NumIterations": 10,
-  "NumThreads": 1,
+  "NumIterations": 1000,
+  "NumThreads": 10,
   "ParamDbConnectionInfo": {
     "ApplicationIntent": 0,
     "ConnectTimeout": 0,

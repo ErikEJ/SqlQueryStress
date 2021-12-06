@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SQLQueryStress", "SQLQueryStress\SQLQueryStress.csproj", "{02A166A4-EE64-432F-AA6E-08C7984BD7BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlQueryStressCLI", "SqlQueryStressCLI\SqlQueryStressCLI.csproj", "{F434A7B7-5B71-4E27-AD71-8398723C928D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sqlstresscmd", "SqlQueryStressCLI\sqlstresscmd.csproj", "{F434A7B7-5B71-4E27-AD71-8398723C928D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

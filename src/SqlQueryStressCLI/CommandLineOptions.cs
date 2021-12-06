@@ -17,6 +17,7 @@ namespace SQLQueryStress
                 HelpText = "Number of threads in unattended mode")]
         public int NumberOfThreads { get; set; } = 1;
 
+        //TODO Implement
         [Option('r', "results",
         HelpText = "Autosave results to specified file")]
         public string ResultsAutoSaveFileName { get; set; } = string.Empty;
