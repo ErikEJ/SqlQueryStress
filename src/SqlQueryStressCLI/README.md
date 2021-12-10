@@ -27,14 +27,6 @@ To get help, run
 sqlstresscmd help
 ```
 
-## Download
-
-You can download a .zip file with the [latest daily build from GitHub releases](https://github.com/ErikEJ/SqlQueryStress/releases)
-
-Notice that you must have the [.NET Core 3.1 runtime](https://dotnet.microsoft.com/download) installed.
-
-[Release notes](https://github.com/ErikEJ/SqlQueryStress/wiki/Release-notes)
-
 ## Contributing
 
 Any and all contributions are welcome! Please see the full [contributing guide](CONTRIBUTING.md) for more details.  
