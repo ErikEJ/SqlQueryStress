@@ -16,7 +16,7 @@ Notice that you must have the [.NET Core Windows runtime](https://dotnet.microso
 
 ## sqlstresscmd
 
-Cross platform command line tool using the same load engine, [see dedicated readme](https://github.com/ErikEJ/SqlQueryStress/blob/master/src/SqlQueryStressCLI/readme.md)
+Cross platform command line tool using the same load engine, [see dedicated readme](https://github.com/ErikEJ/SqlQueryStress/blob/master/src/SqlQueryStressCLI/README.md)
 
 ## Contributing
 
