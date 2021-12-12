@@ -5,7 +5,8 @@
     <PackAsTool>true</PackAsTool>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
-    <PackageVersion>0.9.10</PackageVersion>
+    <PackageVersion>0.9.11</PackageVersion>
+    <PackageReleaseNotes>Added CSV export</PackageReleaseNotes>
     <TargetFrameworks>netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
