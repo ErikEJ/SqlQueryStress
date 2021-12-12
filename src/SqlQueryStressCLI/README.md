@@ -14,7 +14,13 @@ dotnet tool install -g sqlstresscmd
 dotnet tool update -g sqlstresscmd
 ```
 
-2. Create a json config file similar to [this one](https://github.com/ErikEJ/SqlQueryStress/blob/master/src/SqlQueryStressCLI/sample.json)  
+2. Create a json config file similar to [this one](https://github.com/ErikEJ/SqlQueryStress/blob/master/src/SqlQueryStressCLI/sample.json)
+
+You can run this command to get a sample:
+
+```bash
+sqlstresscmd -x
+```
 
 3. Run the tool, create the load, and view the summary - future plan is to show progress while running.
 
