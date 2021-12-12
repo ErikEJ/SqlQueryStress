@@ -61,6 +61,12 @@ namespace SqlQueryStressCLI
 
         private DateTime _testStartTime;
 
+        private string theTime;
+        private string avgSeconds;
+        private string cpuTime;
+        private string actualSeconds;
+        private string logicalReads;
+
         private Guid _testGuid;
 
         private System.Threading.CancellationTokenSource _backgroundWorkerCTS;
@@ -212,20 +218,19 @@ namespace SqlQueryStressCLI
 
         private void UpdateUi()
         {
-            var iterationsSecond_text = _totalIterations.ToString(CultureInfo.CurrentCulture);
             var avgIterations = _totalIterations == 0 ? 0.0 : _totalTime / _totalIterations / 1000;
             var avgCpu = _totalTimeMessages == 0 ? 0.0 : _totalCpuTime / _totalTimeMessages / 1000;
             var avgActual = _totalTimeMessages == 0 ? 0.0 : _totalElapsedTime / _totalTimeMessages / 1000;
             var avgReads = _totalReadMessages == 0 ? 0.0 : _totalLogicalReads / _totalReadMessages;
 
-            var avgSeconds_text = avgIterations.ToString("0.0000", CultureInfo.CurrentCulture);
-            var cpuTime_text = _totalTimeMessages == 0 ? "---" : avgCpu.ToString("0.0000", CultureInfo.CurrentCulture);
-            var actualSeconds_text = _totalTimeMessages == 0 ? "---" : avgActual.ToString("0.0000", CultureInfo.CurrentCulture);
-            var logicalReads_text = _totalReadMessages == 0 ? "---" : avgReads.ToString("0.0000", CultureInfo.CurrentCulture);
+            avgSeconds = avgIterations.ToString("0.0000", CultureInfo.CurrentCulture);
+            cpuTime = _totalTimeMessages == 0 ? "---" : avgCpu.ToString("0.0000", CultureInfo.InvariantCulture);
+            actualSeconds = _totalTimeMessages == 0 ? "---" : avgActual.ToString("0.0000", CultureInfo.InvariantCulture);
+            logicalReads = _totalReadMessages == 0 ? "---" : avgReads.ToString("0.0000", CultureInfo.InvariantCulture);
 
             var end = new TimeSpan(DateTime.Now.Ticks);
             end = end.Subtract(_start);
-            var theTime = end.ToString();
+            theTime = end.ToString();
 
             var color = "[lime on black]";
 
@@ -241,11 +246,11 @@ namespace SqlQueryStressCLI
             AnsiConsole.MarkupLine($"{color}Active Threads: {_activeThreads}[/]");
             AnsiConsole.MarkupLine($"{color}Total Exceptions: {_totalExceptions}[/]");
             AnsiConsole.MarkupLine($"{color}Delay Between Queries (ms): {_settings.DelayBetweenQueries}[/]");
-            AnsiConsole.MarkupLine($"{color}CPU Seconds/Iteration (Avg): {cpuTime_text}[/]");
-            AnsiConsole.MarkupLine($"{color}Actual Seconds/Iteration (Avg): {actualSeconds_text}[/]");
-            AnsiConsole.MarkupLine($"{color}Iterations Completed: {iterationsSecond_text}[/]");
-            AnsiConsole.MarkupLine($"{color}Client Seconds/Iteration (Avg): {avgSeconds_text}[/]");
-            AnsiConsole.MarkupLine($"{color}Logical Reads/Iteration (Avg): {logicalReads_text}[/]");
+            AnsiConsole.MarkupLine($"{color}CPU Seconds/Iteration (Avg): {cpuTime}[/]");
+            AnsiConsole.MarkupLine($"{color}Actual Seconds/Iteration (Avg): {actualSeconds}[/]");
+            AnsiConsole.MarkupLine($"{color}Iterations Completed: {_totalIterations}[/]");
+            AnsiConsole.MarkupLine($"{color}Client Seconds/Iteration (Avg): {avgSeconds}[/]");
+            AnsiConsole.MarkupLine($"{color}Logical Reads/Iteration (Avg): {logicalReads}[/]");
         }
 
         private void AutoSaveResults(string resultsAutoSaveFileName)
@@ -256,8 +261,6 @@ namespace SqlQueryStressCLI
                 ExportBenchMarkToCsvFile(resultsAutoSaveFileName);
             }
         }
-
-        //TODO Avoid duplication of the code below:
 
         private void ExportBenchMarkToCsvFile(string fileName)
         {
@@ -284,22 +287,21 @@ namespace SqlQueryStressCLI
             tw.WriteLine("TestId,TestStartTime,ElapsedTime,Iterations,Threads,Delay,CompletedIterations,AvgCPUSeconds,AvgActualSeconds,AvgClientSeconds,AvgLogicalReads");
         }
 
-        //TODO Implement!
         private void WriteBenchmarkCsvText(TextWriter tw)
         {
-            //tw.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}",
-            //    _testGuid,
-            //    _testStartTime,
-            //    elapsedTime_textBox.Text,
-            //    (int)iterations_numericUpDown.Value,
-            //    (int)threads_numericUpDown.Value,
-            //    int.Parse(queryDelay_numericUpDown.Text, CultureInfo.InvariantCulture),
-            //    iterationsSecond_textBox.Text,
-            //    cpuTime_textBox.Text,
-            //    actualSeconds_textBox.Text,
-            //    avgSeconds_textBox.Text,
-            //    logicalReads_textBox.Text
-            //    );
+            tw.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}",
+                _testGuid,
+                _testStartTime,
+                theTime,
+                _totalIterations,
+                _runParameters.NumberOfThreads,
+                _settings.DelayBetweenQueries,
+                _totalIterations,
+                cpuTime,
+                actualSeconds,
+                avgSeconds,
+                logicalReads
+                );
         }
     }
 }
