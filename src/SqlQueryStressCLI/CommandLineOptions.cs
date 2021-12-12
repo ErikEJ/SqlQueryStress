@@ -5,8 +5,7 @@ namespace SQLQueryStress
     public class CommandLineOptions
     {
         [Option('s', "settingsFile",
-                HelpText = "File name of saved session settings\r\n", 
-                Required = true)]
+                HelpText = "File name of saved session settings")]
         public string SettingsFile { get; set; } = string.Empty;
 
         [Option('d', "dbserver",
@@ -14,8 +13,12 @@ namespace SQLQueryStress
         public string DbServer { get; set; } = string.Empty;
 
         [Option('t', "threads",
-                HelpText = "Number of threads in unattended mode")]
+                HelpText = "Number of threads, default 1")]
         public int NumberOfThreads { get; set; } = 1;
+
+        [Option('x', "xtract",
+                HelpText = "Extract sample.json file to current folder")]
+        public bool ExtractSample { get; set; }
 
         //TODO Implement
         [Option('r', "results",

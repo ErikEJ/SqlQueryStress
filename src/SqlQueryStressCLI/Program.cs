@@ -4,6 +4,7 @@ using SQLQueryStress;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 
 namespace SqlQueryStressCLI
 {
@@ -21,6 +22,11 @@ namespace SqlQueryStressCLI
 
         private static void Run(CommandLineOptions options)
         {
+            if (options.ExtractSample)
+            {
+                ExtractSample();
+            }
+
             if (File.Exists(options.SettingsFile))
             {
                 var settings = OpenConfigFile(options.SettingsFile);
@@ -31,7 +37,24 @@ namespace SqlQueryStressCLI
             }
             else
             {
-                throw new ArgumentException($"Settings file could not be found: {options.SettingsFile}");
+                Console.Error.WriteLine($"Settings file could not be found, or not specified: {options.SettingsFile}");
+            }
+        }
+
+        private static void ExtractSample()
+        {
+            var names = Assembly.GetEntryAssembly().GetManifestResourceNames();
+
+            using (var stream = Assembly.GetEntryAssembly().GetManifestResourceStream("sqlstresscmd.sample.json"))
+            using (var reader = new StreamReader(stream))
+            {
+                string result = reader.ReadToEnd();
+                var path = Path.GetFullPath("sample.json");
+                if (!File.Exists(path))
+                {
+                    File.WriteAllText(path, result, System.Text.Encoding.UTF8);
+                    Console.WriteLine($"{path} saved.");
+                }
             }
         }
 
