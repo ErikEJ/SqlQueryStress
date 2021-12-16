@@ -14,7 +14,7 @@ namespace SQLQueryStress
 
         [Option('t', "threads",
                 HelpText = "Number of threads, default 1")]
-        public int NumberOfThreads { get; set; } = 1;
+        public int? NumberOfThreads { get; set; }
 
         [Option('x', "xtract",
                 HelpText = "Extract sample.json file to current folder")]

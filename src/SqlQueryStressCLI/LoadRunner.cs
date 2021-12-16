@@ -58,6 +58,7 @@ namespace SqlQueryStressCLI
         //some cases.  For instance, look at time reported for
         //WAITFOR DELAY '00:00:05'  (1300 ms?? WTF??)
         private int _totalTimeMessages;
+        private int _numThreads;
 
         private DateTime _testStartTime;
 
@@ -109,7 +110,9 @@ namespace SqlQueryStressCLI
 
             var paramConnectionInfo = _settings.ShareDbSettings ? _settings.MainDbConnectionInfo : _settings.ParamDbConnectionInfo;
 
-            var engine = new LoadEngine(_settings.MainDbConnectionInfo.ConnectionString, _settings.MainQuery, _runParameters.NumberOfThreads, _settings.NumIterations,
+            _numThreads = _runParameters.NumberOfThreads ?? _settings.NumThreads;
+
+            var engine = new LoadEngine(_settings.MainDbConnectionInfo.ConnectionString, _settings.MainQuery, _numThreads, _settings.NumIterations,
                 _settings.ParamQuery, _settings.ParamMappings, paramConnectionInfo.ConnectionString, _settings.CommandTimeout, _settings.CollectIoStats,
                 _settings.CollectTimeStats, _settings.ForceDataRetrieval, _settings.KillQueriesOnCancel, _backgroundWorkerCTS);
 
@@ -131,6 +134,8 @@ namespace SqlQueryStressCLI
             {
                 Thread.Sleep(1000);
             }
+
+            Thread.Sleep(3000);
         }
 
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -223,7 +228,7 @@ namespace SqlQueryStressCLI
             var avgActual = _totalTimeMessages == 0 ? 0.0 : _totalElapsedTime / _totalTimeMessages / 1000;
             var avgReads = _totalReadMessages == 0 ? 0.0 : _totalLogicalReads / _totalReadMessages;
 
-            avgSeconds = avgIterations.ToString("0.0000", CultureInfo.CurrentCulture);
+            avgSeconds = avgIterations.ToString("0.0000", CultureInfo.InvariantCulture);
             cpuTime = _totalTimeMessages == 0 ? "---" : avgCpu.ToString("0.0000", CultureInfo.InvariantCulture);
             actualSeconds = _totalTimeMessages == 0 ? "---" : avgActual.ToString("0.0000", CultureInfo.InvariantCulture);
             logicalReads = _totalReadMessages == 0 ? "---" : avgReads.ToString("0.0000", CultureInfo.InvariantCulture);
@@ -232,25 +237,27 @@ namespace SqlQueryStressCLI
             end = end.Subtract(_start);
             theTime = end.ToString();
 
-            var color = "[lime on black]";
+            var color = "[lime]";
 
-            //TODO Render in table?
+            var table = new Table();
+            table.Border(TableBorder.Square);
+            table.Collapse();
 
-            AnsiConsole.WriteLine(string.Empty);
-            AnsiConsole.MarkupLine($"{color}Test ID: {_testGuid}[/]");
-            AnsiConsole.MarkupLine($"{color}Test TimeStamp: {_testStartTime}[/]");
-            AnsiConsole.MarkupLine($"{color}Elapsed Time: {theTime}[/]");
-            AnsiConsole.MarkupLine($"{color}Number of Iterations: {_totalIterations}[/]");
-            AnsiConsole.MarkupLine($"{color}Number of Threads: {_runParameters.NumberOfThreads}[/]");
-            AnsiConsole.MarkupLine($"{color}Total Exceptions: {_totalExceptions}[/]");
-            AnsiConsole.MarkupLine($"{color}Active Threads: {_activeThreads}[/]");
-            AnsiConsole.MarkupLine($"{color}Total Exceptions: {_totalExceptions}[/]");
-            AnsiConsole.MarkupLine($"{color}Delay Between Queries (ms): {_settings.DelayBetweenQueries}[/]");
-            AnsiConsole.MarkupLine($"{color}CPU Seconds/Iteration (Avg): {cpuTime}[/]");
-            AnsiConsole.MarkupLine($"{color}Actual Seconds/Iteration (Avg): {actualSeconds}[/]");
-            AnsiConsole.MarkupLine($"{color}Iterations Completed: {_totalIterations}[/]");
-            AnsiConsole.MarkupLine($"{color}Client Seconds/Iteration (Avg): {avgSeconds}[/]");
-            AnsiConsole.MarkupLine($"{color}Logical Reads/Iteration (Avg): {logicalReads}[/]");
+            table.AddColumn("sqlstresscmd result");
+            table.AddColumn(new TableColumn("Value").Centered());
+
+            table.Columns[1].RightAligned();
+
+            table.AddRow("Start time", $"{color}{_testStartTime}[/]");
+            table.AddRow("Elapsed time", $"{color}{theTime}[/]");
+            table.AddRow("Number of Threads", $"{color}{_numThreads}[/]");
+            table.AddRow("Iterations Completed", $"{color}{_totalIterations}[/]");
+            table.AddRow("CPU Seconds/Iteration (Avg)", $"{color}{cpuTime}[/]");
+            table.AddRow("Actual Seconds/Iteration (Avg)", $"{color}{actualSeconds}[/]");
+            table.AddRow("Client Seconds/Iteration (Avg)", $"{color}{avgSeconds}[/]");
+            table.AddRow("Logical Reads/Iteration (Avg)", $"{color}{logicalReads}[/]");
+
+            AnsiConsole.Write(table);
         }
 
         private void AutoSaveResults(string resultsAutoSaveFileName)
