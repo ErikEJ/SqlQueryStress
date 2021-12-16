@@ -20,6 +20,7 @@
   },
   "MainQuery": "SELECT * FROM Customers",
   "NumIterations": 10,
+  "NumThreads": 1,
   "ParamDbConnectionInfo": {
     "ApplicationIntent": 0,
     "ConnectTimeout": 0,
