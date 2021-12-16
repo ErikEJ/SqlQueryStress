@@ -135,7 +135,7 @@ namespace SqlQueryStressCLI
                 Thread.Sleep(1000);
             }
 
-            Thread.Sleep(3000);
+            Thread.Sleep(2000);
         }
 
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -248,7 +248,7 @@ namespace SqlQueryStressCLI
 
             table.Columns[1].RightAligned();
 
-            table.AddRow("Start time", $"{color}{_testStartTime}[/]");
+            _ = table.AddRow("Start time", $"{color}{_testStartTime:u}[/]");
             table.AddRow("Elapsed time", $"{color}{theTime}[/]");
             table.AddRow("Number of Threads", $"{color}{_numThreads}[/]");
             table.AddRow("Iterations Completed", $"{color}{_totalIterations}[/]");
