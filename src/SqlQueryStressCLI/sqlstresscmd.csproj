@@ -29,7 +29,9 @@
   </ItemGroup>  
 
   <ItemGroup>
-    <EmbeddedResource Include="sample.json" />
+    <EmbeddedResource Include="sample.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

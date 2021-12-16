@@ -124,7 +124,7 @@ namespace SQLQueryStress
             {
                 try
                 {
-                    conn.Open();
+                    conn.Open(SqlConnectionOverrides.OpenWithoutRetry);
                 }
                 catch (Exception)
                 {
