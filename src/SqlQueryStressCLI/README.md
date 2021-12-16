@@ -25,7 +25,7 @@ sqlstresscmd -x
 3. Run the tool, create the load, and view the summary
 
 ```bash
-sqlstresscmd -s sample.json -t 100
+sqlstresscmd -s sample.json -t 1
 ```
 
 ![](https://github.com/ErikEJ/SqlQueryStress/blob/master/src/SqlQueryStressCLI/sample.png)
