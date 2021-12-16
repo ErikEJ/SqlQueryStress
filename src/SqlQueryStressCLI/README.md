@@ -22,11 +22,14 @@ You can run this command to get a sample:
 sqlstresscmd -x
 ```
 
-3. Run the tool, create the load, and view the summary - future plan is to show progress while running.
+3. Run the tool, create the load, and view the summary
 
 ```bash
 sqlstresscmd -s sample.json -t 100
 ```
+
+![](https://github.com/ErikEJ/SqlQueryStress/blob/master/src/SqlQueryStressCLI/sample.png)
+
 To get help, run
 
 ```bash
