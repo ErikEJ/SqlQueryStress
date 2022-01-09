@@ -1,4 +1,5 @@
 ﻿using CommandLine;
+using System.IO;
 
 namespace SQLQueryStress
 {
@@ -13,12 +14,18 @@ namespace SQLQueryStress
         public string DbServer { get; set; } = string.Empty;
 
         [Option('t', "threads",
-                HelpText = "Number of threads, default 1")]
+        HelpText = "Number of threads, default 1")]
         public int? NumberOfThreads { get; set; }
+
+        [Option('i', "input",
+                HelpText = "Path to .sql script to execute")]
+        public FileInfo Input { get; set; }
 
         [Option('x', "xtract",
                 HelpText = "Extract sample.json file to current folder")]
         public bool ExtractSample { get; set; }
+
+
 
         //TODO Implement
         [Option('r', "results",

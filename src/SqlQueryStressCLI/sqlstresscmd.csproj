@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <None Remove="sample.json" />
+    <None Remove="script.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +27,12 @@
     <Compile Include="..\SQLQueryStress\JsonSerializer.cs" Link="JsonSerializer.cs" />
     <Compile Include="..\SQLQueryStress\LoadEngine.cs" Link="LoadEngine.cs" />
     <Compile Include="..\SQLQueryStress\QueryStressSettings.cs" Link="QueryStressSettings.cs" />
+  </ItemGroup>  
+
+  <ItemGroup>
+    <Content Include="script.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>  
 
   <ItemGroup>

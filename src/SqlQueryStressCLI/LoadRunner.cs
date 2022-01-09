@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Threading;
 
 namespace SqlQueryStressCLI
@@ -112,7 +113,14 @@ namespace SqlQueryStressCLI
 
             _numThreads = _runParameters.NumberOfThreads ?? _settings.NumThreads;
 
-            var engine = new LoadEngine(_settings.MainDbConnectionInfo.ConnectionString, _settings.MainQuery, _numThreads, _settings.NumIterations,
+            var query = _settings.MainQuery;
+
+            if (_runParameters.Input != null)
+            {
+                query = File.ReadAllText(_runParameters.Input.FullName, Encoding.UTF8);
+            }
+
+            var engine = new LoadEngine(_settings.MainDbConnectionInfo.ConnectionString, query, _numThreads, _settings.NumIterations,
                 _settings.ParamQuery, _settings.ParamMappings, paramConnectionInfo.ConnectionString, _settings.CommandTimeout, _settings.CollectIoStats,
                 _settings.CollectTimeStats, _settings.ForceDataRetrieval, _settings.KillQueriesOnCancel, _backgroundWorkerCTS);
 
