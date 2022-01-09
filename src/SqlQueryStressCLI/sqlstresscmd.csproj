@@ -5,8 +5,8 @@
     <PackAsTool>true</PackAsTool>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
-    <PackageVersion>0.9.14</PackageVersion>
-    <PackageReleaseNotes>Bug fix in sample, improve output</PackageReleaseNotes>
+    <PackageVersion>0.9.15</PackageVersion>
+    <PackageReleaseNotes>Enable script in file option (-i)</PackageReleaseNotes>
     <TargetFrameworks>netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
