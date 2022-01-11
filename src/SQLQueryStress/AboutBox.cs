@@ -73,7 +73,11 @@ Settings for a test, including the query, database information, and parameter as
 
         private void textBoxDescription_Click(object sender, EventArgs e)
         {
-            Process.Start("https://github.com/ErikEJ/SqlQueryStress");
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "https://github.com/ErikEJ/SqlQueryStress",
+                UseShellExecute = true
+            });
         }
 
         #region Assembly Attribute Accessors
