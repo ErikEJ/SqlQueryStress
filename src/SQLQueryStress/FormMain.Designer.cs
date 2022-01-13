@@ -25,7 +25,7 @@ namespace SQLQueryStress
                 System.Windows.Forms.MessageBoxButtons.YesNo,
                 System.Windows.Forms.MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
                 {
-                    cancel_button_Click(new System.String(' ', 0), null);
+                    Cancel_button_Click(new System.String(' ', 0), null);
                 }
             }
             else
@@ -72,7 +72,7 @@ namespace SQLQueryStress
       this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
       this.label5 = new System.Windows.Forms.Label();
       this.avgSeconds_textBox = new System.Windows.Forms.Label();
-      this.progressBar1 = new System.Windows.Forms.ProgressBar();
+      this.progressBarMain = new System.Windows.Forms.ProgressBar();
       this.label6 = new System.Windows.Forms.Label();
       this.label7 = new System.Windows.Forms.Label();
       this.totalExceptions_textBox = new System.Windows.Forms.Label();
@@ -162,7 +162,7 @@ namespace SQLQueryStress
       this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
       this.optionsToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
       this.optionsToolStripMenuItem.Text = "Options";
-      this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
+      this.optionsToolStripMenuItem.Click += new System.EventHandler(this.OptionsToolStripMenuItem_Click);
       // 
       // saveSettingsToolStripMenuItem
       // 
@@ -193,28 +193,28 @@ namespace SQLQueryStress
       this.toCsvToolStripMenuItem.Name = "toCsvToolStripMenuItem";
       this.toCsvToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
       this.toCsvToolStripMenuItem.Text = "To Csv";
-      this.toCsvToolStripMenuItem.Click += new System.EventHandler(this.toCsvToolStripMenuItem_Click);
+      this.toCsvToolStripMenuItem.Click += new System.EventHandler(this.ToCsvToolStripMenuItem_Click);
       // 
       // toTextToolStripMenuItem
       // 
       this.toTextToolStripMenuItem.Name = "toTextToolStripMenuItem";
       this.toTextToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
       this.toTextToolStripMenuItem.Text = "To Text";
-      this.toTextToolStripMenuItem.Click += new System.EventHandler(this.toTextToolStripMenuItem_Click);
+      this.toTextToolStripMenuItem.Click += new System.EventHandler(this.ToTextToolStripMenuItem_Click);
       // 
       // toClipboardToolStripMenuItem
       // 
       this.toClipboardToolStripMenuItem.Name = "toClipboardToolStripMenuItem";
       this.toClipboardToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
       this.toClipboardToolStripMenuItem.Text = "To Clipboard";
-      this.toClipboardToolStripMenuItem.Click += new System.EventHandler(this.toClipboardToolStripMenuItem_Click);
+      this.toClipboardToolStripMenuItem.Click += new System.EventHandler(this.ToClipboardToolStripMenuItem_Click);
       // 
       // exitToolStripMenuItem
       // 
       this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
       this.exitToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
       this.exitToolStripMenuItem.Text = "Exit";
-      this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+      this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
       // 
       // helpToolStripMenuItem
       // 
@@ -229,7 +229,7 @@ namespace SQLQueryStress
       this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
       this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
       this.aboutToolStripMenuItem.Text = "About";
-      this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+      this.aboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
       // 
       // go_button
       // 
@@ -242,7 +242,7 @@ namespace SQLQueryStress
       this.go_button.TabIndex = 0;
       this.go_button.Text = "GO";
       this.go_button.UseVisualStyleBackColor = true;
-      this.go_button.Click += new System.EventHandler(this.go_button_Click);
+      this.go_button.Click += new System.EventHandler(this.Go_button_Click);
       // 
       // label2
       // 
@@ -326,7 +326,7 @@ namespace SQLQueryStress
       this.cancel_button.TabIndex = 1;
       this.cancel_button.Text = "Cancel";
       this.cancel_button.UseVisualStyleBackColor = true;
-      this.cancel_button.Click += new System.EventHandler(this.cancel_button_Click);
+      this.cancel_button.Click += new System.EventHandler(this.Cancel_button_Click);
       // 
       // label4
       // 
@@ -372,16 +372,16 @@ namespace SQLQueryStress
       this.avgSeconds_textBox.TabIndex = 12;
       this.avgSeconds_textBox.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
       // 
-      // progressBar1
+      // progressBarMain
       // 
-      this.progressBar1.BackColor = System.Drawing.SystemColors.Control;
-      this.progressBar1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.progressBar1.Location = new System.Drawing.Point(239, 80);
-      this.progressBar1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-      this.progressBar1.Name = "progressBar1";
-      this.progressBar1.Size = new System.Drawing.Size(230, 33);
-      this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-      this.progressBar1.TabIndex = 9;
+      this.progressBarMain.BackColor = System.Drawing.SystemColors.Control;
+      this.progressBarMain.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.progressBarMain.Location = new System.Drawing.Point(239, 80);
+      this.progressBarMain.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+      this.progressBarMain.Name = "progressBarMain";
+      this.progressBarMain.Size = new System.Drawing.Size(230, 33);
+      this.progressBarMain.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+      this.progressBarMain.TabIndex = 9;
       // 
       // label6
       // 
@@ -463,7 +463,7 @@ namespace SQLQueryStress
       this.database_button.TabIndex = 1;
       this.database_button.Text = "Database";
       this.database_button.UseVisualStyleBackColor = true;
-      this.database_button.Click += new System.EventHandler(this.database_button_Click);
+      this.database_button.Click += new System.EventHandler(this.Database_button_Click);
       // 
       // iterationsSecond_textBox
       // 
@@ -514,7 +514,7 @@ namespace SQLQueryStress
       this.exceptions_button.TabIndex = 1;
       this.exceptions_button.Text = "...";
       this.exceptions_button.UseVisualStyleBackColor = true;
-      this.exceptions_button.Click += new System.EventHandler(this.exceptions_button_Click);
+      this.exceptions_button.Click += new System.EventHandler(this.Exceptions_button_Click);
       // 
       // label9
       // 
@@ -601,7 +601,7 @@ namespace SQLQueryStress
       this.tableLayoutPanel1.Controls.Add(this.label4, 1, 5);
       this.tableLayoutPanel1.Controls.Add(this.label6, 1, 1);
       this.tableLayoutPanel1.Controls.Add(this.label8, 1, 3);
-      this.tableLayoutPanel1.Controls.Add(this.progressBar1, 1, 2);
+      this.tableLayoutPanel1.Controls.Add(this.progressBarMain, 1, 2);
       this.tableLayoutPanel1.Controls.Add(this.elapsedTime_textBox, 1, 4);
       this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 1, 0);
       this.tableLayoutPanel1.Controls.Add(this.param_button, 0, 4);
@@ -825,7 +825,7 @@ namespace SQLQueryStress
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label avgSeconds_textBox;
-        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.ProgressBar progressBarMain;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label totalExceptions_textBox;
