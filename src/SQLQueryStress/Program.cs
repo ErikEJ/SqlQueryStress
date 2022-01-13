@@ -31,11 +31,11 @@ namespace SQLQueryStress
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            using var form1 = new Form1(options)
+            using var formMain = new FormMain(options)
             {
                 StartPosition = FormStartPosition.CenterScreen
             };
-            Application.Run(form1);
+            Application.Run(formMain);
         }
 
         private static void DisplayHelp<T>(ParserResult<T> result, IEnumerable<Error> errors)
@@ -79,6 +79,7 @@ namespace SQLQueryStress
             {
                 return null;
             }
+
             var assemblyData = new byte[stream.Length];
             stream.Read(assemblyData, 0, assemblyData.Length);
             return Assembly.Load(assemblyData);
