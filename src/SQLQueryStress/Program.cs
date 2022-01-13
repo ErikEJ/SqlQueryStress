@@ -31,7 +31,7 @@ namespace SQLQueryStress
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            using var form1 = new Form1(options)
+            using var form1 = new FormMain(options)
             {
                 StartPosition = FormStartPosition.CenterScreen
             };
