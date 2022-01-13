@@ -222,14 +222,15 @@ namespace SQLQueryStress
             queryDelay_numericUpDown.Enabled = true;
 
             if (!_cancelled)
-            {
-              progressBar1.Value = 100;
-            }
-            else
-            {
-              progressBar1.Value = progressBar1.Minimum;
-            }
-
+               
+      if (!_cancelled)
+      {
+        progressBar1.Value = 100;
+      }
+      else
+      {
+        progressBar1.Value = progressBar1.Minimum;
+      }
             ((BackgroundWorker)sender).Dispose();
             _backgroundWorkerCTS?.Dispose();
 
