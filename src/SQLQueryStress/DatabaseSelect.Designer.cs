@@ -378,6 +378,7 @@ namespace SQLQueryStress
       this.pm_server_textBox.Name = "pm_server_textBox";
       this.pm_server_textBox.Size = new System.Drawing.Size(268, 23);
       this.pm_server_textBox.TabIndex = 0;
+      this.pm_server_textBox.Text = "localhost";
       // 
       // label8
       // 
