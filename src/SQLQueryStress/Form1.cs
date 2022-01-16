@@ -222,7 +222,13 @@ namespace SQLQueryStress
             queryDelay_numericUpDown.Enabled = true;
 
             if (!_cancelled)
+            {
                 progressBar1.Value = 100;
+            }
+            else
+            {
+                progressBar1.Value = progressBar1.Minimum;
+            }
 
             ((BackgroundWorker)sender).Dispose();
             _backgroundWorkerCTS?.Dispose();
@@ -240,6 +246,8 @@ namespace SQLQueryStress
             {
                 Dispose();
             }
+
+            progressBar1.Value = progressBar1.Minimum;
         }
 
         private void AutoSaveResults(string resultsAutoSaveFileName)
