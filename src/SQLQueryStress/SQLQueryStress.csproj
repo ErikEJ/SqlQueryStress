@@ -36,9 +36,9 @@
     <Compile Update="DatabaseSelect.Designer.cs">
       <DependentUpon>DatabaseSelect.cs</DependentUpon>
     </Compile>
-    <Compile Update="Form1.cs" />
-    <Compile Update="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Update="FormMain.cs" />
+    <Compile Update="FormMain.Designer.cs">
+      <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
     <Compile Update="DataViewer.cs" />
     <Compile Update="DataViewer.Designer.cs">
@@ -63,9 +63,9 @@
       <SubType>Designer</SubType>
       <DependentUpon>DatabaseSelect.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Form1.resx">
+    <EmbeddedResource Update="FormMain.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>Form1.cs</DependentUpon>
+      <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="DataViewer.resx">
       <SubType>Designer</SubType>

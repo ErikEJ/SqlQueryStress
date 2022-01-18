@@ -31,11 +31,11 @@ namespace SQLQueryStress
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            using var form1 = new Form1(options)
+            using var FormMain = new FormMain(options)
             {
                 StartPosition = FormStartPosition.CenterScreen
             };
-            Application.Run(form1);
+            Application.Run(FormMain);
         }
 
         private static void DisplayHelp<T>(ParserResult<T> result, IEnumerable<Error> errors)
