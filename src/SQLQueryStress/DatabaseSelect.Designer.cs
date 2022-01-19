@@ -28,7 +28,7 @@ namespace SQLQueryStress
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
+            this.labelServer = new System.Windows.Forms.Label();
             this.server_textBox = new System.Windows.Forms.TextBox();
             this.authentication_comboBox = new System.Windows.Forms.ComboBox();
             this.login_textBox = new System.Windows.Forms.TextBox();
@@ -63,16 +63,16 @@ namespace SQLQueryStress
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
-            // label1
+            // labelServer
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(9, 60);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(64, 20);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Server";
+            this.labelServer.AutoSize = true;
+            this.labelServer.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelServer.Location = new System.Drawing.Point(9, 60);
+            this.labelServer.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelServer.Name = "labelServer";
+            this.labelServer.Size = new System.Drawing.Size(64, 20);
+            this.labelServer.TabIndex = 0;
+            this.labelServer.Text = "Server";
             // 
             // server_textBox
             // 
@@ -213,7 +213,7 @@ namespace SQLQueryStress
             this.groupBox1.Controls.Add(this.test_button);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.server_textBox);
-            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.labelServer);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.login_textBox);
             this.groupBox1.Controls.Add(this.authentication_comboBox);
@@ -465,7 +465,7 @@ namespace SQLQueryStress
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label labelServer;
         private System.Windows.Forms.TextBox server_textBox;
         private System.Windows.Forms.ComboBox authentication_comboBox;
         private System.Windows.Forms.TextBox login_textBox;
