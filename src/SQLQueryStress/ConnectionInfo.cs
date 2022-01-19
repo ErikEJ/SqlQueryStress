@@ -38,7 +38,7 @@ namespace SQLQueryStress
 
         public ConnectionInfo()
         {
-            Server = string.Empty;
+            Server = "(local)";
             IntegratedAuth = true;
             ApplicationIntent = ApplicationIntent.ReadWrite;
             Login = string.Empty;
