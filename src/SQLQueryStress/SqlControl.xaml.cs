@@ -19,6 +19,11 @@ namespace SQLQueryStress
             set { AvalonEdit.Text = value; }
         }
 
+        public string SelectedText
+        {
+            get { return AvalonEdit.SelectedText; }
+        }
+
         private void SqlControl_OnLoaded(object sender, RoutedEventArgs e)
         {
             Stream stream = null;
