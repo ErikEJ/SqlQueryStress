@@ -642,6 +642,5 @@ namespace SQLQueryStress
             elemHost.Child = sqlControl1;
             tableLayoutPanel3.Controls.Add(elemHost, 0, 0);
         }
-
     }
 }
