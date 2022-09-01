@@ -339,12 +339,6 @@ namespace SQLQueryStress
 
             _totalExpectedIterations = _settings.NumThreads * _settings.NumIterations;
 
-            // override main query string with selected text when selected text exists
-            if (sqlControl1.SelectedText.Length != 0)
-            {
-                _settings.MainQuery = sqlControl1.SelectedText;
-            }
-
             var paramConnectionInfo = _settings.ShareDbSettings ? _settings.MainDbConnectionInfo : _settings.ParamDbConnectionInfo;
             db_label.Text = $@"Server: {paramConnectionInfo.Server}{(paramConnectionInfo.Database.Length > 0 ? "  //  Database: " + paramConnectionInfo.Database : string.Empty)}";
 
