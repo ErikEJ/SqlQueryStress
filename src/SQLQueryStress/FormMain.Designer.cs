@@ -296,7 +296,7 @@ namespace SQLQueryStress
             this.threads_numericUpDown.Location = new System.Drawing.Point(3, 251);
             this.threads_numericUpDown.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.threads_numericUpDown.Maximum = new decimal(new int[] {
-            200,
+            1000,
             0,
             0,
             0});
