@@ -10,7 +10,7 @@ Install from the [Microsoft Store](https://www.microsoft.com/en-us/p/sqlquerystr
 
 You can download a .zip file with the [latest daily build from GitHub releases](https://github.com/ErikEJ/SqlQueryStress/releases)
 
-Notice that you must have the [.NET Core Windows runtime](https://dotnet.microsoft.com/download) installed.
+Notice that you must have the [.NET 6 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/6.0/runtime) installed.
 
 [Release notes](https://github.com/ErikEJ/SqlQueryStress/wiki/Release-notes)
 
