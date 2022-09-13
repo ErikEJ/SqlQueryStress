@@ -30,9 +30,9 @@ namespace SQLQueryStress
 
             server_textBox.Text = _localMainConnectionInfo.Server;
 
-            if (_localMainConnectionInfo.IntegratedAuth)
+            if (!_localMainConnectionInfo.RequiresPassword)
             {
-                authentication_comboBox.SelectedIndex = 0;
+                authentication_comboBox.SelectedIndex =  _localMainConnectionInfo.IntegratedAuth ? 0 : 2;
                 login_textBox.Enabled = false;
                 password_textBox.Enabled = false;
             }
@@ -59,7 +59,7 @@ namespace SQLQueryStress
             {
                 pm_server_textBox.Text = _localParamConnectionInfo.Server;
 
-                if (_localParamConnectionInfo.IntegratedAuth)
+                if (!_localParamConnectionInfo.RequiresPassword)
                 {
                     pm_authentication_comboBox.SelectedIndex = 0;
                     pm_login_textBox.Enabled = false;
@@ -213,7 +213,7 @@ namespace SQLQueryStress
 
         private void authentication_comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (authentication_comboBox.SelectedIndex == 0)
+            if (authentication_comboBox.SelectedIndex == 0 || authentication_comboBox.SelectedIndex == 2)
             {
                 login_textBox.Enabled = false;
                 password_textBox.Enabled = false;
@@ -244,7 +244,7 @@ namespace SQLQueryStress
 
         private void pm_authentication_comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (pm_authentication_comboBox.SelectedIndex == 0)
+            if (pm_authentication_comboBox.SelectedIndex == 0 || pm_authentication_comboBox.SelectedIndex == 2)
             {
                 pm_login_textBox.Enabled = false;
                 pm_password_textBox.Enabled = false;
@@ -262,8 +262,9 @@ namespace SQLQueryStress
             {
                 _localParamConnectionInfo.Server = pm_server_textBox.Text;
                 _localParamConnectionInfo.IntegratedAuth = pm_authentication_comboBox.SelectedIndex == 0;
+                _localParamConnectionInfo.AzureMFA = pm_authentication_comboBox.SelectedIndex == 2;
 
-                if (_localParamConnectionInfo.IntegratedAuth)
+                if (!_localParamConnectionInfo.RequiresPassword)
                 {
                     _localParamConnectionInfo.Login = string.Empty;
                     _localParamConnectionInfo.Password = string.Empty;
@@ -299,8 +300,9 @@ namespace SQLQueryStress
         {
             _localMainConnectionInfo.Server = server_textBox.Text;
             _localMainConnectionInfo.IntegratedAuth = authentication_comboBox.SelectedIndex == 0;
+            _localMainConnectionInfo.AzureMFA = authentication_comboBox.SelectedIndex == 2;
 
-            if (_localMainConnectionInfo.IntegratedAuth)
+            if (!_localMainConnectionInfo.RequiresPassword)
             {
                 _localMainConnectionInfo.Login = string.Empty;
                 _localMainConnectionInfo.Password = string.Empty;

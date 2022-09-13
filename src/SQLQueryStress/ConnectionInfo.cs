@@ -15,6 +15,9 @@ namespace SQLQueryStress
         public bool IntegratedAuth { get; set; }
 
         [DataMember]
+        public bool AzureMFA { get; set; }
+
+        [DataMember]
         public string Login { get; set; }
 
         [DataMember]
@@ -35,6 +38,13 @@ namespace SQLQueryStress
         [DataMember]
         public int MaxPoolSize { get; set; }
 
+        public bool RequiresPassword
+        { 
+            get
+            {
+                return !IntegratedAuth && !AzureMFA;
+            }
+        }
 
         public ConnectionInfo()
         {
@@ -61,10 +71,15 @@ namespace SQLQueryStress
             get
             {
                 var build = new SqlConnectionStringBuilder { DataSource = Server, IntegratedSecurity = IntegratedAuth, ApplicationName = "SQLQueryStress", ApplicationIntent = ApplicationIntent };
-                if (!IntegratedAuth)
+                if (!IntegratedAuth && !AzureMFA)
                 {
                     build.UserID = Login;
                     build.Password = Password;
+                }
+
+                if (AzureMFA)
+                {
+                    build.Authentication = SqlAuthenticationMethod.ActiveDirectoryInteractive;
                 }
 
                 if (Database.Length > 0)
@@ -108,6 +123,7 @@ namespace SQLQueryStress
 
             to.Server = Server;
             to.IntegratedAuth = IntegratedAuth;
+            to.AzureMFA = AzureMFA;
             to.Login = Login;
             to.Password = Password;
             to.Database = Database;
@@ -117,8 +133,9 @@ namespace SQLQueryStress
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]
         public bool TestConnection()
         {
-            if ((string.IsNullOrEmpty(Server)) || ((IntegratedAuth == false) && (string.IsNullOrEmpty(Login) || string.IsNullOrEmpty(Password))))
-                return false;
+            if ((string.IsNullOrEmpty(Server)) 
+                || ((IntegratedAuth == false && AzureMFA == false) && (string.IsNullOrEmpty(Login) || string.IsNullOrEmpty(Password))))
+            return false;
 
             using (var conn = new SqlConnection(ConnectionString))
             {
