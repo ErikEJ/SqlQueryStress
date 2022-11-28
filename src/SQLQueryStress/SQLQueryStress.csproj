@@ -105,8 +105,8 @@
     <Content Include="Resources\QueryStressIcon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AvalonEdit" Version="6.0.1" />
-    <PackageReference Include="CommandLineParser" Version="2.8.0" />
+    <PackageReference Include="AvalonEdit" Version="6.1.3.50" />
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="3.1.1" />
   </ItemGroup>
 </Project>
