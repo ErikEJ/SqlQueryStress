@@ -1,6 +1,6 @@
 # sqlstresscmd
 
-Cross platform SQL query stress simulator command line tool (early preview) 
+Cross platform SQL query stress simulator command line tool (early preview)
 
 ## Getting started guide
 
@@ -13,6 +13,8 @@ dotnet tool install -g sqlstresscmd
 ```bash
 dotnet tool update -g sqlstresscmd
 ```
+
+You can also download directly from [NuGet](https://www.nuget.org/packages/sqlstresscmd) and unzip the package locally.
 
 2. Create a json config file similar to [this one](https://github.com/ErikEJ/SqlQueryStress/blob/master/src/SqlQueryStressCLI/sample.json)
 
