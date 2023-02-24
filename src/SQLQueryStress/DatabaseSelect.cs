@@ -213,9 +213,14 @@ namespace SQLQueryStress
 
         private void authentication_comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (authentication_comboBox.SelectedIndex == 0 || authentication_comboBox.SelectedIndex == 2)
+            if (authentication_comboBox.SelectedIndex == 0)
             {
                 login_textBox.Enabled = false;
+                password_textBox.Enabled = false;
+            }
+            else if (authentication_comboBox.SelectedIndex == 2)
+            {
+                login_textBox.Enabled = true;
                 password_textBox.Enabled = false;
             }
             else
@@ -244,9 +249,14 @@ namespace SQLQueryStress
 
         private void pm_authentication_comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (pm_authentication_comboBox.SelectedIndex == 0 || pm_authentication_comboBox.SelectedIndex == 2)
+            if (pm_authentication_comboBox.SelectedIndex == 0)
             {
                 pm_login_textBox.Enabled = false;
+                pm_password_textBox.Enabled = false;
+            }
+            else if (pm_authentication_comboBox.SelectedIndex == 2)
+            {
+                pm_login_textBox.Enabled = true;
                 pm_password_textBox.Enabled = false;
             }
             else
@@ -264,9 +274,14 @@ namespace SQLQueryStress
                 _localParamConnectionInfo.IntegratedAuth = pm_authentication_comboBox.SelectedIndex == 0;
                 _localParamConnectionInfo.AzureMFA = pm_authentication_comboBox.SelectedIndex == 2;
 
-                if (!_localParamConnectionInfo.RequiresPassword)
+                if (!_localParamConnectionInfo.RequiresPassword && !_localParamConnectionInfo.AzureMFA)
                 {
                     _localParamConnectionInfo.Login = string.Empty;
+                    _localParamConnectionInfo.Password = string.Empty;
+                }
+                else if (_localParamConnectionInfo.AzureMFA)
+                {
+                    _localParamConnectionInfo.Login = pm_login_textBox.Text;
                     _localParamConnectionInfo.Password = string.Empty;
                 }
                 else
@@ -302,9 +317,14 @@ namespace SQLQueryStress
             _localMainConnectionInfo.IntegratedAuth = authentication_comboBox.SelectedIndex == 0;
             _localMainConnectionInfo.AzureMFA = authentication_comboBox.SelectedIndex == 2;
 
-            if (!_localMainConnectionInfo.RequiresPassword)
+            if (!_localMainConnectionInfo.RequiresPassword && !_localMainConnectionInfo.AzureMFA)
             {
                 _localMainConnectionInfo.Login = string.Empty;
+                _localMainConnectionInfo.Password = string.Empty;
+            }
+            else if (_localMainConnectionInfo.AzureMFA)
+            {
+                _localMainConnectionInfo.Login = login_textBox.Text;
                 _localMainConnectionInfo.Password = string.Empty;
             }
             else

@@ -79,6 +79,11 @@ namespace SQLQueryStress
 
                 if (AzureMFA)
                 {
+                    build.UserID = Login;
+                }
+
+                if (AzureMFA)
+                {
                     build.Authentication = SqlAuthenticationMethod.ActiveDirectoryInteractive;
                 }
 
