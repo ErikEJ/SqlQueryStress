@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <None Include="readme.md" Pack="true" PackagePath="\" />
-  </ItemGroup>  
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Include="..\SQLQueryStress\ConnectionInfo.cs" Link="ConnectionInfo.cs" />
