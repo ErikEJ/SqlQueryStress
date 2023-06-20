@@ -10,6 +10,9 @@
     <ProductName>SQLQueryStress</ProductName>
     <PublisherName>Adam Machanic</PublisherName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	<PublishSingleFile>true</PublishSingleFile>
+	<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+	<EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
