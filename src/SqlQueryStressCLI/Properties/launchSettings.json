@@ -2,7 +2,7 @@
   "profiles": {
     "SqlQueryStressCLI": {
       "commandName": "Project",
-      "commandLineArgs": "-s sample.json -t 8 -i script.sql"
+      "commandLineArgs": "--help"
     }
   }
 }

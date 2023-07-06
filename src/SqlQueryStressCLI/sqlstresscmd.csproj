@@ -6,8 +6,8 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
     <PackageVersion>0.9.16</PackageVersion>
-    <PackageReleaseNotes>remove .NET 5 support</PackageReleaseNotes>
-    <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
+    <PackageReleaseNotes>remove .NET 3.1 support</PackageReleaseNotes>
+    <TargetFrameworks>net6.0</TargetFrameworks>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>

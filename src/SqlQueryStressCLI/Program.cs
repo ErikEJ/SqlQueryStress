@@ -4,6 +4,7 @@ using SQLQueryStress;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace SqlQueryStressCLI
@@ -75,7 +76,11 @@ namespace SqlQueryStressCLI
 
         private static void DisplayHelp<T>(ParserResult<T> result, IEnumerable<Error> errors)
         {
-            if (errors.IsVersion())
+            if (errors != null && errors.Any() && errors.First().StopsProcessing)
+            {
+                return;
+            }
+            else if (errors.IsVersion())
             {
                 Console.WriteLine(HelpText.AutoBuild(result));
             }
