@@ -71,7 +71,7 @@ namespace SQLQueryStress
         {
             var dllName = new AssemblyName(args.Name).Name + ".dll";
             var assem = Assembly.GetExecutingAssembly();
-            var resourceName = assem.GetManifestResourceNames().Find(rn => rn.EndsWith(dllName, StringComparison.OrdinalIgnoreCase));
+            var resourceName = Array.Find(assem.GetManifestResourceNames(), rn => rn.EndsWith(dllName, StringComparison.OrdinalIgnoreCase));
             if (resourceName == null) return null; // Not found, maybe another handler will find it
 
             using var stream = assem.GetManifestResourceStream(resourceName);
