@@ -199,7 +199,7 @@ namespace SQLQueryStress
 
 
         //TODO: Monostate pattern to be investigated (class is never instantiated)
-        private class ParamServer
+        private sealed class ParamServer
         {
             private static int _currentRow;
             private static int _numRows;
@@ -261,7 +261,7 @@ namespace SQLQueryStress
             }
         }
 
-        private class QueryInput : IDisposable
+        private sealed class QueryInput : IDisposable
         {
             [ThreadStatic] private static QueryOutput _outInfo;
 
