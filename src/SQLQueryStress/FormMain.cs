@@ -495,6 +495,8 @@ namespace SQLQueryStress
                 return;
             }
 
+            LoadEngine.ExecuteCommand(_settings.MainDbConnectionInfo.ConnectionString, "CHECKPOINT");
+
             MessageBox.Show(LoadEngine.ExecuteCommand(_settings.MainDbConnectionInfo.ConnectionString, "DBCC DROPCLEANBUFFERS")
                 ? "Buffers cleared"
                 : "Errors encountered");
