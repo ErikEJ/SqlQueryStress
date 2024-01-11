@@ -5,8 +5,8 @@
     <PackAsTool>true</PackAsTool>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
-    <PackageVersion>0.9.16</PackageVersion>
-    <PackageReleaseNotes>remove .NET 3.1 support</PackageReleaseNotes>
+    <PackageVersion>0.9.17</PackageVersion>
+    <PackageReleaseNotes>Update M.D.S.</PackageReleaseNotes>
     <TargetFrameworks>net6.0</TargetFrameworks>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
@@ -43,7 +43,7 @@
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="3.1.5" />
     <PackageReference Include="Spectre.Console" Version="0.48.0" />
   </ItemGroup>
   
