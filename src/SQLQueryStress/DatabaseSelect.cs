@@ -30,9 +30,14 @@ namespace SQLQueryStress
 
             server_textBox.Text = _localMainConnectionInfo.Server;
 
+            if (SqlConnectionEncryptOption.TryParse(_localMainConnectionInfo.EncryptOption.ToString(), out SqlConnectionEncryptOption encrypt))
+            {
+                encrypt_Combo.SelectedItem = encrypt.ToString();
+            }
+
             if (!_localMainConnectionInfo.RequiresPassword)
             {
-                authentication_comboBox.SelectedIndex =  _localMainConnectionInfo.IntegratedAuth ? 0 : 2;
+                authentication_comboBox.SelectedIndex = _localMainConnectionInfo.IntegratedAuth ? 0 : 2;
                 login_textBox.Enabled = false;
                 password_textBox.Enabled = false;
             }
@@ -58,6 +63,7 @@ namespace SQLQueryStress
             if (!settings.ShareDbSettings)
             {
                 pm_server_textBox.Text = _localParamConnectionInfo.Server;
+                pm_encrypt_Combo.SelectedText = _localParamConnectionInfo.EncryptOption.ToString();
 
                 if (!_localParamConnectionInfo.RequiresPassword)
                 {
@@ -274,6 +280,11 @@ namespace SQLQueryStress
                 _localParamConnectionInfo.IntegratedAuth = pm_authentication_comboBox.SelectedIndex == 0;
                 _localParamConnectionInfo.AzureMFA = pm_authentication_comboBox.SelectedIndex == 2;
 
+                if (SqlConnectionEncryptOption.TryParse(pm_encrypt_Combo.Text, out SqlConnectionEncryptOption encrypt))
+                {
+                    _localParamConnectionInfo.EncryptOption = encrypt;
+                }
+
                 if (!_localParamConnectionInfo.RequiresPassword && !_localParamConnectionInfo.AzureMFA)
                 {
                     _localParamConnectionInfo.Login = string.Empty;
@@ -315,6 +326,12 @@ namespace SQLQueryStress
         {
             _localMainConnectionInfo.Server = server_textBox.Text;
             _localMainConnectionInfo.IntegratedAuth = authentication_comboBox.SelectedIndex == 0;
+
+            if (SqlConnectionEncryptOption.TryParse(encrypt_Combo.Text, out SqlConnectionEncryptOption encrypt))
+            {
+                _localMainConnectionInfo.EncryptOption = encrypt;
+            }
+
             _localMainConnectionInfo.AzureMFA = authentication_comboBox.SelectedIndex == 2;
 
             if (!_localMainConnectionInfo.RequiresPassword && !_localMainConnectionInfo.AzureMFA)
@@ -335,7 +352,6 @@ namespace SQLQueryStress
 
             if (appintent_check.Checked)
             {
-
                 _ = Enum.TryParse(appintent_combo.Text, out ApplicationIntent applicationIntent);
 
                 _localMainConnectionInfo.ApplicationIntent = applicationIntent;

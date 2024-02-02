@@ -27,6 +27,9 @@ namespace SQLQueryStress
         public string Server { get; set; }
 
         [DataMember]
+        public  SqlConnectionEncryptOption EncryptOption { get; set; }
+
+        [DataMember]
         public ApplicationIntent ApplicationIntent { get; set; }
 
         [DataMember]
@@ -57,6 +60,7 @@ namespace SQLQueryStress
             ConnectTimeout = 0;
             MaxPoolSize = 0;
             EnablePooling = true;
+            EncryptOption = SqlConnectionEncryptOption.Optional;
         }
 
         public ConnectionInfo(int connectTimeout, bool enablePooling, int maxPoolSize) : this()
@@ -102,6 +106,7 @@ namespace SQLQueryStress
                 }
 
                 build.Pooling = EnablePooling;
+                build.Encrypt = EncryptOption;
 
                 return build.ConnectionString;
             }
@@ -133,6 +138,7 @@ namespace SQLQueryStress
             to.Password = Password;
             to.Database = Database;
             to.ApplicationIntent = ApplicationIntent;
+            to.EncryptOption = EncryptOption;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]
