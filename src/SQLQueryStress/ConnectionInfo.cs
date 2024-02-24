@@ -41,6 +41,9 @@ namespace SQLQueryStress
         [DataMember]
         public int MaxPoolSize { get; set; }
 
+        [DataMember]
+        public string AdditionalParameters { get; set; }
+
         public bool RequiresPassword
         { 
             get
@@ -61,6 +64,7 @@ namespace SQLQueryStress
             MaxPoolSize = 0;
             EnablePooling = true;
             EncryptOption = SqlConnectionEncryptOption.Optional;
+            AdditionalParameters = String.Empty;
         }
 
         public ConnectionInfo(int connectTimeout, bool enablePooling, int maxPoolSize) : this()
@@ -108,7 +112,14 @@ namespace SQLQueryStress
                 build.Pooling = EnablePooling;
                 build.Encrypt = EncryptOption;
 
-                return build.ConnectionString;
+                string connString = build.ConnectionString;
+
+                if (!string.IsNullOrEmpty(AdditionalParameters))
+                {
+                    connString = $"{connString};{AdditionalParameters}";
+                }
+
+                return connString;
             }
         }
 
@@ -139,6 +150,7 @@ namespace SQLQueryStress
             to.Database = Database;
             to.ApplicationIntent = ApplicationIntent;
             to.EncryptOption = EncryptOption;
+            to.AdditionalParameters = AdditionalParameters;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]

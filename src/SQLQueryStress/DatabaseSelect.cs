@@ -29,6 +29,7 @@ namespace SQLQueryStress
             InitializeComponent();
 
             server_textBox.Text = _localMainConnectionInfo.Server;
+            additionalParameters_textBox.Text = _localMainConnectionInfo.AdditionalParameters;
 
             if (SqlConnectionEncryptOption.TryParse(_localMainConnectionInfo.EncryptOption.ToString(), out SqlConnectionEncryptOption encrypt))
             {
@@ -63,6 +64,7 @@ namespace SQLQueryStress
             if (!settings.ShareDbSettings)
             {
                 pm_server_textBox.Text = _localParamConnectionInfo.Server;
+                pm_additionalParameters_textBox.Text = _localParamConnectionInfo.AdditionalParameters;
                 pm_encrypt_Combo.SelectedText = _localParamConnectionInfo.EncryptOption.ToString();
 
                 if (!_localParamConnectionInfo.RequiresPassword)
@@ -303,6 +305,8 @@ namespace SQLQueryStress
 
                 _localParamConnectionInfo.Database = pm_db_comboBox.Text;
 
+                _localParamConnectionInfo.AdditionalParameters = additionalParameters_textBox.Text;
+
                 if (pm_appintent_check.Checked)
                 {
 
@@ -358,6 +362,8 @@ namespace SQLQueryStress
             }
 
             _localMainConnectionInfo.Database = db_comboBox.Text;
+
+            _localMainConnectionInfo.AdditionalParameters = additionalParameters_textBox.Text;
         }
 
         private void shareSettings_checkBox_CheckedChanged(object sender, EventArgs e)
