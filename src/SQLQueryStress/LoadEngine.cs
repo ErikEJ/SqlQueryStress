@@ -390,7 +390,6 @@ namespace SQLQueryStress
                                     if (_statsComm != null)
                                     {
                                         _statsComm.ExecuteNonQuery();
-                                        Thread.Sleep(0);
                                         conn.InfoMessage += handler;
                                     }
                                 }
@@ -407,25 +406,20 @@ namespace SQLQueryStress
                                 if (_forceDataRetrieval)
                                 {
                                     var reader = _queryComm.ExecuteReader();
-                                    Thread.Sleep(0);
 
                                     do
                                     {
-                                        Thread.Sleep(0);
-
                                         while (!runCancelled && reader.Read())
                                         {
                                             //grab the first column to force the row down the pipe
                                             // ReSharper disable once UnusedVariable
                                             var x = reader[0];
-                                            Thread.Sleep(0);
                                         }
                                     } while (!runCancelled && reader.NextResult());
                                 }
                                 else
                                 {
                                     _queryComm.ExecuteNonQuery();
-                                    Thread.Sleep(0);
                                 }
 
                                 _sw.Stop();
