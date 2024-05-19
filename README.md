@@ -6,11 +6,7 @@ SQL query stress simulator created by Adam Machanic
 [Introduction to SQL Query Stress](https://github.com/ErikEJ/SqlQueryStress/wiki)
 
 ## Download
-Install from the [Microsoft Store](https://www.microsoft.com/en-us/p/sqlquerystress/9n46qj5sbgkb?activetab=pivot:overviewtab)
-
-You can download a .zip file with the [latest daily build from GitHub releases](https://github.com/ErikEJ/SqlQueryStress/releases)
-
-Notice that you must have the [.NET 6 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/6.0/runtime) installed.
+Download a signed .exe file with the [latest daily build from GitHub releases](https://github.com/ErikEJ/SqlQueryStress/releases)
 
 [Release notes](https://github.com/ErikEJ/SqlQueryStress/wiki/Release-notes)
 
