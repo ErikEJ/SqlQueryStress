@@ -7,7 +7,7 @@
     <PackageReadmeFile>readme.md</PackageReadmeFile>
     <PackageVersion>0.9.17</PackageVersion>
     <PackageReleaseNotes>Update M.D.S.</PackageReleaseNotes>
-    <TargetFrameworks>net6.0</TargetFrameworks>
+    <TargetFramework>net6.0</TargetFramework>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
