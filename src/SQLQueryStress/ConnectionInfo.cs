@@ -27,7 +27,24 @@ namespace SQLQueryStress
         public string Server { get; set; }
 
         [DataMember]
-        public  SqlConnectionEncryptOption EncryptOption { get; set; }
+        public string EncryptOption { get; set; }
+
+        [IgnoreDataMember]
+        public SqlConnectionEncryptOption Encrypt 
+        {
+            get
+            {
+                if ( SqlConnectionEncryptOption.TryParse(EncryptOption, out SqlConnectionEncryptOption result))
+                {
+                    return result;
+                }
+                return SqlConnectionEncryptOption.Optional;
+            }
+            set
+            {
+                EncryptOption = value.ToString();
+            }
+        }
 
         [DataMember]
         public ApplicationIntent ApplicationIntent { get; set; }
@@ -63,8 +80,8 @@ namespace SQLQueryStress
             ConnectTimeout = 0;
             MaxPoolSize = 0;
             EnablePooling = true;
-            EncryptOption = SqlConnectionEncryptOption.Optional;
-            AdditionalParameters = String.Empty;
+            Encrypt = SqlConnectionEncryptOption.Optional;
+            AdditionalParameters = string.Empty;
         }
 
         public ConnectionInfo(int connectTimeout, bool enablePooling, int maxPoolSize) : this()
@@ -110,7 +127,7 @@ namespace SQLQueryStress
                 }
 
                 build.Pooling = EnablePooling;
-                build.Encrypt = EncryptOption;
+                build.Encrypt = Encrypt;
 
                 string connString = build.ConnectionString;
 
