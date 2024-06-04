@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SQLQueryStress
 {
-    internal class JsonSerializer
+    internal static class JsonSerializer
     {
         public static T ReadToObject<T>(string json)
         {

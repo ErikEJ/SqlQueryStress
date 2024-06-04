@@ -42,7 +42,10 @@ namespace SQLQueryStress
             }
             set
             {
-                EncryptOption = value.ToString();
+                if (value != null)
+                {
+                    EncryptOption = value.ToString();
+                }
             }
         }
 
@@ -154,10 +157,7 @@ namespace SQLQueryStress
 
         public void CopyTo(ConnectionInfo to)
         {
-            if (to is null)
-            {
-                throw new ArgumentNullException(nameof(to));
-            }
+            ArgumentNullException.ThrowIfNull(to);
 
             to.Server = Server;
             to.IntegratedAuth = IntegratedAuth;

@@ -22,6 +22,7 @@ TODO, version 1.0::::
 
 namespace SQLQueryStress
 {
+#pragma warning disable CA1031 // Do not catch general exception types
     public partial class FormMain : Form
     {
         private const string Dashes = "---";
@@ -188,11 +189,7 @@ namespace SQLQueryStress
                     theMessage = output.E.Message;
                 }
 
-                if (!_exceptions.ContainsKey(theMessage))
-                {
-                    _exceptions.Add(theMessage, 1);
-                }
-                else
+                if (!_exceptions.TryAdd(theMessage, 1))
                 {
                     _exceptions[theMessage] += 1;
                 }
@@ -234,7 +231,9 @@ namespace SQLQueryStress
             _backgroundWorkerCTS?.Dispose();
 
             db_label.Text = string.Empty;
+#pragma warning disable CA1303 // Do not pass literals as localized parameters
             activeThreads_textBox.Text = "0";
+#pragma warning restore CA1303 // Do not pass literals as localized parameters
 
             if (!string.IsNullOrEmpty(_runParameters.ResultsAutoSaveFileName))
             {
@@ -253,7 +252,7 @@ namespace SQLQueryStress
         private void AutoSaveResults(string resultsAutoSaveFileName)
         {
             string extension = Path.GetExtension(resultsAutoSaveFileName).ToUpperInvariant();
-            if (extension.Equals(".csv", StringComparison.InvariantCultureIgnoreCase))
+            if (extension.Equals(".csv", StringComparison.OrdinalIgnoreCase))
             {
                 ExportBenchMarkToCsvFile(resultsAutoSaveFileName);
             }
@@ -296,6 +295,7 @@ namespace SQLQueryStress
             Dispose();
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "<Pending>")]
         private void go_button_Click(object sender, EventArgs e)
         {
             if (!_settings.MainDbConnectionInfo.TestConnection())
@@ -616,7 +616,7 @@ namespace SQLQueryStress
             tw.WriteLine("TestId,TestStartTime,ElapsedTime,Iterations,Threads,Delay,CompletedIterations,AvgCPUSeconds,AvgActualSeconds,AvgClientSeconds,AvgLogicalReads");
         }
 
-        private void WriteBenchmarkCsvText(TextWriter tw)
+        private void WriteBenchmarkCsvText(StreamWriter tw)
         {
             tw.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}",
                 _testGuid,
@@ -647,3 +647,4 @@ namespace SQLQueryStress
 
     }
 }
+#pragma warning restore CA1031 // Do not catch general exception types

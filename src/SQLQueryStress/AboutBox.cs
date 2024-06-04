@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace SQLQueryStress
 {
-    internal partial class AboutBox : Form
+    sealed partial class AboutBox : Form
     {
         public AboutBox()
         {

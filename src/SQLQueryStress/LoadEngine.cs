@@ -12,7 +12,8 @@ using System.Threading.Tasks;
 
 namespace SQLQueryStress
 {
-    internal class LoadEngine
+#pragma warning disable CA1031 // Do not catch general exception types
+    sealed class LoadEngine
     {
         private static BlockingCollection<QueryOutput> QueryOutInfo;
         private static CancellationTokenSource _backgroundWorkerCTS;
@@ -67,7 +68,9 @@ namespace SQLQueryStress
         {
             using var conn = new SqlConnection(connectionString);
             conn.Open();
+#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
             using var cmd = new SqlCommand(sql, conn);
+#pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
             cmd.ExecuteNonQuery();
             return true;
         }
@@ -121,7 +124,9 @@ namespace SQLQueryStress
 
                 SqlCommand statsComm = null;
 
+#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
                 var queryComm = new SqlCommand { CommandTimeout = _commandTimeout, Connection = conn, CommandText = _query };
+#pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
 
                 if (useParams)
                 {
@@ -199,7 +204,7 @@ namespace SQLQueryStress
 
 
         //TODO: Monostate pattern to be investigated (class is never instantiated)
-        private sealed class ParamServer
+        private static class ParamServer
         {
             private static int _currentRow;
             private static int _numRows;
@@ -235,7 +240,9 @@ namespace SQLQueryStress
 
             public static void Initialize(string paramQuery, string connString, Dictionary<string, string> paramMappings)
             {
+#pragma warning disable CA2100
                 using var sqlDataAdapter = new SqlDataAdapter(paramQuery, connString);
+#pragma warning restore CA2100
                 _theParams = new DataTable();
                 sqlDataAdapter.Fill(_theParams);
 
@@ -522,7 +529,7 @@ namespace SQLQueryStress
             }
         }
 
-        public class QueryOutput
+        internal sealed class QueryOutput
         {
             public int CpuTime;
             public Exception E;
@@ -550,3 +557,4 @@ namespace SQLQueryStress
         }
     }
 }
+#pragma warning restore CA1031 // Do not catch general exception types

@@ -6,6 +6,7 @@ namespace SQLQueryStress
     /// <summary>
     /// Interaction logic for SqlControl.xaml
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "Windows only")]
     public partial class SqlControl
     {
         public SqlControl()
@@ -24,6 +25,7 @@ namespace SQLQueryStress
             get { return AvalonEdit.SelectedText; }
         }
 
+        
         private void SqlControl_OnLoaded(object sender, RoutedEventArgs e)
         {
             Stream stream = null;
@@ -43,8 +45,7 @@ namespace SQLQueryStress
             }
             finally
             {
-                if (stream != null)
-                    stream.Dispose();    
+                stream.Dispose();    
             }
         }
     }
