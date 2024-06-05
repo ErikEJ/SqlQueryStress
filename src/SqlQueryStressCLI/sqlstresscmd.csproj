@@ -5,7 +5,7 @@
     <PackAsTool>true</PackAsTool>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
-    <PackageVersion>0.9.17</PackageVersion>
+    <PackageVersion>0.9.18</PackageVersion>
     <PackageReleaseNotes>Update M.D.S.</PackageReleaseNotes>
     <TargetFramework>net6.0</TargetFramework>
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
