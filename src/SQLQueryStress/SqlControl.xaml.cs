@@ -37,7 +37,6 @@ namespace SQLQueryStress
                 if (stream == null) return;
                 using (var reader = new System.Xml.XmlTextReader(stream))
                 {
-                    stream = null;
                     AvalonEdit.SyntaxHighlighting =
                         ICSharpCode.AvalonEdit.Highlighting.Xshd.HighlightingLoader.Load(reader,
                             ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance);
@@ -45,7 +44,7 @@ namespace SQLQueryStress
             }
             finally
             {
-                stream.Dispose();    
+                stream?.Dispose();    
             }
         }
     }
