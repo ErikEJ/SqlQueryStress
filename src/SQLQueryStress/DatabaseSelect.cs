@@ -186,7 +186,7 @@ namespace SQLQueryStress
                     return;
                 if (ex.Number != 4060)
                 {
-                    MessageBox.Show(Resources.ConnFail + Environment.NewLine + Environment.NewLine + ex.Message);
+                    MessageBox.Show(Resources.ConnFail + Environment.NewLine + ex.Message);
 
                     if (dbComboboxParam == db_comboBox)
                     {
