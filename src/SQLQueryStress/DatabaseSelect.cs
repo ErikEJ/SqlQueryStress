@@ -186,7 +186,7 @@ namespace SQLQueryStress
                     return;
                 if (ex.Number != 4060)
                 {
-                    MessageBox.Show(Resources.ConnFail + Environment.NewLine + ex.Message);
+                    MessageBox.Show($"{Resources.ConnFail}{Environment.NewLine}{ex.Message}", Resources.AppTitle);
 
                     if (dbComboboxParam == db_comboBox)
                     {
@@ -323,7 +323,7 @@ namespace SQLQueryStress
         {
             pm_saveLocalSettings();
 
-            MessageBox.Show(_localParamConnectionInfo.TestConnection() ? Resources.ConnSucc : Resources.ConnFail);
+            MessageBox.Show(_localParamConnectionInfo.TestConnection() ? Resources.ConnSucc : Resources.ConnFail, Resources.AppTitle);
         }
 
         private void SaveLocalSettings()
@@ -396,7 +396,7 @@ namespace SQLQueryStress
         {
             SaveLocalSettings();
 
-            MessageBox.Show(_localMainConnectionInfo.TestConnection() ? Resources.ConnSucc : Resources.ConnFail);
+            MessageBox.Show(_localMainConnectionInfo.TestConnection() ? Resources.ConnSucc : Resources.ConnFail, Resources.AppTitle);
         }
 
 

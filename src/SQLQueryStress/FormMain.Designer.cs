@@ -1,3 +1,4 @@
+using SQLQueryStress.Properties;
 using System.Windows.Forms;
 
 namespace SQLQueryStress
@@ -16,14 +17,14 @@ namespace SQLQueryStress
         protected override void Dispose(bool disposing)
         {
             if (backgroundWorker1.CancellationPending)
-                System.Windows.Forms.MessageBox.Show("Please wait while background threads are cancelled.");
+                System.Windows.Forms.MessageBox.Show("Please wait while background threads are canceled.", Resources.AppTitle);
             else if (backgroundWorker1.IsBusy)
             {
                 if (System.Windows.Forms.MessageBox.Show(
-                "A test is currently running.  Cancel and shut down?",
-                "Really Close?",
-                System.Windows.Forms.MessageBoxButtons.YesNo,
-                System.Windows.Forms.MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                    "Really Close? A test is currently running.  Cancel and shut down?",
+                    Resources.AppTitle,
+                    System.Windows.Forms.MessageBoxButtons.YesNo,
+                    System.Windows.Forms.MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
                 {
                     cancel_button_Click(new System.String(' ', 0), null);
                 }

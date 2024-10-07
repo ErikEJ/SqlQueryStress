@@ -108,7 +108,7 @@ namespace SQLQueryStress
 
             if (!dbInfo.TestConnection())
             {
-                MessageBox.Show(Resources.MustSetValidDatabaseConn);
+                MessageBox.Show(Resources.MustSetValidDatabaseConn, Resources.AppTitle);
                 return;
             }
 
@@ -124,7 +124,7 @@ namespace SQLQueryStress
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message, Resources.AppTitle);
             }
 
             if (reader != null)
@@ -181,7 +181,7 @@ namespace SQLQueryStress
         private string[] GetParams()
         {
             //Find all SQL variables:
-            //'@', preceeded by '=', ',', or any white space character
+            //'@', preceded by '=', ',', or any white space character
             //then, any "word" character
             //Finally, '=', ',', or any white space, repeated 0 or more times 
             //(in the case of end-of-string, will be 0 times)
@@ -197,7 +197,7 @@ namespace SQLQueryStress
             }
 
             if (output.Count == 0)
-                MessageBox.Show(Resources.NoVarsWereIdentified);
+                MessageBox.Show(Resources.NoVarsWereIdentified, Resources.AppTitle);
 
             return output.ToArray();
         }
