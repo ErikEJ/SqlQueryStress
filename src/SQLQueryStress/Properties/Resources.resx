@@ -157,4 +157,7 @@
   <data name="TextFiles" xml:space="preserve">
     <value>Text Files (*.txt)|*.txt</value>
   </data>
+  <data name="AppTitle" xml:space="preserve">
+    <value>SqlQueryStress</value>
+  </data>
 </root>

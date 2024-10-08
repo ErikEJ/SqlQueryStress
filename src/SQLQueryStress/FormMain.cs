@@ -300,7 +300,7 @@ namespace SQLQueryStress
         {
             if (!_settings.MainDbConnectionInfo.TestConnection())
             {
-                MessageBox.Show(Resources.MustSetValidDbConnInfo);
+                MessageBox.Show(Resources.MustSetValidDbConnInfo, Resources.AppTitle);
                 return;
             }
 
@@ -378,7 +378,7 @@ namespace SQLQueryStress
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"{Resources.ErrLoadingSettings}: {ex.Message}");
+                MessageBox.Show($"{Resources.ErrLoadingSettings}: {ex.Message}", Resources.AppTitle);
             }
 
             sqlControl1.Text = _settings.MainQuery;
@@ -414,7 +414,7 @@ namespace SQLQueryStress
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"{Resources.ErrorSavingSettings}: {ex.Message}");
+                MessageBox.Show($"{Resources.ErrorSavingSettings}: {ex.Message}", Resources.AppTitle);
             }
         }
 
@@ -491,7 +491,7 @@ namespace SQLQueryStress
         {
             if (!_settings.MainDbConnectionInfo.TestConnection())
             {
-                MessageBox.Show(Resources.MustSetValidDbConnInfo);
+                MessageBox.Show(Resources.MustSetValidDbConnInfo, Resources.AppTitle);
                 return;
             }
 
@@ -499,20 +499,22 @@ namespace SQLQueryStress
 
             MessageBox.Show(LoadEngine.ExecuteCommand(_settings.MainDbConnectionInfo.ConnectionString, "DBCC DROPCLEANBUFFERS")
                 ? "Buffers cleared"
-                : "Errors encountered");
+                : "Errors encountered",
+                Resources.AppTitle);
         }
 
         private void btnFreeCache_Click(object sender, EventArgs e)
         {
             if (!_settings.MainDbConnectionInfo.TestConnection())
             {
-                MessageBox.Show(Resources.MustSetValidDbConnInfo);
+                MessageBox.Show(Resources.MustSetValidDbConnInfo, Resources.AppTitle);
                 return;
             }
 
             MessageBox.Show(LoadEngine.ExecuteCommand(_settings.MainDbConnectionInfo.ConnectionString, "DBCC FREEPROCCACHE")
                 ? "Cache freed"
-                : "Errors encountered");
+                : "Errors encountered",
+                Resources.AppTitle);
         }
 
 
@@ -540,8 +542,7 @@ namespace SQLQueryStress
             catch (Exception)
             {
                 MessageBox
-                    .Show("Error While Saving BenchMark",
-                    $"There was an error saving the benchmark to '{fileName}', make sure you have write privileges to that path");
+                    .Show($"Error While Saving BenchMark: There was an error saving the benchmark to '{fileName}', make sure you have write privileges to that path", Resources.AppTitle);
             }
         }
 
