@@ -287,6 +287,8 @@ namespace SQLQueryStress
                     _localParamConnectionInfo.Encrypt = encrypt;
                 }
 
+                _localParamConnectionInfo.TrustServerCertificate = pm_trustcert_check.Checked;
+
                 if (!_localParamConnectionInfo.RequiresPassword && !_localParamConnectionInfo.AzureMFA)
                 {
                     _localParamConnectionInfo.Login = string.Empty;
@@ -335,6 +337,8 @@ namespace SQLQueryStress
             {
                 _localMainConnectionInfo.Encrypt = encrypt;
             }
+
+            _localMainConnectionInfo.TrustServerCertificate = trustcert_check.Checked;
 
             _localMainConnectionInfo.AzureMFA = authentication_comboBox.SelectedIndex == 2;
 

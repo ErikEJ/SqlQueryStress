@@ -29,6 +29,9 @@ namespace SQLQueryStress
         [DataMember]
         public string EncryptOption { get; set; }
 
+        [DataMember]
+        public bool TrustServerCertificate { get; set; }
+
         [IgnoreDataMember]
         public SqlConnectionEncryptOption Encrypt 
         {
@@ -98,7 +101,7 @@ namespace SQLQueryStress
         {
             get
             {
-                var build = new SqlConnectionStringBuilder { DataSource = Server, IntegratedSecurity = IntegratedAuth, ApplicationName = "SQLQueryStress", ApplicationIntent = ApplicationIntent };
+                var build = new SqlConnectionStringBuilder { DataSource = Server, IntegratedSecurity = IntegratedAuth, ApplicationName = "SQLQueryStress", ApplicationIntent = ApplicationIntent, TrustServerCertificate = TrustServerCertificate };
                 if (!IntegratedAuth && !AzureMFA)
                 {
                     build.UserID = Login;
