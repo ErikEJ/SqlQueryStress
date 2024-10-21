@@ -29,6 +29,7 @@ namespace SQLQueryStress
             InitializeComponent();
 
             server_textBox.Text = _localMainConnectionInfo.Server;
+            trustcert_check.Checked = _localMainConnectionInfo.TrustServerCertificate;
             additionalParameters_textBox.Text = _localMainConnectionInfo.AdditionalParameters;
 
             if (SqlConnectionEncryptOption.TryParse(_localMainConnectionInfo.EncryptOption, out SqlConnectionEncryptOption encrypt))
@@ -66,6 +67,7 @@ namespace SQLQueryStress
                 pm_server_textBox.Text = _localParamConnectionInfo.Server;
                 pm_additionalParameters_textBox.Text = _localParamConnectionInfo.AdditionalParameters;
                 pm_encrypt_Combo.SelectedText = _localParamConnectionInfo.EncryptOption;
+                pm_trustcert_check.Checked = _localParamConnectionInfo.TrustServerCertificate;
 
                 if (!_localParamConnectionInfo.RequiresPassword)
                 {

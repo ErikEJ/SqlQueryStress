@@ -134,6 +134,7 @@ namespace SQLQueryStress
 
                 build.Pooling = EnablePooling;
                 build.Encrypt = Encrypt;
+                build.TrustServerCertificate = TrustServerCertificate;
 
                 string connString = build.ConnectionString;
 
@@ -171,6 +172,7 @@ namespace SQLQueryStress
             to.ApplicationIntent = ApplicationIntent;
             to.EncryptOption = EncryptOption;
             to.AdditionalParameters = AdditionalParameters;
+            to.TrustServerCertificate = TrustServerCertificate;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types")]
