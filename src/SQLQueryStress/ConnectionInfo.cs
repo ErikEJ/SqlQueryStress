@@ -188,8 +188,9 @@ namespace SQLQueryStress
                 {
                     conn.Open(SqlConnectionOverrides.OpenWithoutRetry);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Console.WriteLine($"Failed to connect to server: {ex}");
                     return false;
                 }
             }
