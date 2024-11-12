@@ -30,7 +30,7 @@ sqlstresscmd -x
 sqlstresscmd -s sample.json -t 1
 ```
 
-![](https://github.com/ErikEJ/SqlQueryStress/blob/master/src/SqlQueryStressCLI/sample.png)
+![Sample screenshot](https://raw.githubusercontent.com/ErikEJ/SqlQueryStress/refs/heads/master/src/SqlQueryStressCLI/sample.png)
 
 To get help, run
 
