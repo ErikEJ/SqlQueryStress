@@ -59,13 +59,13 @@ To stop testing, click the Cancel button.  Note that cancellation of a test may 
 Settings for a test, including the query, database information, and parameter assignments, can be saved and re-loaded using the File menu.  Keep in mind that all database information is persisted -- do not save sensitive database passwords!";
              */
         }
-
+/*
         public sealed override string Text
         {
             get { return base.Text; }
             set { base.Text = value; }
         }
-
+*/
         private void okButton_Click(object sender, EventArgs e)
         {
             Dispose();
