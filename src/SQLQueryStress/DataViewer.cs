@@ -3,6 +3,7 @@
 using System;
 using System.Data;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 #endregion
 
@@ -15,6 +16,7 @@ namespace SQLQueryStress
             InitializeComponent();
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DataTable DataView { get; set; }
 
         private void Form2_Load(object sender, EventArgs e)

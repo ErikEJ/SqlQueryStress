@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,7 +32,7 @@ namespace SQLQueryStress
         //private readonly List<Queue<queryOutput>> queryOutInfoPool = new List<Queue<queryOutput>>();        
         private readonly string _paramQuery;
         private readonly string _query;
-        private readonly List<Thread> _threadPool = new List<Thread>();
+        private readonly List<Task> _threadPool = new();
         private readonly int _threads;
         private static int _finishedThreads;
         private int _queryDelay;
@@ -113,7 +114,8 @@ namespace SQLQueryStress
             SqlConnection.ClearPool(conn);
             conn.Open();
             conn.Dispose();
-
+            using var workerCTS = new CancellationTokenSource();
+            var token = workerCTS.Token;
             //Spin up the load threads
             for (var i = 0; i < _threads; i++)
             {
@@ -146,31 +148,36 @@ namespace SQLQueryStress
                     //                    this.queryOutInfo,
                     _iterations, _forceDataRetrieval, _queryDelay, worker, _killQueriesOnCancel, _threads);
 
-                var theThread = new Thread(input.StartLoadThread) { Priority = ThreadPriority.BelowNormal, IsBackground = true };
-                theThread.Name = "thread: " + i;
+                var theThread = input.StartLoadThread(token);
+               // theThread.Name = "thread: " + i;
 
                 _threadPool.Add(theThread);
                 _commandPool.Add(queryComm);
                 //queryOutInfoPool.Add(queryOutInfo);
             }
             // create a token source for the workers to be able to listen to a cancel event
-            using var workerCTS = new CancellationTokenSource();
+            //using var workerCTS = new CancellationTokenSource();
             _finishedThreads = 0;
             for (var i = 0; i < _threads; i++)
             {
-                _threadPool[i].Start(workerCTS.Token);
+              //  _threadPool[i].Start(workerCTS.Token);
             }
 
             //Start reading the queue...
             var cancelled = false;
 
-            while (!cancelled)
+
+            while (_threadPool.Any(x => !x.IsCompleted))
             {
                 QueryOutput theOut = null;
                 try
                 {
+                    Task.Delay(250).GetAwaiter().GetResult();
+
                     // wait for OutInfo items in the queue or a user cancel event
-                    theOut = QueryOutInfo.Take(_backgroundWorkerCTS.Token);
+                    if(!QueryOutInfo.TryTake(out theOut)){
+                        continue;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -184,8 +191,8 @@ namespace SQLQueryStress
                         foreach (var theThread in _threadPool)
                         {
                             // give the thread max 5 seconds to cancel nicely
-                            if (!theThread.Join(5000))
-                                theThread.Interrupt();
+                        //    if (!theThread.Join(5000))
+                          //      theThread.Interrupt();
                         }
                     }
                     SqlConnection.ClearAllPools();
@@ -270,7 +277,7 @@ namespace SQLQueryStress
 
         private sealed class QueryInput : IDisposable
         {
-            [ThreadStatic] private static QueryOutput _outInfo;
+            private static QueryOutput _outInfo=new();
 
             //This regex is used to find the number of logical reads
             //in the messages collection returned in the queryOutput class
@@ -361,7 +368,7 @@ namespace SQLQueryStress
                 }
             }
 
-            public void StartLoadThread(Object token)
+            public async Task StartLoadThread(Object token)
             {
                 bool runCancelled = false;
 
@@ -387,16 +394,16 @@ namespace SQLQueryStress
                             try
                             {
                                 //initialize the outInfo structure
-                                _outInfo = new QueryOutput();
+                                //_outInfo = new QueryOutput();
 
                                 if (conn != null)
                                 {
-                                    conn.Open();
+                                    await conn.OpenAsync();
 
                                     //set up the statistics gathering
                                     if (_statsComm != null)
                                     {
-                                        _statsComm.ExecuteNonQuery();
+                                        await _statsComm.ExecuteNonQueryAsync();
                                         conn.InfoMessage += handler;
                                     }
                                 }
@@ -412,21 +419,21 @@ namespace SQLQueryStress
                                 //TODO: This could be made better
                                 if (_forceDataRetrieval)
                                 {
-                                    var reader = _queryComm.ExecuteReader();
+                                    var reader = await _queryComm.ExecuteReaderAsync();
 
                                     do
                                     {
-                                        while (!runCancelled && reader.Read())
+                                        while (!runCancelled && await reader.ReadAsync())
                                         {
                                             //grab the first column to force the row down the pipe
                                             // ReSharper disable once UnusedVariable
                                             var x = reader[0];
                                         }
-                                    } while (!runCancelled && reader.NextResult());
+                                    } while (!runCancelled && await reader.NextResultAsync());
                                 }
                                 else
                                 {
-                                    _queryComm.ExecuteNonQuery();
+                                   await  _queryComm.ExecuteNonQueryAsync();
                                 }
 
                                 _sw.Stop();
@@ -450,7 +457,7 @@ namespace SQLQueryStress
                                     {
                                         conn.InfoMessage -= handler;
                                     }
-                                    conn.Close();
+                                    await conn.CloseAsync();
                                 }
                             }
 
@@ -467,7 +474,6 @@ namespace SQLQueryStress
                                 finished,
                                 (infoMessages == null || infoMessages.Count == 0) ? null : infoMessages.ToArray());
                              */
-
                             _outInfo.E = outException;
                             _outInfo.Time = _sw.Elapsed;
                             _outInfo.Finished = finished;
@@ -485,7 +491,7 @@ namespace SQLQueryStress
                                 try
                                 {
                                     if (_queryDelay > 0)
-                                        Task.Delay(_queryDelay, ctsToken).Wait();
+                                        await Task.Delay(_queryDelay, ctsToken);
                                 }
                                 catch (AggregateException ae)
                                 {
