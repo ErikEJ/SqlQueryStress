@@ -12,7 +12,7 @@ namespace SQLQueryStress.Controls
         private VScrollBar _verticalScrollBar;
         private HScrollBar _horizontalScrollBar;
         private Panel _chartPanel;
-        private readonly float _timeScale = 20.0f; // pixels per second
+        private float _timeScale = 2000.0f; // pixels per second (start at 2 pixels per millisecond)
         private readonly int _rowHeight = 20;
         private readonly int _rowSpacing = 4;
         private DateTime _ganttStartTime;
@@ -20,11 +20,51 @@ namespace SQLQueryStress.Controls
         private readonly Random _random = new Random(42);
         private ToolTip _tooltip = new ToolTip();
         private Point _lastMousePosition;
+        private const float MIN_SCALE = 100.0f; // 0.1 pixel per millisecond
+        private const float MAX_SCALE = 10000.0f; // 10 pixels per millisecond
+        private const float ZOOM_FACTOR = 1.2f;
 
         public GanttChartControl()
         {
             InitializeComponents();
             InitializeGanttChart();
+        }
+
+        public void ZoomIn()
+        {
+            _timeScale = Math.Min(_timeScale * ZOOM_FACTOR, MAX_SCALE);
+            UpdateScrollBars();
+            _chartPanel.Invalidate();
+        }
+
+        public void ZoomOut()
+        {
+            _timeScale = Math.Max(_timeScale / ZOOM_FACTOR, MIN_SCALE);
+            UpdateScrollBars();
+            _chartPanel.Invalidate();
+        }
+
+        public void FitToData()
+        {
+            if (_ganttItems.Count == 0) return;
+
+            // Find the time range of the data
+            var startTime = _ganttItems.Min(x => x.StartTime);
+            var endTime = _ganttItems.Max(x => x.StartTime.Add(x.Duration));
+            var totalSeconds = (endTime - startTime).TotalSeconds;
+
+            // Calculate scale needed to fit the width
+            var availableWidth = _chartPanel.Width - 50; // Leave some margin
+            _timeScale = (float)(availableWidth / totalSeconds);
+
+            // Ensure minimum scale shows 5ms as 10 pixels
+            _timeScale = Math.Max(MIN_SCALE, Math.Min(_timeScale, MAX_SCALE));
+            
+            // Update start time to include some padding
+            _ganttStartTime = startTime.AddMilliseconds(-100); // 100ms padding
+
+            UpdateScrollBars();
+            _chartPanel.Invalidate();
         }
 
         public void AddGanttItem(GanttItem item)
@@ -71,6 +111,9 @@ namespace SQLQueryStress.Controls
 
             // Add mouse move handler to chart panel
             _chartPanel.MouseMove += ChartPanel_MouseMove;
+
+            // Add mouse wheel handler for zooming
+            _chartPanel.MouseWheel += ChartPanel_MouseWheel;
 
             // Add controls
             Controls.Add(_chartPanel);
@@ -126,18 +169,14 @@ namespace SQLQueryStress.Controls
             }
             Debug.WriteLine($"Drawing {_ganttItems.Count} items");
             int c = 0;
-            // Draw items
-            foreach (var item in _ganttItems.OrderBy(x=>x.Row))
+            // Draw items with millisecond precision
+            foreach (var item in _ganttItems.OrderBy(x => x.Row))
             {
                 var offsetSeconds = (item.StartTime - _ganttStartTime).TotalSeconds;
                 var x = (float)(offsetSeconds * _timeScale);
                 var y = item.Row * (_rowHeight + _rowSpacing);
-                var width = (float)(item.Duration.TotalSeconds * _timeScale);
-
-                if (item.Row == 1)
-                {
-                    Debug.WriteLine($"Drawing {c++},{item.StartTime.Millisecond},{item.Duration.TotalMilliseconds}{x},{y},{width}");
-                }
+                var width = Math.Max(2.0f, (float)(item.Duration.TotalSeconds * _timeScale)); // Minimum 2px width
+                
                 using (var brush = new SolidBrush(item.Color))
                 {
                     var rect = new RectangleF(x, y, width, _rowHeight);
@@ -150,16 +189,46 @@ namespace SQLQueryStress.Controls
                 }
             }
 
-            // Draw time scale
+            // Draw time scale with millisecond precision
             using (var pen = new Pen(Color.Black))
             using (var font = new Font("Arial", 8))
             using (var brush = new SolidBrush(Color.Black))
             {
-                for (int i = 0; i <= 60; i += 5)
+                // Calculate appropriate time interval based on zoom level
+                float pixelsPerInterval = 100; // Desired pixels between markers
+                float millisecondsPerInterval = (pixelsPerInterval / _timeScale) * 1000;
+                
+                // Round to a nice interval
+                float intervalMs;
+                if (millisecondsPerInterval >= 1000) intervalMs = 1000; // 1 second
+                else if (millisecondsPerInterval >= 500) intervalMs = 500;
+                else if (millisecondsPerInterval >= 250) intervalMs = 250;
+                else if (millisecondsPerInterval >= 100) intervalMs = 100;
+                else if (millisecondsPerInterval >= 50) intervalMs = 50;
+                else if (millisecondsPerInterval >= 25) intervalMs = 25;
+                else if (millisecondsPerInterval >= 10) intervalMs = 10;
+                else intervalMs = 5;
+
+                float intervalSeconds = intervalMs / 1000f;
+
+                // Draw time markers
+                float visibleStartSeconds = _horizontalScrollBar.Value / _timeScale;
+                float visibleEndSeconds = (_horizontalScrollBar.Value + _chartPanel.Width) / _timeScale;
+
+                for (float i = (float)Math.Floor(visibleStartSeconds / intervalSeconds) * intervalSeconds; 
+                     i <= visibleEndSeconds; 
+                     i += intervalSeconds)
                 {
                     var x = i * _timeScale;
                     e.Graphics.DrawLine(pen, x, 0, x, 10 * (_rowHeight + _rowSpacing));
-                    e.Graphics.DrawString($"{i}s", font, brush, x, -15);
+                    
+                    string timeText;
+                    if (intervalMs >= 1000)
+                        timeText = $"{Math.Floor(i)}s";
+                    else
+                        timeText = $"{Math.Floor(i * 1000)}ms";
+                    
+                    e.Graphics.DrawString(timeText, font, brush, x, -15);
                 }
             }
         }
@@ -173,7 +242,7 @@ namespace SQLQueryStress.Controls
             // Find the row based on Y position
             var row = chartY / (_rowHeight + _rowSpacing);
             
-            // Convert X position to time
+            // Convert X position to time with millisecond precision
             var secondsFromStart = chartX / _timeScale;
             var timeAtCursor = _ganttStartTime.AddSeconds(secondsFromStart);
 
@@ -186,7 +255,7 @@ namespace SQLQueryStress.Controls
             if (item != null)
             {
                 var tooltipText = $"Start: {item.StartTime:HH:mm:ss.fff}{Environment.NewLine}" +
-                                 $"Duration: {item.Duration.TotalMilliseconds:F0}ms";
+                                 $"Duration: {item.Duration.TotalMilliseconds:F3}ms";
                 
                 // Only show tooltip if mouse position changed
                 if (_lastMousePosition != e.Location)
@@ -199,6 +268,17 @@ namespace SQLQueryStress.Controls
             {
                 _tooltip.Hide(_chartPanel);
                 _lastMousePosition = Point.Empty;
+            }
+        }
+
+        private void ChartPanel_MouseWheel(object sender, MouseEventArgs e)
+        {
+            if (ModifierKeys.HasFlag(Keys.Control))
+            {
+                if (e.Delta > 0)
+                    ZoomIn();
+                else
+                    ZoomOut();
             }
         }
     }

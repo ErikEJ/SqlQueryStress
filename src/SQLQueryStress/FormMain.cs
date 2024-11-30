@@ -672,6 +672,21 @@ namespace SQLQueryStress
         {
 
         }
+
+        private void ZoomInButton_Click(object sender, EventArgs e)
+        {
+            ganttChart.ZoomIn();
+        }
+
+        private void ZoomOutButton_Click(object sender, EventArgs e)
+        {
+            ganttChart.ZoomOut();
+        }
+
+        private void FitButton_Click(object sender, EventArgs e)
+        {
+            ganttChart.FitToData();
+        }
     }
 }
 #pragma warning restore CA1031 // Do not catch general exception types

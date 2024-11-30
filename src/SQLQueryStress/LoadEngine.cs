@@ -1,5 +1,5 @@
 using Microsoft.Data.SqlClient;
-using SQLQueryStress.Controls;
+//using SQLQueryStress.Controls;
 
 //using SQLQueryStress.Controls;
 using System;
