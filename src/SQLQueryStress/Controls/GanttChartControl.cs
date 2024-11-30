@@ -23,6 +23,11 @@ namespace SQLQueryStress.Controls
             InitializeGanttChart();
         }
 
+        public void ClearItems(){
+            _ganttItems.Clear();
+            _chartPanel.Invalidate();
+        }
+
         private void InitializeComponents()
         {
             // Initialize panel

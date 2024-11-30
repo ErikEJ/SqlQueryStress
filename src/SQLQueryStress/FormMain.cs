@@ -309,7 +309,9 @@ namespace SQLQueryStress
                 return;
             }
 
-            _testStartTime = DateTime.Now;
+            ganttChart.ClearItems();
+
+           _testStartTime = DateTime.Now;
             _testGuid = Guid.NewGuid();
             _cancelled = false;
             _exitOnComplete = false;
