@@ -1,12 +1,15 @@
 #region
 
+using SQLQueryStress.Controls;
 using SQLQueryStress.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 #endregion
@@ -88,6 +91,8 @@ namespace SQLQueryStress
         private System.Threading.CancellationTokenSource _backgroundWorkerCTS;
 
         private SqlControl sqlControl1;
+
+        private GanttChartControl ganttChart;
 
         public FormMain(CommandLineOptions runParameters) : this()
         {
@@ -644,6 +649,19 @@ namespace SQLQueryStress
             elemHost.Size = new System.Drawing.Size(490, 623);
             elemHost.Child = sqlControl1;
             tableLayoutPanel3.Controls.Add(elemHost, 0, 0);
+        }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            
+            // Create and configure Gantt chart
+            ganttChart = new GanttChartControl();
+            ganttChart.Dock = DockStyle.Fill;
+            
+            // Add it to the bottom row of tableLayoutPanel3
+            tableLayoutPanel3.Controls.Add(ganttChart, 0, 1);
+            tableLayoutPanel3.SetColumnSpan(ganttChart, 2); // Span both columns
         }
 
     }
