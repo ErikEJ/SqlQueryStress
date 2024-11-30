@@ -409,6 +409,7 @@ namespace SQLQueryStress
             elapsedTime_textBox.Size = new System.Drawing.Size(230, 33);
             elapsedTime_textBox.TabIndex = 10;
             elapsedTime_textBox.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            elapsedTime_textBox.Click += elapsedTime_textBox_Click;
             // 
             // perfCounterTimer
             // 

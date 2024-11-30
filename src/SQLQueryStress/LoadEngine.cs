@@ -1,4 +1,5 @@
 using Microsoft.Data.SqlClient;
+//using SQLQueryStress.Controls;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace SQLQueryStress
 {
@@ -146,7 +148,7 @@ namespace SQLQueryStress
 
                 using var input = new QueryInput(statsComm, queryComm,
                     //                    this.queryOutInfo,
-                    _iterations, _forceDataRetrieval, _queryDelay, worker, _killQueriesOnCancel, _threads);
+                    _iterations, _forceDataRetrieval, _queryDelay, worker, _killQueriesOnCancel, _threads,i);
 
                 var theThread = input.StartLoadThread(token);
                // theThread.Name = "thread: " + i;
@@ -158,10 +160,6 @@ namespace SQLQueryStress
             // create a token source for the workers to be able to listen to a cancel event
             //using var workerCTS = new CancellationTokenSource();
             _finishedThreads = 0;
-            for (var i = 0; i < _threads; i++)
-            {
-              //  _threadPool[i].Start(workerCTS.Token);
-            }
 
             //Start reading the queue...
             var cancelled = false;
@@ -169,15 +167,14 @@ namespace SQLQueryStress
 
             while (_threadPool.Any(x => !x.IsCompleted))
             {
+                Debug.WriteLine($"DoWork {_threadPool.Count(x => !x.IsCompleted)} Running");
                 QueryOutput theOut = null;
                 try
                 {
                     Task.Delay(250).GetAwaiter().GetResult();
 
-                    // wait for OutInfo items in the queue or a user cancel event
-                    if(!QueryOutInfo.TryTake(out theOut)){
-                        continue;
-                    }
+                    processOuts(worker);
+                    
                 }
                 catch (Exception ex)
                 {
@@ -198,17 +195,30 @@ namespace SQLQueryStress
                     SqlConnection.ClearAllPools();
                     cancelled = true;
                 }
-
-                if (theOut != null)
-                {
-                    //Report output to the UI
-                    int finishedThreads = Interlocked.CompareExchange(ref _finishedThreads, 0, 0);
-                    theOut.ActiveThreads = _threads - finishedThreads;
-                    worker.ReportProgress((int)(_finishedThreads / (decimal)_threads * 100), theOut);
-                }
             }
+            cancelled = true;
+            QueryOutInfo.CompleteAdding();
+            processOuts(worker) ;
+            worker.ReportProgress(100, null);
+
+
         }
 
+        void processOuts(BackgroundWorker worker)
+        {
+            while (true)
+            {
+
+                if (!QueryOutInfo.TryTake(out var theOut))
+                {
+                    break;
+                }
+                int finishedThreads = Interlocked.CompareExchange(ref _finishedThreads, 0, 0);
+                theOut.ActiveThreads = _threads - finishedThreads;
+                worker.ReportProgress((int)(_finishedThreads / (decimal)_threads * 100), theOut);
+            }
+
+        }
 
         //TODO: Monostate pattern to be investigated (class is never instantiated)
         private static class ParamServer
@@ -303,11 +313,12 @@ namespace SQLQueryStress
             private readonly int _iterations;
             private readonly int _queryDelay;
             private readonly int _numWorkerThreads;
+            private readonly int _threadNumber;
             private readonly BackgroundWorker _backgroundWorker;
 
             public QueryInput(SqlCommand statsComm, SqlCommand queryComm,
                 //                Queue<queryOutput> queryOutInfo,
-                int iterations, bool forceDataRetrieval, int queryDelay, BackgroundWorker _backgroundWorker, bool killQueriesOnCancel, int numWorkerThreads)
+                int iterations, bool forceDataRetrieval, int queryDelay, BackgroundWorker _backgroundWorker, bool killQueriesOnCancel, int numWorkerThreads, int threadNumber)
             {
                 _statsComm = statsComm;
                 _queryComm = queryComm;
@@ -329,6 +340,8 @@ namespace SQLQueryStress
                     _killTimer.Elapsed += KillTimer_Elapsed;
                     _killTimer.Enabled = true;
                 }
+
+                _threadNumber = threadNumber;
             }
 
             private void KillTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -385,14 +398,17 @@ namespace SQLQueryStress
                     //do the work
                     using (var conn = _queryComm.Connection)
                     {
+                        var StartTime = DateTime.Now;
                         SqlInfoMessageEventHandler handler = GetInfoMessages;
-
+                        var EndTime = DateTime.Now;
+                        Guid context= Guid.Empty;
                         for (var i = 0; i < _iterations && !runCancelled; i++)
                         {
                             Exception outException = null;
 
                             try
                             {
+                                context = Guid.NewGuid();
                                 //initialize the outInfo structure
                                 //_outInfo = new QueryOutput();
 
@@ -415,7 +431,7 @@ namespace SQLQueryStress
                                 }
 
                                 _sw.Start();
-
+                                StartTime = DateTime.Now;
                                 //TODO: This could be made better
                                 if (_forceDataRetrieval)
                                 {
@@ -435,8 +451,10 @@ namespace SQLQueryStress
                                 {
                                    await  _queryComm.ExecuteNonQueryAsync();
                                 }
-
+                                EndTime = DateTime.Now;
                                 _sw.Stop();
+                                
+                                //AddGanttItem(int row, DateTime startTime, int durationMS)
                             }
                             catch (Exception ex)
                             {
@@ -445,6 +463,7 @@ namespace SQLQueryStress
 
                                 if (_sw.IsRunning)
                                 {
+                                    EndTime = DateTime.Now;
                                     _sw.Stop();
                                 }
                             }
@@ -477,6 +496,10 @@ namespace SQLQueryStress
                             _outInfo.E = outException;
                             _outInfo.Time = _sw.Elapsed;
                             _outInfo.Finished = finished;
+                            _outInfo.startTime = StartTime;
+                            _outInfo.endTime = EndTime;
+                            _outInfo.context = context;
+                            _outInfo.ThreadNumber = _threadNumber;
 
                             QueryOutInfo.Add(_outInfo);
 
@@ -522,11 +545,11 @@ namespace SQLQueryStress
                     }
                 }
                 Interlocked.Increment(ref _finishedThreads);
-                if (_finishedThreads == _numWorkerThreads)
+        /*        if (_finishedThreads == _numWorkerThreads)
                 {
                     // once all of the threads have exited, tell the other side that we're done adding items to the collection
                     QueryOutInfo.CompleteAdding();
-                }
+                }*/
             }
 
             public void Dispose()
@@ -537,12 +560,16 @@ namespace SQLQueryStress
 
         internal sealed class QueryOutput
         {
+            public DateTime startTime;
+            public DateTime endTime;
+            public Guid context;
             public int CpuTime;
             public Exception E;
             public int ElapsedTime;
             public bool Finished;
             public int LogicalReads;
             public TimeSpan Time;
+            public int ThreadNumber;
 
             // Remaining active threads for the load
             public int ActiveThreads;

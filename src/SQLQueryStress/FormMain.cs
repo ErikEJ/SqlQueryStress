@@ -158,6 +158,7 @@ namespace SQLQueryStress
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             var output = (LoadEngine.QueryOutput)e.UserState;
+            if (output == null) return;
 
             _totalIterations++;
 
@@ -207,7 +208,8 @@ namespace SQLQueryStress
                 }
                  */
             }
-
+            ganttChart.AddGanttItem(output.ThreadNumber, output.startTime, (int)output.Time.TotalMilliseconds);
+            ganttChart.Invalidate();
             _activeThreads = output.ActiveThreads;
         }
 
@@ -311,7 +313,7 @@ namespace SQLQueryStress
 
             ganttChart.ClearItems();
 
-           _testStartTime = DateTime.Now;
+            _testStartTime = DateTime.Now;
             _testGuid = Guid.NewGuid();
             _cancelled = false;
             _exitOnComplete = false;
@@ -389,7 +391,7 @@ namespace SQLQueryStress
             }
 
             sqlControl1.Text = _settings.MainQuery;
-            
+
             threads_numericUpDown.Value = _settings.NumThreads;
             iterations_numericUpDown.Value = _settings.NumIterations;
             queryDelay_numericUpDown.Text = _settings.DelayBetweenQueries.ToString(CultureInfo.InvariantCulture);
@@ -656,16 +658,20 @@ namespace SQLQueryStress
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            
+
             // Create and configure Gantt chart
             ganttChart = new GanttChartControl();
             ganttChart.Dock = DockStyle.Fill;
-            
+
             // Add it to the bottom row of tableLayoutPanel3
             tableLayoutPanel3.Controls.Add(ganttChart, 0, 1);
             tableLayoutPanel3.SetColumnSpan(ganttChart, 2); // Span both columns
         }
 
+        private void elapsedTime_textBox_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
 #pragma warning restore CA1031 // Do not catch general exception types

@@ -3,6 +3,7 @@ using SQLQueryStress;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -154,6 +155,7 @@ namespace SqlQueryStressCLI
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             ((LoadEngine)e.Argument).StartLoad(backgroundWorker1, _settings.DelayBetweenQueries);
+            Debug.WriteLine("DoWorkDone");
         }
 
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -214,6 +216,7 @@ namespace SqlQueryStressCLI
             }
 
             _activeThreads = output.ActiveThreads;
+            
         }
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -16,6 +17,7 @@ namespace SQLQueryStress.Controls
         private readonly int _rowSpacing = 4;
         private DateTime _ganttStartTime;
         private readonly List<GanttItem> _ganttItems = new List<GanttItem>();
+        private readonly Random _random = new Random(42);
 
         public GanttChartControl()
         {
@@ -23,7 +25,25 @@ namespace SQLQueryStress.Controls
             InitializeGanttChart();
         }
 
+        public void AddGanttItem(GanttItem item)
+        {
+            _ganttItems.Add(item);
+            _chartPanel.Invalidate();
+        }
+
+        public void AddGanttItem(int row, DateTime startTime, int durationMS)
+        {
+            _ganttItems.Add(new GanttItem
+            {
+                Row = row,
+                StartTime = startTime,
+                Duration = TimeSpan.FromMilliseconds(durationMS),
+                Color = Color.FromArgb(_random.Next(64, 255), _random.Next(64, 255), _random.Next(64, 255))
+            });
+        }
+
         public void ClearItems(){
+            _ganttStartTime = DateTime.Now;
             _ganttItems.Clear();
             _chartPanel.Invalidate();
         }
@@ -115,7 +135,7 @@ namespace SQLQueryStress.Controls
                         _chartPanel.Width + _horizontalScrollBar.Value, _rowHeight);
                 }
             }
-
+            Debug.WriteLine($"Drawing {_ganttItems.Count} items");
             // Draw items
             foreach (var item in _ganttItems)
             {
