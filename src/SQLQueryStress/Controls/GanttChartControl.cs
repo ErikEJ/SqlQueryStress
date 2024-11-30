@@ -18,6 +18,8 @@ namespace SQLQueryStress.Controls
         private DateTime _ganttStartTime;
         private readonly List<GanttItem> _ganttItems = new List<GanttItem>();
         private readonly Random _random = new Random(42);
+        private ToolTip _tooltip = new ToolTip();
+        private Point _lastMousePosition;
 
         public GanttChartControl()
         {
@@ -66,6 +68,9 @@ namespace SQLQueryStress.Controls
             
             _verticalScrollBar.Scroll += (s, e) => _chartPanel.Invalidate();
             _horizontalScrollBar.Scroll += (s, e) => _chartPanel.Invalidate();
+
+            // Add mouse move handler to chart panel
+            _chartPanel.MouseMove += ChartPanel_MouseMove;
 
             // Add controls
             Controls.Add(_chartPanel);
@@ -156,6 +161,44 @@ namespace SQLQueryStress.Controls
                     e.Graphics.DrawLine(pen, x, 0, x, 10 * (_rowHeight + _rowSpacing));
                     e.Graphics.DrawString($"{i}s", font, brush, x, -15);
                 }
+            }
+        }
+
+        private void ChartPanel_MouseMove(object sender, MouseEventArgs e)
+        {
+            // Convert mouse coordinates to chart coordinates by adding scroll offset
+            var chartX = e.X + _horizontalScrollBar.Value;
+            var chartY = e.Y + _verticalScrollBar.Value;
+
+            // Find the row based on Y position
+            var row = chartY / (_rowHeight + _rowSpacing);
+            
+            // Convert X position to time
+            var secondsFromStart = chartX / _timeScale;
+            var timeAtCursor = _ganttStartTime.AddSeconds(secondsFromStart);
+
+            // Find matching GanttItem
+            var item = _ganttItems.FirstOrDefault(x => 
+                x.Row == row && 
+                timeAtCursor >= x.StartTime && 
+                timeAtCursor <= x.StartTime.Add(x.Duration));
+
+            if (item != null)
+            {
+                var tooltipText = $"Start: {item.StartTime:HH:mm:ss.fff}{Environment.NewLine}" +
+                                 $"Duration: {item.Duration.TotalMilliseconds:F0}ms";
+                
+                // Only show tooltip if mouse position changed
+                if (_lastMousePosition != e.Location)
+                {
+                    _tooltip.Show(tooltipText, _chartPanel, e.X, e.Y + 20);
+                    _lastMousePosition = e.Location;
+                }
+            }
+            else
+            {
+                _tooltip.Hide(_chartPanel);
+                _lastMousePosition = Point.Empty;
             }
         }
     }
