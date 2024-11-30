@@ -312,7 +312,7 @@ namespace SQLQueryStress
             }
 
             ganttChart.ClearItems();
-
+            ganttChart.Invalidate();
             _testStartTime = DateTime.Now;
             _testGuid = Guid.NewGuid();
             _cancelled = false;

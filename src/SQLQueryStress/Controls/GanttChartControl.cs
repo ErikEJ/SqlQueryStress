@@ -77,23 +77,7 @@ namespace SQLQueryStress.Controls
         {
             // Create dummy data
             _ganttStartTime = DateTime.Now;
-            var random = new Random(42);
-            
-            for (int i = 0; i < 50; i++)
-            {
-                var row = random.Next(0, 10);
-                var startOffset = random.Next(0, 60);
-                var duration = random.Next(1, 20);
-                
-                _ganttItems.Add(new GanttItem
-                {
-                    Row = row,
-                    StartTime = _ganttStartTime.AddSeconds(startOffset),
-                    Duration = TimeSpan.FromSeconds(duration),
-                    Color = Color.FromArgb(random.Next(64, 255), random.Next(64, 255), random.Next(64, 255))
-                });
-            }
-
+           
             UpdateScrollBars();
         }
 
@@ -136,14 +120,19 @@ namespace SQLQueryStress.Controls
                 }
             }
             Debug.WriteLine($"Drawing {_ganttItems.Count} items");
+            int c = 0;
             // Draw items
-            foreach (var item in _ganttItems)
+            foreach (var item in _ganttItems.OrderBy(x=>x.Row))
             {
                 var offsetSeconds = (item.StartTime - _ganttStartTime).TotalSeconds;
                 var x = (float)(offsetSeconds * _timeScale);
                 var y = item.Row * (_rowHeight + _rowSpacing);
                 var width = (float)(item.Duration.TotalSeconds * _timeScale);
-                
+
+                if (item.Row == 1)
+                {
+                    Debug.WriteLine($"Drawing {c++},{item.StartTime.Millisecond},{item.Duration.TotalMilliseconds}{x},{y},{width}");
+                }
                 using (var brush = new SolidBrush(item.Color))
                 {
                     var rect = new RectangleF(x, y, width, _rowHeight);

@@ -1,4 +1,6 @@
 using Microsoft.Data.SqlClient;
+using SQLQueryStress.Controls;
+
 //using SQLQueryStress.Controls;
 using System;
 using System.Collections.Concurrent;
@@ -39,10 +41,13 @@ namespace SQLQueryStress
         private static int _finishedThreads;
         private int _queryDelay;
 
+       
+
         public LoadEngine(string connectionString, string query, int threads, int iterations, string paramQuery,
             Dictionary<string, string> paramMappings, string paramConnectionString, int commandTimeout,
             bool collectIoStats, bool collectTimeStats, bool forceDataRetrieval, bool killQueriesOnCancel, CancellationTokenSource cts)
         {
+            
             //Set the min pool size so that the pool does not have
             //to get allocated in real-time
             var builder = new SqlConnectionStringBuilder(connectionString)
@@ -167,8 +172,6 @@ namespace SQLQueryStress
 
             while (_threadPool.Any(x => !x.IsCompleted))
             {
-                Debug.WriteLine($"DoWork {_threadPool.Count(x => !x.IsCompleted)} Running");
-                QueryOutput theOut = null;
                 try
                 {
                     Task.Delay(250).GetAwaiter().GetResult();
@@ -206,6 +209,9 @@ namespace SQLQueryStress
 
         void processOuts(BackgroundWorker worker)
         {
+            int finishedThreads = _threadPool.Count(x => x.IsCompleted);
+            int totalThreads = _threadPool.Count();
+
             while (true)
             {
 
@@ -213,11 +219,9 @@ namespace SQLQueryStress
                 {
                     break;
                 }
-                int finishedThreads = Interlocked.CompareExchange(ref _finishedThreads, 0, 0);
-                theOut.ActiveThreads = _threads - finishedThreads;
-                worker.ReportProgress((int)(_finishedThreads / (decimal)_threads * 100), theOut);
+                
+                worker.ReportProgress((int)(finishedThreads / (decimal)totalThreads * 100), theOut);
             }
-
         }
 
         //TODO: Monostate pattern to be investigated (class is never instantiated)
@@ -500,8 +504,22 @@ namespace SQLQueryStress
                             _outInfo.endTime = EndTime;
                             _outInfo.context = context;
                             _outInfo.ThreadNumber = _threadNumber;
+                            var copyOutInfo = new QueryOutput()
+                            {
+                                E = outException,
+                                Time = _sw.Elapsed,
+                                Finished = finished,
+                                startTime = StartTime,
+                                endTime = EndTime,
+                                context = context,
+                                ThreadNumber = _threadNumber,
+                                ActiveThreads=_outInfo.ActiveThreads,
+                                CpuTime=_outInfo.CpuTime,
+                                ElapsedTime= _outInfo.ElapsedTime,
+                                LogicalReads = _outInfo.LogicalReads
+                            };
 
-                            QueryOutInfo.Add(_outInfo);
+                            QueryOutInfo.Add(copyOutInfo);
 
                             //Prep the collection for the next round
                             //if (infoMessages != null && infoMessages.Count > 0)
