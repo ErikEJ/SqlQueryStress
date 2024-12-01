@@ -14,6 +14,7 @@ namespace SqlQueryStressCLI
     public class LoadRunner
     {
         private System.ComponentModel.BackgroundWorker backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+        private System.ComponentModel.BackgroundWorker ExtendedEventBackgroundWorker = new System.ComponentModel.BackgroundWorker();
 
         //Exceptions that occurred
         private Dictionary<string, int> _exceptions;
@@ -133,11 +134,21 @@ namespace SqlQueryStressCLI
 
             backgroundWorker1.RunWorkerAsync(engine);
 
-            //timer.Elapsed += Timer_Elapsed;
-            //timer.AutoReset = true;
-            //timer.Enabled = true;
 
-            _start = new TimeSpan(DateTime.Now.Ticks);
+            ExtendedEventBackgroundWorker.WorkerReportsProgress = true;
+            ExtendedEventBackgroundWorker.WorkerSupportsCancellation = true;
+            ExtendedEventBackgroundWorker.DoWork += new DoWorkEventHandler(this.ExtendedEventBackgroundWorker_DoWork);
+            ExtendedEventBackgroundWorker.ProgressChanged += new ProgressChangedEventHandler(this.ExtendedEventBackgroundWorker_ProgressChanged);
+            ExtendedEventBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.ExtendedEventBackgroundWorker_RunWorkerCompleted);
+
+            ExtendedEventBackgroundWorker.RunWorkerAsync(engine);
+
+
+           //timer.Elapsed += Timer_Elapsed;
+           //timer.AutoReset = true;
+           //timer.Enabled = true;
+
+           _start = new TimeSpan(DateTime.Now.Ticks);
 
             while (backgroundWorker1.IsBusy)
             {
@@ -145,6 +156,22 @@ namespace SqlQueryStressCLI
             }
 
             Thread.Sleep(2000);
+        }
+
+       
+        private void ExtendedEventBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ExtendedEventBackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ExtendedEventBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)

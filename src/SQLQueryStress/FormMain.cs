@@ -94,6 +94,8 @@ namespace SQLQueryStress
 
         private GanttChartControl ganttChart;
 
+        //private BackgroundWorker ExtendedEventsReader;
+
         public FormMain(CommandLineOptions runParameters) : this()
         {
             _runParameters = runParameters;
@@ -284,6 +286,9 @@ namespace SQLQueryStress
             {
                 _exitOnComplete = true;
             }
+
+          //  if (ExtendedEventsReader.IsBusy)
+            //    ExtendedEventsReader.CancelAsync();
         }
 
         private void database_button_Click(object sender, EventArgs e)
@@ -310,6 +315,8 @@ namespace SQLQueryStress
                 MessageBox.Show(Resources.MustSetValidDbConnInfo, Resources.AppTitle);
                 return;
             }
+
+            
 
             ganttChart.ClearItems();
             ganttChart.Invalidate();
@@ -687,6 +694,8 @@ namespace SQLQueryStress
         {
             ganttChart.FitToData();
         }
+
+      
     }
 }
 #pragma warning restore CA1031 // Do not catch general exception types

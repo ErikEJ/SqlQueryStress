@@ -10,6 +10,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,7 +42,10 @@ namespace SQLQueryStress
         private static int _finishedThreads;
         private int _queryDelay;
 
-       
+
+        private ExtendedEventsReader _extendedEventsReader = null;
+        private Task _extendedEventReaderTask = null;
+
 
         public LoadEngine(string connectionString, string query, int threads, int iterations, string paramQuery,
             Dictionary<string, string> paramMappings, string paramConnectionString, int commandTimeout,
@@ -114,6 +118,10 @@ namespace SQLQueryStress
                 ParamServer.Initialize(_paramQuery, _paramConnectionString, _paramMappings);
                 useParams = true;
             }
+            _extendedEventsReader = new(_connectionString);
+
+            _extendedEventsReader.StartSession().GetAwaiter().GetResult();
+            _extendedEventReaderTask = _extendedEventsReader.ReadEventsLoop();
 
             //Initialize the connection pool            
             var conn = new SqlConnection(_connectionString);
@@ -385,6 +393,17 @@ namespace SQLQueryStress
                 }
             }
 
+            static string ConvertGuidToHexString(Guid guid)
+            {
+                byte[] bytes = guid.ToByteArray();
+                StringBuilder binaryString = new StringBuilder();
+                foreach (byte b in bytes)
+                {
+                    binaryString.Append(Convert.ToString(b, 16).PadLeft(2, '0'));
+                }
+                return binaryString.ToString();
+            }
+
             public async Task StartLoadThread(Object token)
             {
                 bool runCancelled = false;
@@ -421,13 +440,15 @@ namespace SQLQueryStress
                                     await conn.OpenAsync();
 
                                     //set up the statistics gathering
-                                    if (_statsComm != null)
-                                    {
-                                        await _statsComm.ExecuteNonQueryAsync();
-                                        conn.InfoMessage += handler;
-                                    }
+                                 //   if (_statsComm != null)
+                                   // {
+                                     //   await _statsComm.ExecuteNonQueryAsync();
+                                    //    conn.InfoMessage += handler;
+                                  //  }
                                 }
 
+                                var contextcmd = new SqlCommand($"SET CONTEXT_INFO 0x{ConvertGuidToHexString(context)};",conn);
+                                await contextcmd.ExecuteNonQueryAsync();
                                 //Params are assigned only once -- after that, their values are dynamically retrieved
                                 if (_queryComm.Parameters.Count > 0)
                                 {
