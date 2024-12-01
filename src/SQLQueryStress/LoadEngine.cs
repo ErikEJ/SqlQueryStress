@@ -438,15 +438,7 @@ namespace SQLQueryStress
                                 if (conn != null)
                                 {
                                     await conn.OpenAsync();
-
-                                    //set up the statistics gathering
-                                 //   if (_statsComm != null)
-                                   // {
-                                     //   await _statsComm.ExecuteNonQueryAsync();
-                                    //    conn.InfoMessage += handler;
-                                  //  }
                                 }
-
                                 var contextcmd = new SqlCommand($"SET CONTEXT_INFO 0x{ConvertGuidToHexString(context)};",conn);
                                 await contextcmd.ExecuteNonQueryAsync();
                                 //Params are assigned only once -- after that, their values are dynamically retrieved

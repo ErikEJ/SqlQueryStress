@@ -73,14 +73,15 @@ namespace SQLQueryStress.Controls
             _chartPanel.Invalidate();
         }
 
-        public void AddGanttItem(int row, DateTime startTime, int durationMS)
+        internal void AddGanttItem(int row, DateTime startTime, int durationMS, LoadEngine.QueryOutput queryOutput)
         {
             _ganttItems.Add(new GanttItem
             {
                 Row = row,
                 StartTime = startTime,
                 Duration = TimeSpan.FromMilliseconds(durationMS),
-                Color = Color.FromArgb(_random.Next(64, 255), _random.Next(64, 255), _random.Next(64, 255))
+                Color = Color.FromArgb(_random.Next(64, 255), _random.Next(64, 255), _random.Next(64, 255)),
+                QueryOutput = queryOutput
             });
         }
 
@@ -255,8 +256,9 @@ namespace SQLQueryStress.Controls
             if (item != null)
             {
                 var tooltipText = $"Start: {item.StartTime:HH:mm:ss.fff}{Environment.NewLine}" +
-                                 $"Duration: {item.Duration.TotalMilliseconds:F3}ms";
-                
+                                 $"Duration: {item.Duration.TotalMilliseconds:F3}ms{Environment.NewLine}" +
+                                 $"Context:{item.QueryOutput.context.ToString()}";
+
                 // Only show tooltip if mouse position changed
                 if (_lastMousePosition != e.Location)
                 {
@@ -289,5 +291,7 @@ namespace SQLQueryStress.Controls
         public DateTime StartTime { get; set; }
         public TimeSpan Duration { get; set; }
         public Color Color { get; set; }
+
+        internal LoadEngine.QueryOutput QueryOutput { get; set; }
     }
 } 
