@@ -1,4 +1,6 @@
 using Microsoft.Data.SqlClient;
+using SQLQueryStress.Controls;
+
 //using SQLQueryStress.Controls;
 
 //using SQLQueryStress.Controls;
@@ -42,6 +44,7 @@ namespace SQLQueryStress
         private readonly int _threads;
         private static int _finishedThreads;
         private int _queryDelay;
+        private readonly GanttChartControl _ganttChart; 
 
 
         private ExtendedEventsReader _extendedEventsReader = null;
@@ -50,7 +53,7 @@ namespace SQLQueryStress
 
         public LoadEngine(string connectionString, string query, int threads, int iterations, string paramQuery,
             Dictionary<string, string> paramMappings, string paramConnectionString, int commandTimeout,
-            bool collectIoStats, bool collectTimeStats, bool forceDataRetrieval, bool killQueriesOnCancel, CancellationTokenSource cts)
+            bool collectIoStats, bool collectTimeStats, bool forceDataRetrieval, bool killQueriesOnCancel, CancellationTokenSource cts,GanttChartControl ganttChart)
         {
             
             //Set the min pool size so that the pool does not have
@@ -75,6 +78,7 @@ namespace SQLQueryStress
             _forceDataRetrieval = forceDataRetrieval;
             _killQueriesOnCancel = killQueriesOnCancel;
             _backgroundWorkerCTS = cts;
+            _ganttChart = ganttChart;
         }
 
         public static bool ExecuteCommand(string connectionString, string sql)
@@ -165,7 +169,7 @@ namespace SQLQueryStress
 
                 using var input = new QueryInput(statsComm, queryComm,
                     //                    this.queryOutInfo,
-                    _iterations, _forceDataRetrieval, _queryDelay, worker, _killQueriesOnCancel, _threads,i);
+                    _iterations, _forceDataRetrieval, _queryDelay, worker, _killQueriesOnCancel, _threads,i,_ganttChart);
 
                 var theThread = input.StartLoadThread(token);
                // theThread.Name = "thread: " + i;
@@ -215,6 +219,7 @@ namespace SQLQueryStress
             QueryOutInfo.CompleteAdding();
             processOuts(worker) ;
             worker.ReportProgress(100, null);
+            
             
                 Task.Run(() =>
                 {
@@ -346,10 +351,11 @@ namespace SQLQueryStress
             private readonly int _numWorkerThreads;
             private readonly int _threadNumber;
             private readonly BackgroundWorker _backgroundWorker;
+            private readonly GanttChartControl _ganntChart;
 
             public QueryInput(SqlCommand statsComm, SqlCommand queryComm,
                 //                Queue<queryOutput> queryOutInfo,
-                int iterations, bool forceDataRetrieval, int queryDelay, BackgroundWorker _backgroundWorker, bool killQueriesOnCancel, int numWorkerThreads, int threadNumber)
+                int iterations, bool forceDataRetrieval, int queryDelay, BackgroundWorker _backgroundWorker, bool killQueriesOnCancel, int numWorkerThreads, int threadNumber,GanttChartControl ganttChart)
             {
                 _statsComm = statsComm;
                 _queryComm = queryComm;
@@ -358,6 +364,7 @@ namespace SQLQueryStress
                 _forceDataRetrieval = forceDataRetrieval;
                 _queryDelay = queryDelay;
                 _numWorkerThreads = numWorkerThreads;
+                _ganntChart = ganttChart;
 
                 //Prepare the infoMessages collection, if we are collecting statistics
                 //if (stats_comm != null)
@@ -469,7 +476,7 @@ namespace SQLQueryStress
                                 _sw.Start();
                                 StartTime = DateTime.Now;
                                 //TODO: This could be made better
-                                if (_forceDataRetrieval)
+                                if (true ||_forceDataRetrieval)
                                 {
                                     var reader = await _queryComm.ExecuteReaderAsync();
 
@@ -552,7 +559,7 @@ namespace SQLQueryStress
                             };
 
                             QueryOutInfo.Add(copyOutInfo);
-
+                            _ganntChart.Invalidate();
                             //Prep the collection for the next round
                             //if (infoMessages != null && infoMessages.Count > 0)
                             //    infoMessages.Clear();
