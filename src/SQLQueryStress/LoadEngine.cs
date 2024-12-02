@@ -219,21 +219,21 @@ namespace SQLQueryStress
             QueryOutInfo.CompleteAdding();
             processOuts(worker) ;
             worker.ReportProgress(100, null);
-            
-            
-                Task.Run(() =>
+
+
+            _ = Task.Run(() =>
                 {
                     Task.Delay(1000).GetAwaiter().GetResult();
                     exEventCTS.Cancel();
                     Task.Delay(1000).GetAwaiter().GetResult();
                     Debug.WriteLine("Calling Dispose of reader");
                     _extendedEventsReader.Dispose();
-                     _extendedEventReaderTask.Dispose();
+                    _extendedEventReaderTask.Dispose();
 
                     exEventCTS.Dispose();
                     Debug.WriteLine("Disposing Done");
-                    
-                    
+
+
                 });
             
 
