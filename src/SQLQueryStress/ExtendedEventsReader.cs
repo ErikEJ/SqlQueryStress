@@ -19,7 +19,7 @@ namespace SQLQueryStress
         private readonly string _sessionName;
         private XELiveEventStreamer _reader;
         private bool _isDisposed;
-        private CancellationTokenSource _cts;
+        private CancellationToken _cancellationToken;
 
         public event EventHandler<XEventData> OnEventReceived;
 
@@ -28,6 +28,7 @@ namespace SQLQueryStress
 
         static Guid ConvertByteArrayToGuid(byte[] Hex)
         {
+            if(Hex.Length == 0) return Guid.Empty;
             return new Guid(Hex);
         }
         private void addEventToDictionary(IXEvent exEvent)
@@ -42,11 +43,11 @@ namespace SQLQueryStress
 
         }
 
-        public ExtendedEventsReader(string connectionString)
+        public ExtendedEventsReader(string connectionString,CancellationToken cancellationToken)
         {
             _connectionString = connectionString;
             _sessionName = $"SQLQueryStress_{DateTime.Now:yyyyMMddHHmmss}";
-            _cts = new CancellationTokenSource();
+            _cancellationToken = cancellationToken;
         }
 
         public async  Task StartSession()
@@ -92,7 +93,8 @@ namespace SQLQueryStress
 
         public async Task StopSession()
         {
-           // _cts.Cancel();
+            // _cts.Cancel();
+            Debug.WriteLine("in stop session");
 
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -109,13 +111,14 @@ namespace SQLQueryStress
                     await cmd.ExecuteNonQueryAsync();
                 }
             }
+            Debug.WriteLine("Stop session Done");
         }
 
         public async Task ReadEventsLoop()
         {
             try
             {
-                while (!_cts.Token.IsCancellationRequested)
+                while (!_cancellationToken.IsCancellationRequested)
                 {
                     Task readTask = _reader.ReadEventStream(() =>
                     {
@@ -127,7 +130,7 @@ namespace SQLQueryStress
                            addEventToDictionary(xevent);
                            return Task.CompletedTask;
                        },
-                       _cts.Token);
+                       _cancellationToken);
 
                     await readTask;
 
@@ -140,7 +143,7 @@ namespace SQLQueryStress
             catch (Exception ex)
             {
                 // Log or handle error
-                System.Diagnostics.Debug.WriteLine($"Error in XEvent reader: {ex}");
+                System.Diagnostics.Debug.WriteLine($"Error in XEvent reader: {ex.GetType().Name}: {ex}");
             }
         }
 
@@ -152,12 +155,11 @@ namespace SQLQueryStress
 
         protected virtual void Dispose(bool disposing)
         {
+            Debug.WriteLine($"In readerDispose status = {_isDisposed}");
             if (!_isDisposed)
             {
                 if (disposing)
                 {
-                    _cts?.Cancel();
-                    _cts?.Dispose();
                    // _reader?.Dispose();
                     Task.Run(() => StopSession()).Wait();
                 }

@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 
 //using SQLQueryStress.Controls;
 using System;
+using System.CodeDom;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -118,7 +119,10 @@ namespace SQLQueryStress
                 ParamServer.Initialize(_paramQuery, _paramConnectionString, _paramMappings);
                 useParams = true;
             }
-            _extendedEventsReader = new(_connectionString);
+            var exEventCTS = new CancellationTokenSource();
+            var exToken = exEventCTS.Token;
+
+            _extendedEventsReader = new(_connectionString,exToken);
 
             _extendedEventsReader.StartSession().GetAwaiter().GetResult();
             _extendedEventReaderTask = _extendedEventsReader.ReadEventsLoop();
@@ -211,7 +215,22 @@ namespace SQLQueryStress
             QueryOutInfo.CompleteAdding();
             processOuts(worker) ;
             worker.ReportProgress(100, null);
+            
+                Task.Run(() =>
+                {
+                    Task.Delay(1000).GetAwaiter().GetResult();
+                    exEventCTS.Cancel();
+                    Task.Delay(1000).GetAwaiter().GetResult();
+                    Debug.WriteLine("Calling Dispose of reader");
+                    _extendedEventsReader.Dispose();
+                     _extendedEventReaderTask.Dispose();
 
+                    exEventCTS.Dispose();
+                    Debug.WriteLine("Disposing Done");
+                    
+                    
+                });
+            
 
         }
 

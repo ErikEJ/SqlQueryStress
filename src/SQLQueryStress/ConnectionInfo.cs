@@ -136,6 +136,7 @@ namespace SQLQueryStress
                 build.Encrypt = Encrypt;
                 build.TrustServerCertificate = TrustServerCertificate;
 
+                build.ApplicationName = "SQLStress";
                 string connString = build.ConnectionString;
 
                 if (!string.IsNullOrEmpty(AdditionalParameters))
