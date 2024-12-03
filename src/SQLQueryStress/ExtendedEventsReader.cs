@@ -68,7 +68,7 @@ namespace SQLQueryStress
                            sqlserver.username,
                            sqlserver.context_info)
                     WHERE ([package0].[equal_boolean]([sqlserver].[is_system],(0))))
-                ADD TARGET package0.event_file(SET filename=N'SQLQueryStress.xel')
+            --    ADD TARGET package0.event_file(SET filename=N'SQLQueryStress.xel')
                 WITH (MAX_MEMORY=4096 KB,
                       EVENT_RETENTION_MODE=ALLOW_SINGLE_EVENT_LOSS,
                       MAX_DISPATCH_LATENCY=1 SECONDS,

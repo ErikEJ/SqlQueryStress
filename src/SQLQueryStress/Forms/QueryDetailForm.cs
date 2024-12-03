@@ -2,6 +2,7 @@ using Microsoft.SqlServer.XEvent.XELite;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace SQLQueryStress.Forms
@@ -39,8 +40,22 @@ namespace SQLQueryStress.Forms
                 return;
             }
 
+            
+            var customRows = contextEvents.Select(xEvent => {
+                var sqlText = xEvent.Actions.FirstOrDefault(x => x.Key == "sql_text");
+                var empty = xEvent.Actions.FirstOrDefault(x => x.Key == "empty");
+                return new
+                {
+                    Name = xEvent.Name,
+                    Timestamp = xEvent.Timestamp,
+                    SqlText = sqlText.Value ?? "",
+                    Fields = string.Join(", ", xEvent.Fields.Select(f => $"{f.Key}={f.Value}")),
+                    Actions = string.Join(", ", xEvent.Actions.Select(a => $"{a.Key}={a.Value}"))
+                };
+            }
+            ).ToList();
             // Populate the DataGridView with XEvents
-            dataGridView1.DataSource = contextEvents;
+            dataGridView1.DataSource = customRows;
             
             // Optional: Adjust column widths for better visibility
             dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
