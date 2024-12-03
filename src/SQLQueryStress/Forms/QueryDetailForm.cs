@@ -39,14 +39,11 @@ namespace SQLQueryStress.Forms
                 return;
             }
 
-
-
-            /*
-            if (_queryOutput.exception != null)
-            {
-                detailsTextBox.Text += $"\r\nException:\r\n{_queryOutput.exception}";
-            }
-            */
+            // Populate the DataGridView with XEvents
+            dataGridView1.DataSource = contextEvents;
+            
+            // Optional: Adjust column widths for better visibility
+            dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
         }
 
         private void InitializeComponent()
