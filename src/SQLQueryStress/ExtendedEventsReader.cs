@@ -23,8 +23,7 @@ namespace SQLQueryStress
 
         public event EventHandler<XEventData> OnEventReceived;
 
-        private readonly ConcurrentDictionary<Guid, List<IXEvent>> _events = new();
-
+        private readonly ConcurrentDictionary<Guid, List<IXEvent>> _events;
 
         static Guid ConvertByteArrayToGuid(byte[] Hex)
         {
@@ -43,11 +42,12 @@ namespace SQLQueryStress
 
         }
 
-        public ExtendedEventsReader(string connectionString,CancellationToken cancellationToken)
+        public ExtendedEventsReader(string connectionString,CancellationToken cancellationToken, ConcurrentDictionary<Guid, List<IXEvent>> events)
         {
             _connectionString = connectionString;
             _sessionName = $"SQLQueryStress_{DateTime.Now:yyyyMMddHHmmss}";
             _cancellationToken = cancellationToken;
+            _events = events;
         }
 
         public async  Task StartSession()

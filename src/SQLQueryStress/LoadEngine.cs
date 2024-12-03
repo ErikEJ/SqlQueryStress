@@ -1,4 +1,5 @@
 using Microsoft.Data.SqlClient;
+using Microsoft.SqlServer.XEvent.XELite;
 using SQLQueryStress.Controls;
 
 //using SQLQueryStress.Controls;
@@ -49,13 +50,15 @@ namespace SQLQueryStress
 
         private ExtendedEventsReader _extendedEventsReader = null;
         private Task _extendedEventReaderTask = null;
+        private readonly ConcurrentDictionary<Guid, List<IXEvent>> _events = new();
 
 
         public LoadEngine(string connectionString, string query, int threads, int iterations, string paramQuery,
             Dictionary<string, string> paramMappings, string paramConnectionString, int commandTimeout,
-            bool collectIoStats, bool collectTimeStats, bool forceDataRetrieval, bool killQueriesOnCancel, CancellationTokenSource cts,GanttChartControl ganttChart)
+            bool collectIoStats, bool collectTimeStats, bool forceDataRetrieval, bool killQueriesOnCancel, CancellationTokenSource cts,GanttChartControl ganttChart,
+            ConcurrentDictionary<Guid, List<IXEvent>> events)
         {
-            
+            _events = events;
             //Set the min pool size so that the pool does not have
             //to get allocated in real-time
             var builder = new SqlConnectionStringBuilder(connectionString)
@@ -98,7 +101,7 @@ namespace SQLQueryStress
 
             StartLoad(worker);
         }
-
+        public ExtendedEventsReader extendedEventsReader => _extendedEventsReader;
         private void StartLoad(BackgroundWorker worker)
         {
             var useParams = false;
@@ -126,7 +129,7 @@ namespace SQLQueryStress
             var exEventCTS = new CancellationTokenSource();
             var exToken = exEventCTS.Token;
 
-            _extendedEventsReader = new(_connectionString,exToken);
+            _extendedEventsReader = new(_connectionString,exToken,_events);
 
             _extendedEventsReader.StartSession().GetAwaiter().GetResult();
             _extendedEventReaderTask = _extendedEventsReader.ReadEventsLoop();

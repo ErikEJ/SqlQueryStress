@@ -1,5 +1,7 @@
+using Microsoft.SqlServer.XEvent.XELite;
 using SQLQueryStress.Forms;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -25,10 +27,14 @@ namespace SQLQueryStress.Controls
         private const float MAX_SCALE = 10000.0f; // 10 pixels per millisecond
         private const float ZOOM_FACTOR = 1.2f;
 
-        public GanttChartControl()
+        private readonly ConcurrentDictionary<Guid, List<IXEvent>> _events;
+
+        public GanttChartControl(ConcurrentDictionary<Guid, List<IXEvent>> events)
         {
             InitializeComponents();
             InitializeGanttChart();
+        
+            _events = events;
         }
 
         public void ZoomIn()
@@ -309,7 +315,7 @@ namespace SQLQueryStress.Controls
 
             if (item != null && item.QueryOutput != null)
             {
-                var detailForm = new QueryDetailForm(item.QueryOutput);
+                var detailForm = new QueryDetailForm(item.QueryOutput,_events);
                 detailForm.Show();
             }
         }

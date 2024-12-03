@@ -1,8 +1,10 @@
 #region
 
+using Microsoft.SqlServer.XEvent.XELite;
 using SQLQueryStress.Controls;
 using SQLQueryStress.Properties;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,6 +12,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Windows.Forms;
 
 #endregion
@@ -93,7 +96,7 @@ namespace SQLQueryStress
         private SqlControl sqlControl1;
 
         private GanttChartControl ganttChart;
-
+        private readonly ConcurrentDictionary<Guid, List<IXEvent>> _events = new();
         //private BackgroundWorker ExtendedEventsReader;
 
         public FormMain(CommandLineOptions runParameters) : this()
@@ -366,8 +369,8 @@ namespace SQLQueryStress
 
             var engine = new LoadEngine(_settings.MainDbConnectionInfo.ConnectionString, _settings.MainQuery, _settings.NumThreads, _settings.NumIterations,
                 _settings.ParamQuery, _settings.ParamMappings, paramConnectionInfo.ConnectionString, _settings.CommandTimeout, _settings.CollectIoStats,
-                _settings.CollectTimeStats, _settings.ForceDataRetrieval, _settings.KillQueriesOnCancel, _backgroundWorkerCTS,ganttChart);
-
+                _settings.CollectTimeStats, _settings.ForceDataRetrieval, _settings.KillQueriesOnCancel, _backgroundWorkerCTS,ganttChart,_events);
+            //extendedEventsReader = engine.extendedEventsReader;
             backgroundWorker1.RunWorkerAsync(engine);
 
             _start = new TimeSpan(DateTime.Now.Ticks);
@@ -667,7 +670,7 @@ namespace SQLQueryStress
             base.OnLoad(e);
 
             // Create and configure Gantt chart
-            ganttChart = new GanttChartControl();
+            ganttChart = new GanttChartControl(_events);
             ganttChart.Dock = DockStyle.Fill;
 
             // Add it to the bottom row of tableLayoutPanel3
