@@ -1,3 +1,4 @@
+using SQLQueryStress.Forms;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -115,6 +116,9 @@ namespace SQLQueryStress.Controls
 
             // Add mouse wheel handler for zooming
             _chartPanel.MouseWheel += ChartPanel_MouseWheel;
+
+            // Add mouse click handler
+            _chartPanel.MouseClick += ChartPanel_MouseClick;
 
             // Add controls
             Controls.Add(_chartPanel);
@@ -283,6 +287,32 @@ namespace SQLQueryStress.Controls
                     ZoomOut();
             }
         }
+
+        private void ChartPanel_MouseClick(object sender, MouseEventArgs e)
+        {
+            // Convert mouse coordinates to chart coordinates by adding scroll offset
+            var chartX = e.X + _horizontalScrollBar.Value;
+            var chartY = e.Y + _verticalScrollBar.Value;
+
+            // Find the row based on Y position
+            var row = chartY / (_rowHeight + _rowSpacing);
+            
+            // Convert X position to time
+            var secondsFromStart = chartX / _timeScale;
+            var timeAtCursor = _ganttStartTime.AddSeconds(secondsFromStart);
+
+            // Find matching GanttItem
+            var item = _ganttItems.FirstOrDefault(x => 
+                x.Row == row && 
+                timeAtCursor >= x.StartTime && 
+                timeAtCursor <= x.StartTime.Add(x.Duration));
+
+            if (item != null && item.QueryOutput != null)
+            {
+                var detailForm = new QueryDetailForm(item.QueryOutput);
+                detailForm.Show();
+            }
+        }
     }
 
     public class GanttItem
@@ -291,7 +321,6 @@ namespace SQLQueryStress.Controls
         public DateTime StartTime { get; set; }
         public TimeSpan Duration { get; set; }
         public Color Color { get; set; }
-
         internal LoadEngine.QueryOutput QueryOutput { get; set; }
     }
 } 

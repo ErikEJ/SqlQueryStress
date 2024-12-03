@@ -22,7 +22,7 @@ using System.Windows;
 namespace SQLQueryStress
 {
 #pragma warning disable CA1031 // Do not catch general exception types
-    sealed class LoadEngine
+    public class LoadEngine
     {
         private static BlockingCollection<QueryOutput> QueryOutInfo;
         private static CancellationTokenSource _backgroundWorkerCTS;
@@ -321,7 +321,7 @@ namespace SQLQueryStress
             }
         }
 
-        private sealed class QueryInput : IDisposable
+        public sealed class QueryInput : IDisposable
         {
             private static QueryOutput _outInfo=new();
 
@@ -615,7 +615,7 @@ namespace SQLQueryStress
             }
         }
 
-        internal sealed class QueryOutput
+        public class QueryOutput
         {
             public DateTime startTime;
             public DateTime endTime;
