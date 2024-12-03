@@ -61,21 +61,41 @@ namespace SQLQueryStress
                 IF EXISTS (SELECT * FROM sys.server_event_sessions WHERE name = '{_sessionName}')
                     DROP EVENT SESSION [{_sessionName}] ON SERVER;
 
-                CREATE EVENT SESSION [{_sessionName}] ON SERVER 
-                ADD EVENT sqlserver.sql_batch_completed(
-                    ACTION(sqlserver.database_name,
-                           sqlserver.sql_text,
-                           sqlserver.username,
-                           sqlserver.context_info)
-                    WHERE ([package0].[equal_boolean]([sqlserver].[is_system],(0))))
-            --    ADD TARGET package0.event_file(SET filename=N'SQLQueryStress.xel')
-                WITH (MAX_MEMORY=4096 KB,
-                      EVENT_RETENTION_MODE=ALLOW_SINGLE_EVENT_LOSS,
-                      MAX_DISPATCH_LATENCY=1 SECONDS,
-                      MAX_EVENT_SIZE=0 KB,
-                      MEMORY_PARTITION_MODE=NONE,
-                      TRACK_CAUSALITY=OFF,
-                      STARTUP_STATE=OFF);
+                CREATE EVENT SESSION [{_sessionName}] ON SERVER
+ADD EVENT sqlos.wait_info(
+    ACTION(sqlserver.context_info,sqlserver.session_id,sqlserver.transaction_id)
+    WHERE ([package0].[equal_boolean]([sqlserver].[is_system],(0)) AND [wait_type]<>'SOS_WORK_DISPATCHER')),
+ADD EVENT sqlserver.blocked_process_report(
+    ACTION(sqlserver.context_info,sqlserver.session_id,sqlserver.sql_text,sqlserver.transaction_id)),
+ADD EVENT sqlserver.lock_cancel(
+    ACTION(sqlserver.client_app_name,sqlserver.client_pid,sqlserver.context_info,sqlserver.database_name,sqlserver.nt_username,sqlserver.server_principal_name,sqlserver.session_id,sqlserver.sql_text,sqlserver.transaction_id)),
+ADD EVENT sqlserver.lock_deadlock(
+    ACTION(sqlserver.client_app_name,sqlserver.client_pid,sqlserver.context_info,sqlserver.database_name,sqlserver.nt_username,sqlserver.server_principal_name,sqlserver.session_id,sqlserver.sql_text,sqlserver.transaction_id)),
+ADD EVENT sqlserver.lock_deadlock_chain(
+    ACTION(sqlserver.context_info,sqlserver.database_name,sqlserver.session_id,sqlserver.sql_text,sqlserver.transaction_id)),
+ADD EVENT sqlserver.lock_escalation(
+    ACTION(sqlserver.client_app_name,sqlserver.client_pid,sqlserver.context_info,sqlserver.database_name,sqlserver.nt_username,sqlserver.server_principal_name,sqlserver.session_id,sqlserver.sql_text,sqlserver.transaction_id)),
+ADD EVENT sqlserver.lock_timeout_greater_than_0(
+    ACTION(sqlserver.client_app_name,sqlserver.client_pid,sqlserver.context_info,sqlserver.database_name,sqlserver.nt_username,sqlserver.server_principal_name,sqlserver.session_id,sqlserver.sql_text,sqlserver.transaction_id)),
+ADD EVENT sqlserver.sp_statement_completed(SET collect_statement=(1)
+    ACTION(sqlserver.client_app_name,sqlserver.client_pid,sqlserver.context_info,sqlserver.database_name,sqlserver.nt_username,sqlserver.server_principal_name,sqlserver.session_id,sqlserver.sql_text,sqlserver.transaction_id)
+    WHERE (([package0].[equal_boolean]([sqlserver].[is_system],(0))))),
+ADD EVENT sqlserver.sp_statement_starting(SET collect_statement=(1)
+    ACTION(sqlserver.client_app_name,sqlserver.client_pid,sqlserver.context_info,sqlserver.database_name,sqlserver.nt_username,sqlserver.server_principal_name,sqlserver.session_id,sqlserver.sql_text,sqlserver.transaction_id)
+   WHERE (([package0].[equal_boolean]([sqlserver].[is_system],(0))))),
+ADD EVENT sqlserver.sql_batch_completed(
+    ACTION(sqlserver.client_app_name,sqlserver.client_pid,sqlserver.context_info,sqlserver.database_name,sqlserver.nt_username,sqlserver.server_principal_name,sqlserver.session_id,sqlserver.sql_text,sqlserver.transaction_id)
+WHERE (([package0].[equal_boolean]([sqlserver].[is_system],(0))))),
+ADD EVENT sqlserver.sql_statement_completed(
+    ACTION(sqlserver.client_app_name,sqlserver.client_pid,sqlserver.context_info,sqlserver.database_name,sqlserver.nt_username,sqlserver.server_principal_name,sqlserver.session_id,sqlserver.sql_text,sqlserver.transaction_id)
+WHERE (([package0].[equal_boolean]([sqlserver].[is_system],(0))))),
+ADD EVENT sqlserver.sql_statement_starting(
+    ACTION(sqlserver.client_app_name,sqlserver.context_info,sqlserver.database_id,sqlserver.query_hash,sqlserver.query_plan_hash,sqlserver.session_id,sqlserver.sql_text,sqlserver.transaction_id)
+WHERE (([package0].[equal_boolean]([sqlserver].[is_system],(0))))),
+ADD EVENT sqlserver.xml_deadlock_report(
+    ACTION(sqlserver.context_info,sqlserver.server_principal_name,sqlserver.session_id,sqlserver.sql_text,sqlserver.transaction_id))
+ADD TARGET package0.ring_buffer
+WITH (MAX_MEMORY=4096 KB,EVENT_RETENTION_MODE=ALLOW_SINGLE_EVENT_LOSS,MAX_DISPATCH_LATENCY=30 SECONDS,MAX_EVENT_SIZE=0 KB,MEMORY_PARTITION_MODE=NONE,TRACK_CAUSALITY=ON,STARTUP_STATE=OFF)
 
                 ALTER EVENT SESSION [{_sessionName}] ON SERVER STATE = START;";
 
@@ -133,7 +153,7 @@ namespace SQLQueryStress
                        _cancellationToken);
 
                     await readTask;
-
+                    Debug.WriteLine("Exited readeventstream");
                 }
             }
             catch (OperationCanceledException)

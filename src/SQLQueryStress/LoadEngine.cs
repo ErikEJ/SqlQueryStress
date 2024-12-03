@@ -226,9 +226,11 @@ namespace SQLQueryStress
 
             _ = Task.Run(() =>
                 {
-                    Task.Delay(1000).GetAwaiter().GetResult();
+                    Task.Delay(10000).GetAwaiter().GetResult();
+                    Debug.WriteLine("Cancelling Reader");
                     exEventCTS.Cancel();
-                    Task.Delay(1000).GetAwaiter().GetResult();
+                    Debug.WriteLine("Reader Cancelled");
+                    Task.Delay(10000).GetAwaiter().GetResult();
                     Debug.WriteLine("Calling Dispose of reader");
                     _extendedEventsReader.Dispose();
                     _extendedEventReaderTask.Dispose();
