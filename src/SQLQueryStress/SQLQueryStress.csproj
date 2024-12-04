@@ -23,54 +23,54 @@
     <WarningsAsErrors>$(WarningsAsErrors);NU1605;CA1849;CS4014</WarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Update="AboutBox.cs" />
-    <Compile Update="AboutBox.Designer.cs">
+    <Compile Update="Forms\AboutBox.cs" />
+    <Compile Update="Forms\AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
-    <Compile Update="DatabaseSelect.cs" />
-    <Compile Update="DatabaseSelect.Designer.cs">
+    <Compile Update="Forms\DatabaseSelect.cs" />
+    <Compile Update="Forms\DatabaseSelect.Designer.cs">
       <DependentUpon>DatabaseSelect.cs</DependentUpon>
     </Compile>
-    <Compile Update="FormMain.cs" />
-    <Compile Update="FormMain.Designer.cs">
+    <Compile Update="Forms\FormMain.cs" />
+    <Compile Update="Forms\FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
-    <Compile Update="DataViewer.cs" />
-    <Compile Update="DataViewer.Designer.cs">
+    <Compile Update="Forms\DataViewer.cs" />
+    <Compile Update="Forms\DataViewer.Designer.cs">
       <DependentUpon>DataViewer.cs</DependentUpon>
     </Compile>
-    <Compile Update="Options.cs" />
-    <Compile Update="Options.Designer.cs">
+    <Compile Update="Forms\Options.cs" />
+    <Compile Update="Forms\Options.Designer.cs">
       <DependentUpon>Options.cs</DependentUpon>
     </Compile>
-    <Compile Update="ParamWindow.cs" />
-    <Compile Update="ParamWindow.Designer.cs">
+    <Compile Update="Forms\ParamWindow.cs" />
+    <Compile Update="Forms\ParamWindow.Designer.cs">
       <DependentUpon>ParamWindow.cs</DependentUpon>
     </Compile>
     <Compile Update="SqlControl.xaml.cs">
       <DependentUpon>SqlControl.xaml</DependentUpon>
     </Compile>
-    <EmbeddedResource Update="AboutBox.resx">
+    <EmbeddedResource Update="Forms\AboutBox.resx">
       <SubType>Designer</SubType>
       <DependentUpon>AboutBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="DatabaseSelect.resx">
+    <EmbeddedResource Update="Forms\DatabaseSelect.resx">
       <SubType>Designer</SubType>
       <DependentUpon>DatabaseSelect.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="FormMain.resx">
+    <EmbeddedResource Update="Forms\FormMain.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="DataViewer.resx">
+    <EmbeddedResource Update="Forms\DataViewer.resx">
       <SubType>Designer</SubType>
       <DependentUpon>DataViewer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="Options.resx">
+    <EmbeddedResource Update="Forms\Options.resx">
       <SubType>Designer</SubType>
       <DependentUpon>Options.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Update="ParamWindow.resx">
+    <EmbeddedResource Update="Forms\ParamWindow.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ParamWindow.cs</DependentUpon>
     </EmbeddedResource>

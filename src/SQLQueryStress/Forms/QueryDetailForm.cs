@@ -94,7 +94,6 @@ namespace SQLQueryStress.Forms
             detailsTextBox.ScrollBars = ScrollBars.Both;
             detailsTextBox.Size = new System.Drawing.Size(800, 300);
             detailsTextBox.TabIndex = 0;
-            detailsTextBox.TextChanged += detailsTextBox_TextChanged;
             // 
             // splitContainer1
             // 
@@ -133,9 +132,5 @@ namespace SQLQueryStress.Forms
         private System.Windows.Forms.TextBox detailsTextBox;
         private System.Windows.Forms.SplitContainer splitContainer1;
 
-        private void detailsTextBox_TextChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 } 

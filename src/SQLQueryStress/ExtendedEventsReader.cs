@@ -1,63 +1,61 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using Microsoft.SqlServer.XEvent.XELite;
 
-namespace SQLQueryStress
+namespace SQLQueryStress;
+
+public class ExtendedEventsReader : IDisposable
 {
-    public class ExtendedEventsReader : IDisposable
+    private readonly string _connectionString;
+    private readonly ConcurrentDictionary<Guid, List<IXEvent>> _events;
+    private readonly string _sessionName;
+    private readonly CancellationToken _cancellationToken;
+    private bool _isDisposed;
+    private XELiveEventStreamer _reader;
+
+    public ExtendedEventsReader(string connectionString, CancellationToken cancellationToken,
+        ConcurrentDictionary<Guid, List<IXEvent>> events)
     {
-        private readonly string _connectionString;
-        private readonly string _sessionName;
-        private XELiveEventStreamer _reader;
-        private bool _isDisposed;
-        private CancellationToken _cancellationToken;
+        _connectionString = connectionString;
+        _sessionName = $"SQLQueryStress_{DateTime.Now:yyyyMMddHHmmss}";
+        _cancellationToken = cancellationToken;
+        _events = events;
+    }
 
-        public event EventHandler<XEventData> OnEventReceived;
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 
-        private readonly ConcurrentDictionary<Guid, List<IXEvent>> _events;
+    private static Guid ConvertByteArrayToGuid(byte[] Hex)
+    {
+        if (Hex.Length == 0) return Guid.Empty;
+        return new Guid(Hex);
+    }
 
-        static Guid ConvertByteArrayToGuid(byte[] Hex)
+    private void addEventToDictionary(IXEvent exEvent)
+    {
+        if (!exEvent.Actions.TryGetValue("context_info", out var context)) return;
+
+        var contextS = ConvertByteArrayToGuid((byte[])context);
+        var eventList = _events.AddOrUpdate(contextS, a => new List<IXEvent>(), (a, b) => { return b; });
+        eventList.Add(exEvent);
+    }
+
+    public async Task StartSession()
+    {
+        using (var conn = new SqlConnection(_connectionString))
         {
-            if(Hex.Length == 0) return Guid.Empty;
-            return new Guid(Hex);
-        }
-        private void addEventToDictionary(IXEvent exEvent)
-        {
-            if (!exEvent.Actions.TryGetValue("context_info", out object context)) return;
+            await conn.OpenAsync();
 
-            var contextS = ConvertByteArrayToGuid((byte[])context);
-            var eventList = _events.AddOrUpdate(contextS, (a) => new(), (a,b) => { return b; });
-            eventList.Add(exEvent);
-
-
-
-        }
-
-        public ExtendedEventsReader(string connectionString,CancellationToken cancellationToken, ConcurrentDictionary<Guid, List<IXEvent>> events)
-        {
-            _connectionString = connectionString;
-            _sessionName = $"SQLQueryStress_{DateTime.Now:yyyyMMddHHmmss}";
-            _cancellationToken = cancellationToken;
-            _events = events;
-        }
-
-        public async  Task StartSession()
-        {
-            using (var conn = new SqlConnection(_connectionString))
-            {
-                await conn.OpenAsync();
-
-                // Create XE session
-                var createSessionSql = $@"
+            // Create XE session
+            var createSessionSql = $@"
                 IF EXISTS (SELECT * FROM sys.server_event_sessions WHERE name = '{_sessionName}')
                     DROP EVENT SESSION [{_sessionName}] ON SERVER;
 
@@ -99,102 +97,80 @@ WITH (MAX_MEMORY=4096 KB,EVENT_RETENTION_MODE=ALLOW_SINGLE_EVENT_LOSS,MAX_DISPAT
 
                 ALTER EVENT SESSION [{_sessionName}] ON SERVER STATE = START;";
 
-                using (var cmd = new SqlCommand(createSessionSql, conn))
-                {
-                    await cmd.ExecuteNonQueryAsync();
-                }
-            }
-
-            // Initialize XEvent reader
-            _reader = new XELiveEventStreamer(_connectionString, _sessionName);
-
-           
+            using var cmd = new SqlCommand(createSessionSql, conn);
+            await cmd.ExecuteNonQueryAsync();
         }
 
-        public async Task StopSession()
-        {
-            // _cts.Cancel();
-            Debug.WriteLine("in stop session");
+        // Initialize XEvent reader
+        _reader = new XELiveEventStreamer(_connectionString, _sessionName);
+    }
 
-            using (var conn = new SqlConnection(_connectionString))
-            {
-                await conn.OpenAsync();
-                var dropSessionSql = $@"
+    public async Task StopSession()
+    {
+        // _cts.Cancel();
+        Debug.WriteLine("in stop session");
+
+        using (var conn = new SqlConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+            var dropSessionSql = $@"
                 IF EXISTS (SELECT * FROM sys.server_event_sessions WHERE name = '{_sessionName}')
                 BEGIN
                     ALTER EVENT SESSION [{_sessionName}] ON SERVER STATE = STOP;
                     DROP EVENT SESSION [{_sessionName}] ON SERVER;
                 END";
 
-                using (var cmd = new SqlCommand(dropSessionSql, conn))
-                {
-                    await cmd.ExecuteNonQueryAsync();
-                }
+            using (var cmd = new SqlCommand(dropSessionSql, conn))
+            {
+                await cmd.ExecuteNonQueryAsync();
             }
-            Debug.WriteLine("Stop session Done");
         }
 
-        public async Task ReadEventsLoop()
+        Debug.WriteLine("Stop session Done");
+    }
+
+    public async Task ReadEventsLoop()
+    {
+        try
         {
-            try
+            while (!_cancellationToken.IsCancellationRequested)
             {
-                while (!_cancellationToken.IsCancellationRequested)
-                {
-                    Task readTask = _reader.ReadEventStream(() =>
+                var readTask = _reader.ReadEventStream(() =>
                     {
                         Debug.WriteLine("Connected to session");
                         return Task.CompletedTask;
                     },
-                       xevent =>
-                       {
-                           addEventToDictionary(xevent);
-                           return Task.CompletedTask;
-                       },
-                       _cancellationToken);
+                    xevent =>
+                    {
+                        addEventToDictionary(xevent);
+                        return Task.CompletedTask;
+                    },
+                    _cancellationToken);
 
-                    await readTask;
-                    Debug.WriteLine("Exited readeventstream");
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                // Normal cancellation, ignore
-            }
-            catch (Exception ex)
-            {
-                // Log or handle error
-                System.Diagnostics.Debug.WriteLine($"Error in XEvent reader: {ex.GetType().Name}: {ex}");
+                await readTask;
+                Debug.WriteLine("Exited readeventstream");
             }
         }
-
-        public void Dispose()
+        catch (OperationCanceledException)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            // Normal cancellation, ignore
         }
-
-        protected virtual void Dispose(bool disposing)
+        catch (Exception ex)
         {
-            Debug.WriteLine($"In readerDispose status = {_isDisposed}");
-            if (!_isDisposed)
-            {
-                if (disposing)
-                {
-                   // _reader?.Dispose();
-                    Task.Run(() => StopSession()).Wait();
-                }
-                _isDisposed = true;
-            }
+            // Log or handle error
+            Debug.WriteLine($"Error in XEvent reader: {ex.GetType().Name}: {ex}");
         }
     }
 
-    public class XEventData
+    protected virtual void Dispose(bool disposing)
     {
-        public string EventName { get; set; }
-        public DateTime Timestamp { get; set; }
-        public TimeSpan Duration { get; set; }
-        public string DatabaseName { get; set; }
-        public string SqlText { get; set; }
-        public string Username { get; set; }
+        Debug.WriteLine($"In readerDispose status = {_isDisposed}");
+        if (!_isDisposed)
+        {
+            if (disposing)
+                Task.Run(() => StopSession()).Wait();
+
+            _isDisposed = true;
+        }
     }
-} 
+}

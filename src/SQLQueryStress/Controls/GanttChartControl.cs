@@ -74,12 +74,6 @@ namespace SQLQueryStress.Controls
             _chartPanel.Invalidate();
         }
 
-        public void AddGanttItem(GanttItem item)
-        {
-            _ganttItems.Add(item);
-            _chartPanel.Invalidate();
-        }
-
         internal void AddGanttItem(int row, DateTime startTime, int durationMS, LoadEngine.QueryOutput queryOutput)
         {
             _ganttItems.Add(new GanttItem
@@ -319,14 +313,5 @@ namespace SQLQueryStress.Controls
                 detailForm.Show();
             }
         }
-    }
-
-    public class GanttItem
-    {
-        public int Row { get; set; }
-        public DateTime StartTime { get; set; }
-        public TimeSpan Duration { get; set; }
-        public Color Color { get; set; }
-        internal LoadEngine.QueryOutput QueryOutput { get; set; }
     }
 } 
