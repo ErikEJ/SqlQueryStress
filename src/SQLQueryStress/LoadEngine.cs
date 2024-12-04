@@ -16,9 +16,6 @@ public partial class LoadEngine
 {
     private static BlockingCollection<QueryOutput> QueryOutInfo;
     private static int _finishedThreads;
-    private readonly bool _collectIoStats;
-    private readonly bool _collectTimeStats;
-    private readonly List<SqlCommand> _commandPool = new();
     private readonly int _commandTimeout;
     private readonly string _connectionString;
     private readonly ConcurrentDictionary<Guid, List<IXEvent>> _events = new();
@@ -60,8 +57,6 @@ public partial class LoadEngine
         _paramMappings = paramMappings;
         _paramConnectionString = paramConnectionString;
         _commandTimeout = commandTimeout;
-        _collectIoStats = collectIoStats;
-        _collectTimeStats = collectTimeStats;
         _forceDataRetrieval = forceDataRetrieval;
         _killQueriesOnCancel = killQueriesOnCancel;
         _ganttChart = ganttChart;
@@ -107,7 +102,6 @@ public partial class LoadEngine
         var exToken = exEventCTS.Token;
 
         _extendedEventsReader = new ExtendedEventsReader(_connectionString, exToken, _events);
-
         _extendedEventsReader.StartSession().GetAwaiter().GetResult();
         _extendedEventReaderTask = _extendedEventsReader.ReadEventsLoop();
 
@@ -136,13 +130,12 @@ public partial class LoadEngine
 
             if (useParams) queryComm.Parameters.AddRange(ParamServer.GetParams());
 
-            using var input = new QueryInput(statsComm, queryComm,
-                _iterations, _forceDataRetrieval, _queryDelay, worker, _killQueriesOnCancel, _threads, i, _ganttChart);
+            var input = new QueryInput(statsComm, queryComm,
+                _iterations, _forceDataRetrieval, _queryDelay, worker, _killQueriesOnCancel, 
+                _threads, i, _ganttChart);
 
             var theThread = input.StartLoadThread(token);
-
             _threadPool.Add(theThread);
-            _commandPool.Add(queryComm);
         }
 
         // create a token source for the workers to be able to listen to a cancel event
@@ -194,6 +187,7 @@ public partial class LoadEngine
 
     private void processOuts(BackgroundWorker worker)
     {
+        Debug.WriteLine("In processOuts");
         var finishedThreads = _threadPool.Count(x => x.IsCompleted);
         var totalThreads = _threadPool.Count();
 
@@ -203,6 +197,9 @@ public partial class LoadEngine
 
             worker.ReportProgress((int)(finishedThreads / (decimal)totalThreads * 100), theOut);
         }
+        GanttMessages.SendFitToData(_ganttChart);
+        //_ganttChart.FitToData();
+        //_ganttChart.Invalidate();
     }
 }
 #pragma warning restore CA1031 // Do not catch general exception types

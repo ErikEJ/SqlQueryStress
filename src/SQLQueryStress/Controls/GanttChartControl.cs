@@ -313,5 +313,18 @@ namespace SQLQueryStress.Controls
                 detailForm.Show();
             }
         }
+
+        protected override void WndProc(ref Message m)
+        {
+            switch (m.Msg)
+            {
+                case GanttMessages.WM_FIT_TO_DATA:
+                    FitToData();
+                    break;
+                default:
+                    base.WndProc(ref m);
+                    break;
+            }
+        }
     }
 } 
