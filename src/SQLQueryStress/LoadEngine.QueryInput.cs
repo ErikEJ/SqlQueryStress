@@ -73,7 +73,7 @@ public partial class LoadEngine
             return binaryString.ToString();
         }
 
-        public async Task StartLoadThread(Object token)
+        public void StartLoadThread(Object token)
         {
             bool runCancelled = false;
 
@@ -100,10 +100,10 @@ public partial class LoadEngine
                         context = Guid.NewGuid();
                         if (conn != null)
                         {
-                            await conn.OpenAsync();
+                            conn.Open();
                         }
                         var contextcmd = new SqlCommand($"SET CONTEXT_INFO 0x{ConvertGuidToHexString(context)};", conn);
-                        await contextcmd.ExecuteNonQueryAsync();
+                        contextcmd.ExecuteNonQuery();
                         //Params are assigned only once -- after that, their values are dynamically retrieved
                         if (_queryComm.Parameters.Count > 0)
                         {
@@ -113,26 +113,27 @@ public partial class LoadEngine
                         _sw.Start();
                         startTime = DateTime.Now;
                         //TODO: This could be made better
-                        if (true || _forceDataRetrieval)
+                        if (_forceDataRetrieval)
                         {
-                            var reader = await _queryComm.ExecuteReaderAsync();
+                            var reader = _queryComm.ExecuteReader();
 
                             do
                             {
-                                while (!runCancelled && await reader.ReadAsync())
+                                while (!runCancelled && reader.Read())
                                 {
                                     //grab the first column to force the row down the pipe
                                     // ReSharper disable once UnusedVariable
                                     var x = reader[0];
                                 }
-                            } while (!runCancelled && await reader.NextResultAsync());
+                            } while (!runCancelled && reader.NextResult());
                         }
                         else
                         {
-                            await _queryComm.ExecuteNonQueryAsync();
+                            _queryComm.ExecuteNonQuery();
                         }
                         endTime = DateTime.Now;
                         _sw.Stop();
+                        Debug.WriteLine($"Thread {Thread.CurrentThread.Name} ReadDone Iteration {i}");
                     }
                     catch (Exception ex)
                     {
@@ -150,7 +151,7 @@ public partial class LoadEngine
                         //Clean up the connection
                         if (conn != null)
                         {
-                            await conn.CloseAsync();
+                            conn.Close();
                         }
                     }
 
@@ -177,9 +178,8 @@ public partial class LoadEngine
                         ElapsedTime = _outInfo.ElapsedTime,
                         LogicalReads = _outInfo.LogicalReads
                     };
-
+                    
                     QueryOutInfo.Add(copyOutInfo);
-                    _ganntChart.Invalidate();
                     _sw.Reset();
 
                     if (!runCancelled)
@@ -187,7 +187,7 @@ public partial class LoadEngine
                         try
                         {
                             if (_queryDelay > 0)
-                                await Task.Delay(_queryDelay, ctsToken);
+                                Task.Delay(_queryDelay, ctsToken).GetAwaiter().GetResult();
                         }
                         catch (AggregateException ae)
                         {
@@ -215,7 +215,9 @@ public partial class LoadEngine
                     QueryOutInfo.Add(_outInfo);
                 }
             }
-            Interlocked.Increment(ref _finishedThreads);
+            var t = Interlocked.Increment(ref _finishedThreads);
+            Debug.WriteLine($"Thread {Thread.CurrentThread.Name} Completed , FT ={t}");
+
         }
 
         public void Dispose()

@@ -213,8 +213,6 @@ namespace SQLQueryStress
                 }
                  */
             }
-            ganttChart.AddGanttItem(output.ThreadNumber, output.startTime, (int)output.Time.TotalMilliseconds,output);
-            ganttChart.Invalidate();
             _activeThreads = output.ActiveThreads;
         }
 

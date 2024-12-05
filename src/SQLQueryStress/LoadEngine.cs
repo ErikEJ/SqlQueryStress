@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
@@ -27,7 +26,8 @@ public partial class LoadEngine
     private readonly Dictionary<string, string> _paramMappings;
     private readonly string _paramQuery;
     private readonly string _query;
-    private readonly List<Task> _threadPool = new();
+    private readonly List<Thread> _threadPool = new();
+
     private readonly int _threads;
     private Task _extendedEventReaderTask;
     private ExtendedEventsReader _extendedEventsReader;
@@ -131,10 +131,13 @@ public partial class LoadEngine
             if (useParams) queryComm.Parameters.AddRange(ParamServer.GetParams());
 
             var input = new QueryInput(statsComm, queryComm,
-                _iterations, _forceDataRetrieval, _queryDelay, worker, _killQueriesOnCancel, 
+                _iterations, _forceDataRetrieval, _queryDelay, worker, _killQueriesOnCancel,
                 _threads, i, _ganttChart);
 
-            var theThread = input.StartLoadThread(token);
+            var theThread = new Thread(input.StartLoadThread)
+                { Priority = ThreadPriority.BelowNormal, IsBackground = true };
+            theThread.Name = "thread: " + i;
+            Debug.WriteLine($"Thread {i} Created");
             _threadPool.Add(theThread);
         }
 
@@ -145,12 +148,32 @@ public partial class LoadEngine
         var cancelled = false;
 
 
-        while (_threadPool.Any(x => !x.IsCompleted))
+        _finishedThreads = 0;
+        for (var i = 0; i < _threads; i++)
+        {
+            _threadPool[i].Start(workerCTS.Token);
+            Debug.WriteLine($"Thread {_threadPool[i].Name} Started");
+        }
+        Debug.WriteLine("Threads Started");
+
+        while (!cancelled)
+        {
+            Task.Delay(250).GetAwaiter().GetResult();
+            QueryOutput theOut = null;
             try
             {
-                Task.Delay(250).GetAwaiter().GetResult();
-
                 processOuts(worker);
+
+                bool allComplete = true;
+                for (var i = 0; i < _threads; i++)
+                {
+                    if (_threadPool[i].IsAlive)
+                    {
+                        allComplete = false;
+                    }
+                }
+
+                if (allComplete) break;
             }
             catch (Exception ex)
             {
@@ -158,14 +181,33 @@ public partial class LoadEngine
                 // and OperationCanceledException if the user clicked cancel.
                 // If it's OperationCanceledException, we need to cancel
                 // the worker threads and wait for them to exit
-                if (ex is OperationCanceledException) workerCTS.Cancel();
+                if (ex is OperationCanceledException)
+                {
+                    workerCTS.Cancel();
+                    foreach (var theThread in _threadPool)
+                        // give the thread max 5 seconds to cancel nicely
+                        if (!theThread.Join(5000))
+                            theThread.Interrupt();
+                }
+
                 SqlConnection.ClearAllPools();
                 cancelled = true;
+                Debug.WriteLine($"Exception caught and loop cancelled \r\n {ex}");
             }
 
-        cancelled = true;
+            if (theOut != null)
+            {
+                //Report output to the UI
+                var finishedThreads = Interlocked.CompareExchange(ref _finishedThreads, 0, 0);
+                theOut.ActiveThreads = _threads - finishedThreads;
+                worker.ReportProgress((int)(_finishedThreads / (decimal)_threads * 100), theOut);
+            }
+
+            
+        }
+        Debug.WriteLine("Threads Completed");
         QueryOutInfo.CompleteAdding();
-        processOuts(worker);
+      
         worker.ReportProgress(100, null);
 
 
@@ -188,18 +230,16 @@ public partial class LoadEngine
     private void processOuts(BackgroundWorker worker)
     {
         Debug.WriteLine("In processOuts");
-        var finishedThreads = _threadPool.Count(x => x.IsCompleted);
-        var totalThreads = _threadPool.Count();
-
         while (true)
         {
-            if (!QueryOutInfo.TryTake(out var theOut)) break;
+            if (!QueryOutInfo.TryTake(out var theOut))
+                break;
 
-            worker.ReportProgress((int)(finishedThreads / (decimal)totalThreads * 100), theOut);
+            _ganttChart.AddGanttItem(theOut.ThreadNumber, theOut.startTime, (int)theOut.Time.TotalMilliseconds, theOut);
+
         }
+
         GanttMessages.SendFitToData(_ganttChart);
-        //_ganttChart.FitToData();
-        //_ganttChart.Invalidate();
     }
 }
 #pragma warning restore CA1031 // Do not catch general exception types
