@@ -159,7 +159,7 @@ public partial class LoadEngine
         while (!cancelled)
         {
             Task.Delay(250).GetAwaiter().GetResult();
-            QueryOutput theOut = null;
+           // QueryOutput theOut = null;
             try
             {
                 processOuts(worker);
@@ -195,15 +195,6 @@ public partial class LoadEngine
                 Debug.WriteLine($"Exception caught and loop cancelled \r\n {ex}");
             }
 
-            if (theOut != null)
-            {
-                //Report output to the UI
-                var finishedThreads = Interlocked.CompareExchange(ref _finishedThreads, 0, 0);
-                theOut.ActiveThreads = _threads - finishedThreads;
-                worker.ReportProgress((int)(_finishedThreads / (decimal)_threads * 100), theOut);
-            }
-
-            
         }
         Debug.WriteLine("Threads Completed");
         QueryOutInfo.CompleteAdding();
