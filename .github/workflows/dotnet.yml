@@ -26,10 +26,9 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore
+
     - name: Build
-      run: dotnet build --no-restore --configuration Release
+      run: dotnet build ./src/SQLQueryStress.sln --configuration Release
 
     - name: dotnet publish  
       run: dotnet publish ./src/SQLQueryStress/SqlQueryStress.csproj --configuration Release --output .\src\SQLQueryStress\bin\Publish\net8.0-windows\ --self-contained true
