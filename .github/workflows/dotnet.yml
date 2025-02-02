@@ -39,15 +39,9 @@ jobs:
     - name: Publish artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: Artifacts
         path: |
           *.zip
-
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        path: |
-          **\\*.nupkg
+          *.nupkg
 
     - name: Publish NuGet
       if: startsWith(github.ref, 'refs/heads/master') && github.repository_owner == 'ErikEJ'
