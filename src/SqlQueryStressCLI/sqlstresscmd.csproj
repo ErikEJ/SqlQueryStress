@@ -8,9 +8,7 @@
     <PackageVersion>0.9.20</PackageVersion>
     <PackageReleaseNotes>Update M.D.S.</PackageReleaseNotes>
     <TargetFramework>net8.0</TargetFramework>
-    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <ItemGroup>
