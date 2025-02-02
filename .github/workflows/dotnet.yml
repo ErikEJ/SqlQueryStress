@@ -41,7 +41,7 @@ jobs:
       with:
         path: |
           *.zip
-          *.nupkg
+          **\\*.nupkg
 
     - name: Publish NuGet
       if: startsWith(github.ref, 'refs/heads/master') && github.repository_owner == 'ErikEJ'
