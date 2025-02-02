@@ -34,7 +34,7 @@ jobs:
       run: dotnet publish ./src/SQLQueryStress/SqlQueryStress.csproj --configuration Release --output .\src\SQLQueryStress\bin\Publish\net8.0-windows\ --self-contained true
 
     - name: zip app
-      run: 7z a SqlQueryStress-0.9.8.${{ env.VERSION }}.zip .\src\SQLQueryStress\bin\Publish\net8.0-windows\*.exe  
+      run: 7z a SqlQueryStress-0.9.8.${{ github.run_number }}.zip .\src\SQLQueryStress\bin\Publish\net8.0-windows\*.exe  
 
     - name: Publish artifacts
       uses: actions/upload-artifact@v4
@@ -49,7 +49,7 @@ jobs:
         path: |
           **\\*.nupkg
 
-    # - name: Publish NuGet
-    #   if: startsWith(github.ref, 'refs/heads/master') && github.repository_owner == 'ErikEJ'
-    #   run: dotnet nuget push **\*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{ secrets.NUGET }} --skip-duplicate
+    - name: Publish NuGet
+      if: startsWith(github.ref, 'refs/heads/master') && github.repository_owner == 'ErikEJ'
+      run: dotnet nuget push **\*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{ secrets.NUGET }} --skip-duplicate
   
