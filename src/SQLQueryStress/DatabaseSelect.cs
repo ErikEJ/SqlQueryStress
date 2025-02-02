@@ -410,14 +410,13 @@ namespace SQLQueryStress
         {
             appintent_combo.Enabled = appintent_check.Checked;
 
-            appintent_combo.DataSource = Enum.GetValues(typeof(ApplicationIntent));
+            appintent_combo.DataSource = Enum.GetValues<ApplicationIntent>();
         }
 
         private void pm_appintent_check_CheckedChanged(object sender, EventArgs e)
         {
             pm_appintent_combo.Enabled = pm_appintent_check.Checked;
 
-            pm_appintent_combo.DataSource = Enum.GetValues(typeof(ApplicationIntent));
-        }
+            pm_appintent_combo.DataSource = Enum.GetValues<ApplicationIntent>();    }
     }
 }

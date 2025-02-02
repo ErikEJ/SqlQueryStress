@@ -1,0 +1,56 @@
+name: .NET
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Update Version
+      run: |
+       ((Get-Content -Path .\src\SqlQueryStressCLI\AssemblyInfo.cs -Raw) -Replace "1.0.0.0", "0.9.8.${{ github.run_number }}") | Set-Content -Path .\src\SqlQueryStressCLI\AssemblyInfo.cs
+       ((Get-Content -Path .\src\SQLQueryStress\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.0.0", "0.9.8.${{ github.run_number }}") | Set-Content -Path .\src\SqlQueryStressCLI\AssemblyInfo.cs
+      shell: pwsh
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore --configuration Release
+
+    - name: dotnet publish  
+      run: dotnet publish ./src/SQLQueryStress/SqlQueryStress.csproj --configuration Release --output .\src\SQLQueryStress\bin\Publish\net8.0-windows\ --self-contained true
+
+    - name: zip app
+      run: 7z a SqlQueryStress-0.9.8.${{ env.VERSION }}.zip .\src\SQLQueryStress\bin\Publish\net8.0-windows\*.exe  
+
+    - name: Publish artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: Artifacts
+        path: |
+          *.zip
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        path: |
+          **\\*.nupkg
+
+    # - name: Publish NuGet
+    #   if: startsWith(github.ref, 'refs/heads/master') && github.repository_owner == 'ErikEJ'
+    #   run: dotnet nuget push **\*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{ secrets.NUGET }} --skip-duplicate
+  

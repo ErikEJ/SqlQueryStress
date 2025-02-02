@@ -3,7 +3,6 @@ using CommandLine.Text;
 using SQLQueryStress.Properties;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -80,7 +79,7 @@ namespace SQLQueryStress
                 return null;
             }
             var assemblyData = new byte[stream.Length];
-            stream.Read(assemblyData, 0, assemblyData.Length);
+            stream.ReadExactly(assemblyData);
             return Assembly.Load(assemblyData);
         }
     }
