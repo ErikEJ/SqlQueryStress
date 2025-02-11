@@ -15,7 +15,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ejlskov@hotmail.com")]
 [assembly: AssemblyProduct("SQLQueryStress")]
-[assembly: AssemblyCopyright("Copyright ©  2006, 2007 Adam Machanic")]
+[assembly: AssemblyCopyright("Copyright © 2006, 2007 Adam Machanic")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: NeutralResourcesLanguage("en")]
