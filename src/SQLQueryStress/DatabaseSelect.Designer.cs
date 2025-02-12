@@ -43,6 +43,7 @@ namespace SQLQueryStress
             label5 = new System.Windows.Forms.Label();
             groupBox1 = new System.Windows.Forms.GroupBox();
             additionalParameters_textBox = new System.Windows.Forms.TextBox();
+            database_list_autorefresh = new System.Windows.Forms.CheckBox();
             label13 = new System.Windows.Forms.Label();
             encrypt_Combo = new System.Windows.Forms.ComboBox();
             label11 = new System.Windows.Forms.Label();
@@ -208,6 +209,7 @@ namespace SQLQueryStress
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(database_list_autorefresh);
             groupBox1.Controls.Add(trustcert_check);
             groupBox1.Controls.Add(additionalParameters_textBox);
             groupBox1.Controls.Add(label13);
@@ -234,6 +236,18 @@ namespace SQLQueryStress
             groupBox1.TabIndex = 0;
             groupBox1.TabStop = false;
             groupBox1.Text = "Main Load Settings";
+            // 
+            // database_list_autorefresh
+            // 
+            database_list_autorefresh.AutoSize = true;
+            database_list_autorefresh.Checked = true;
+            database_list_autorefresh.CheckState = System.Windows.Forms.CheckState.Checked;
+            database_list_autorefresh.Location = new System.Drawing.Point(207, 301);
+            database_list_autorefresh.Name = "database_list_autorefresh";
+            database_list_autorefresh.Size = new System.Drawing.Size(112, 24);
+            database_list_autorefresh.TabIndex = 21;
+            database_list_autorefresh.Text = "auto-refresh";
+            database_list_autorefresh.UseVisualStyleBackColor = true;
             // 
             // additionalParameters_textBox
             // 
@@ -613,5 +627,6 @@ namespace SQLQueryStress
 		private System.Windows.Forms.Label label14;
         private System.Windows.Forms.CheckBox trustcert_check;
         private System.Windows.Forms.CheckBox pm_trustcert_check;
+        private System.Windows.Forms.CheckBox database_list_autorefresh;
     }
 }

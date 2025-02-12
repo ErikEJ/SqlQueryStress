@@ -138,7 +138,10 @@ namespace SQLQueryStress
         {
             var cbSender = ((ComboBox)sender);
             var _prevSelectedValue = cbSender.SelectedValue != null ? cbSender.SelectedValue.ToString() : string.Empty;
-            ReloadDatabaseList(sender);
+            if (database_list_autorefresh.Checked)
+            {
+                ReloadDatabaseList(sender);
+            }
 
             if (cbSender.Items.Contains(_prevSelectedValue))
             {
@@ -188,7 +191,7 @@ namespace SQLQueryStress
                     return;
                 if (ex.Number != 4060)
                 {
-                    MessageBox.Show($"{Resources.ConnFail}{Environment.NewLine}{ex.Message}", Resources.AppTitle);
+                    MessageBox.Show($"{Resources.ConnFail}{Environment.NewLine}{ex.Message}", $"{Resources.ConnFail} - {Resources.AppTitle}", MessageBoxButtons.OK, MessageBoxIcon.Stop);
 
                     if (dbComboboxParam == db_comboBox)
                     {
@@ -327,7 +330,7 @@ namespace SQLQueryStress
         {
             pm_saveLocalSettings();
 
-            MessageBox.Show(_localParamConnectionInfo.TestConnection() ? Resources.ConnSucc : Resources.ConnFail, Resources.AppTitle);
+            ShowTestConnectionResult(_localParamConnectionInfo.TestConnection());
         }
 
         private void SaveLocalSettings()
@@ -402,9 +405,20 @@ namespace SQLQueryStress
         {
             SaveLocalSettings();
 
-            MessageBox.Show(_localMainConnectionInfo.TestConnection() ? Resources.ConnSucc : Resources.ConnFail, Resources.AppTitle);
+            ShowTestConnectionResult(_localMainConnectionInfo.TestConnection());
         }
 
+        private static void ShowTestConnectionResult(bool testResult)
+        {
+            if (testResult)
+            {
+                MessageBox.Show(Resources.ConnSucc, $"Test connection - {Resources.AppTitle}", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show(Resources.ConnFail, $"Test connection - {Resources.AppTitle}", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+        }
 
         private void appintent_check_CheckedChanged(object sender, EventArgs e)
         {
@@ -417,6 +431,8 @@ namespace SQLQueryStress
         {
             pm_appintent_combo.Enabled = pm_appintent_check.Checked;
 
-            pm_appintent_combo.DataSource = Enum.GetValues<ApplicationIntent>();    }
+            pm_appintent_combo.DataSource = Enum.GetValues<ApplicationIntent>();
+        }
+
     }
 }
