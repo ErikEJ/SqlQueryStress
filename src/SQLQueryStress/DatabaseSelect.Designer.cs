@@ -96,6 +96,7 @@ namespace SQLQueryStress
             // 
             authentication_comboBox.FormattingEnabled = true;
             authentication_comboBox.Items.AddRange(new object[] { "Integrated Authentication", "SQL Server Authentication", "Azure Active Directory - Universal with MFA" });
+            authentication_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             authentication_comboBox.Location = new System.Drawing.Point(13, 145);
             authentication_comboBox.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             authentication_comboBox.Name = "authentication_comboBox";
@@ -518,6 +519,7 @@ namespace SQLQueryStress
             pm_authentication_comboBox.Enabled = false;
             pm_authentication_comboBox.FormattingEnabled = true;
             pm_authentication_comboBox.Items.AddRange(new object[] { "Integrated Authentication", "SQL Server Authentication", "Azure Active Directory - Universal with MFA" });
+            pm_authentication_comboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             pm_authentication_comboBox.Location = new System.Drawing.Point(13, 145);
             pm_authentication_comboBox.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             pm_authentication_comboBox.Name = "pm_authentication_comboBox";
