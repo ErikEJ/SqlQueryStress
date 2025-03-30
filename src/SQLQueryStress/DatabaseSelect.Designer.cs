@@ -243,7 +243,7 @@ namespace SQLQueryStress
             database_list_autorefresh.AutoSize = true;
             database_list_autorefresh.Checked = true;
             database_list_autorefresh.CheckState = System.Windows.Forms.CheckState.Checked;
-            database_list_autorefresh.Location = new System.Drawing.Point(207, 301);
+            database_list_autorefresh.Location = new System.Drawing.Point(207, 300);
             database_list_autorefresh.Name = "database_list_autorefresh";
             database_list_autorefresh.Size = new System.Drawing.Size(112, 24);
             database_list_autorefresh.TabIndex = 21;
