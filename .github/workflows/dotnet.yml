@@ -9,6 +9,9 @@ on:
     branches:
     - master
 
+permissions:
+  id-token: write # This is required for the federated credential to work
+
 jobs:
   build:
 
