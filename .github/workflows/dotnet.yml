@@ -20,7 +20,6 @@ jobs:
     - name: Update Version
       run: |
        ((Get-Content -Path .\src\SqlQueryStressCLI\AssemblyInfo.cs -Raw) -Replace "1.0.0.0", "0.9.8.${{ github.run_number }}") | Set-Content -Path .\src\SqlQueryStressCLI\AssemblyInfo.cs
-       ((Get-Content -Path .\src\SQLQueryStress\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.0.0", "0.9.8.${{ github.run_number }}") | Set-Content -Path .\src\SqlQueryStress\AssemblyInfo.cs
        ((Get-Content -Path .\src\SQLQueryStress\SQLQueryStress.csproj -Raw) -Replace "1.0.0", "0.9.8.${{ github.run_number }}") | Set-Content -Path .\src\SqlQueryStress\SQLQueryStress.csproj
       shell: pwsh
 
