@@ -4,12 +4,10 @@
     <OutputType>WinExe</OutputType>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
-    <SignManifests>false</SignManifests>
     <ApplicationIcon>Resources\QueryStressIcon.ico</ApplicationIcon>
     <ProductName>SQLQueryStress</ProductName>
     <PublisherName>Adam Machanic</PublisherName>
-    <ProductVersion>1.0.0</ProductVersion>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <FileVersion>1.0.0.0</FileVersion>
     <PublishSingleFile>true</PublishSingleFile>
    	<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
 	  <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>

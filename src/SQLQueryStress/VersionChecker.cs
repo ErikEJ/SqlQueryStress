@@ -64,7 +64,7 @@ namespace SQLQueryStress
                     return;
                 }
 
-                if (latestVersion > new Version(fileVersion.ProductVersion))
+                if (latestVersion > new Version(fileVersion.FileVersion))
                 {
                     MessageBox.Show($"A new version of SQLQueryStress is available: {latestVersion}. Download from https://github.com/ErikEJ/SQLQueryStress/releases/latest.", "Update Available", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
