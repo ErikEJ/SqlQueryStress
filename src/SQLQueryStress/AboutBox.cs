@@ -22,7 +22,7 @@ namespace SQLQueryStress
             //  - AssemblyInfo.cs
             Text = $"About {AssemblyTitle}";
             labelProductName.Text = AssemblyProduct;
-            labelVersion.Text = $"Version {AssemblyVersion}";
+            labelVersion.Text = $"Version {AssemblyFileVersion}";
             labelCopyright.Text = AssemblyCopyright;
             labelCompanyName.Text = AssemblyCompany;
             /*this.textBoxDescription.Text = //AssemblyDescription;
@@ -160,6 +160,17 @@ Settings for a test, including the query, database information, and parameter as
                     return string.Empty;
                 // If there is a Company attribute, return its value
                 return ((AssemblyCompanyAttribute)attributes[0]).Company;
+            }
+        }
+
+        public static string AssemblyFileVersion
+        {
+            get
+            {
+                var attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), false);
+                if (attributes.Length == 0)
+                    return string.Empty;
+                return ((AssemblyFileVersionAttribute)attributes[0]).Version;
             }
         }
 
