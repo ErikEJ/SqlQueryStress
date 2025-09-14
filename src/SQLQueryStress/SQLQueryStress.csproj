@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
-    <PlatformName>windows</PlatformName>
     <OutputType>WinExe</OutputType>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
@@ -10,13 +9,29 @@
     <ApplicationIcon>Resources\QueryStressIcon.ico</ApplicationIcon>
     <ProductName>SQLQueryStress</ProductName>
     <PublisherName>Adam Machanic</PublisherName>
+    <PackageId>ErikEJ.SQLQueryStress</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-	<PublishSingleFile>true</PublishSingleFile>
-	<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
-	<EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <PackAsTool>true</PackAsTool>
+    <PackageVersion>1.0.0</PackageVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
     <AnalysisLevel>latest-all</AnalysisLevel>
   </PropertyGroup>
+
+  <!--https://github.com/dotnet-campus/dotnetCampus.FileDownloader/pull/50-->
+  <Target Name="HackBeforePackToolValidation" BeforeTargets="_PackToolValidation">
+    <PropertyGroup>
+      <TargetPlatformIdentifier></TargetPlatformIdentifier>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="HackAfterPackToolValidation" AfterTargets="_PackToolValidation">
+    <PropertyGroup>
+      <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
+    </PropertyGroup>
+  </Target>
+  
   <ItemGroup>
     <Compile Update="AboutBox.cs" />
     <Compile Update="AboutBox.Designer.cs">
@@ -93,6 +108,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\QueryStressIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\README.md" Link="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
