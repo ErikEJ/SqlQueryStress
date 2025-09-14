@@ -15,6 +15,7 @@
     <PackAsTool>true</PackAsTool>
     <PackageVersion>1.0.0</PackageVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
     <AnalysisLevel>latest-all</AnalysisLevel>
   </PropertyGroup>

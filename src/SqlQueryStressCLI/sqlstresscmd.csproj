@@ -9,6 +9,7 @@
     <PackageReleaseNotes>Update M.D.S.</PackageReleaseNotes>
     <TargetFramework>net8.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
