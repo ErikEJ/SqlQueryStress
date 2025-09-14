@@ -9,31 +9,21 @@
     <ApplicationIcon>Resources\QueryStressIcon.ico</ApplicationIcon>
     <ProductName>SQLQueryStress</ProductName>
     <PublisherName>Adam Machanic</PublisherName>
-    <PackageId>ErikEJ.SQLQueryStress</PackageId>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <!--<PackageId>ErikEJ.SQLQueryStress</PackageId>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackAsTool>true</PackAsTool>
     <PackageVersion>1.0.0</PackageVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <ToolCommandName>sqlquerystress</ToolCommandName>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/ErikEJ/SqlQueryStress</RepositoryUrl>
+    <RepositoryUrl>https://github.com/ErikEJ/SqlQueryStress</RepositoryUrl>-->
+    <PublishSingleFile>true</PublishSingleFile>
+   	<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+	  <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
     <AnalysisLevel>latest-all</AnalysisLevel>
   </PropertyGroup>
-
-  <!--https://github.com/dotnet-campus/dotnetCampus.FileDownloader/pull/50-->
-  <Target Name="HackBeforePackToolValidation" BeforeTargets="_PackToolValidation">
-    <PropertyGroup>
-      <TargetPlatformIdentifier></TargetPlatformIdentifier>
-    </PropertyGroup>
-  </Target>
-
-  <Target Name="HackAfterPackToolValidation" AfterTargets="_PackToolValidation">
-    <PropertyGroup>
-      <TargetPlatformIdentifier>Windows</TargetPlatformIdentifier>
-    </PropertyGroup>
-  </Target>
   
   <ItemGroup>
     <Compile Update="AboutBox.cs" />
@@ -112,9 +102,9 @@
   <ItemGroup>
     <Content Include="Resources\QueryStressIcon.ico" />
   </ItemGroup>
-  <ItemGroup>
+  <!--<ItemGroup>
     <None Include="..\..\README.md" Link="README.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
+  </ItemGroup>-->
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.3.1.120" />
     <PackageReference Include="CommandLineParser" Version="2.9.1" />

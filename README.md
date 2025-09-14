@@ -1,16 +1,14 @@
 # SqlQueryStress
 
+![screenshot](https://raw.githubusercontent.com/ErikEJ/SqlQueryStress/refs/heads/master/images/figure1.png)
+
 SQL query stress simulator [created by Adam Machanic](https://dataeducation.com/sqlquerystress-the-source-code/).
 
 ## Installation
 
-The tool runs on any Windows machine with the .NET 8.0 SDK installed.
+The tool runs on any Windows machine with the .NET 8.0 runtime installed.
 
-Installing the tool:
-
-```dos
-dotnet tool install ErikEJ.SQLQueryStress -g
-```
+Get the latest version from [GitHub releases](https://github.com/ErikEJ/SqlQueryStress/releases)
 
 [Release notes](https://github.com/ErikEJ/SqlQueryStress/wiki/Release-notes)
 
