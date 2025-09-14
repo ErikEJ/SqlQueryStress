@@ -4,7 +4,7 @@ SQL query stress simulator [created by Adam Machanic](https://dataeducation.com/
 
 ## Installation
 
-The tool runs on any Windows machine with the .NET 8.0 runtime installed.
+The tool runs on any Windows machine with the .NET 8.0 SDK installed.
 
 Installing the tool:
 
