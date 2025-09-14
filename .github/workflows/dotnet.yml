@@ -9,9 +9,6 @@ on:
     branches:
     - master
 
-permissions:
-  id-token: write # This is required for the federated credential to work
-
 jobs:
   build:
 
@@ -23,7 +20,8 @@ jobs:
     - name: Update Version
       run: |
        ((Get-Content -Path .\src\SqlQueryStressCLI\AssemblyInfo.cs -Raw) -Replace "1.0.0.0", "0.9.8.${{ github.run_number }}") | Set-Content -Path .\src\SqlQueryStressCLI\AssemblyInfo.cs
-       ((Get-Content -Path .\src\SQLQueryStress\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.0.0", "0.9.8.${{ github.run_number }}") | Set-Content -Path .\src\SqlQueryStressCLI\AssemblyInfo.cs
+       ((Get-Content -Path .\src\SQLQueryStress\Properties\AssemblyInfo.cs -Raw) -Replace "1.0.0.0", "0.9.8.${{ github.run_number }}") | Set-Content -Path .\src\SqlQueryStress\AssemblyInfo.cs
+       ((Get-Content -Path .\src\SQLQueryStress\SQLQueryStress.csproj -Raw) -Replace "1.0.0", "0.9.8.${{ github.run_number }}") | Set-Content -Path .\src\SqlQueryStress\SQLQueryStress.csproj
       shell: pwsh
 
     - name: Setup .NET
@@ -34,37 +32,10 @@ jobs:
     - name: Build
       run: dotnet build ./src/SQLQueryStress.sln --configuration Release
 
-    - name: dotnet publish  
-      run: dotnet publish ./src/SQLQueryStress/SqlQueryStress.csproj --configuration Release --output .\src\SQLQueryStress\bin\Publish\net8.0-windows\ --self-contained true
-
-    - name: Azure CLI login with federated credential
-      if: github.event_name != 'pull_request'
-      uses: azure/login@v2
-      with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-    - name: Install dotnet sign
-      if: github.event_name != 'pull_request'
-      run: dotnet tool install --global sign --prerelease
-
-    - name: Sign .exe # Causes signing requests - max is 5000 per month
-      if: github.ref == 'refs/heads/master' && github.repository_owner == 'erikej' && (github.event_name == 'push' ||  github.event_name == 'workflow_dispatch')
-      run: sign code trusted-signing .\src\SQLQueryStress\bin\Publish\net8.0-windows\*.exe `
-        --trusted-signing-account ErikEJ `
-        --trusted-signing-certificate-profile ErikEJCert `
-        --trusted-signing-endpoint https://weu.codesigning.azure.net `
-        --verbosity information 
-
-    - name: zip app
-      run: 7z a SqlQueryStress-0.9.8.${{ github.run_number }}.zip .\src\SQLQueryStress\bin\Publish\net8.0-windows\*.exe  
-
     - name: Publish artifacts
       uses: actions/upload-artifact@v4
       with:
         path: |
-          *.zip
           **\\*.nupkg
 
     - name: Publish NuGet
