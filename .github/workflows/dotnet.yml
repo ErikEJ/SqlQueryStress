@@ -31,6 +31,9 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
+    - name: Build
+      run: dotnet build ./src/SQLQueryStress.sln --configuration Release
+
     - name: dotnet publish  
       run: dotnet publish ./src/SQLQueryStress/SqlQueryStress.csproj --configuration Release --output .\src\SQLQueryStress\bin\Publish\net8.0-windows\ --self-contained true
 

@@ -644,6 +644,7 @@ namespace SQLQueryStress
             elemHost.Size = new System.Drawing.Size(490, 623);
             elemHost.Child = sqlControl1;
             tableLayoutPanel3.Controls.Add(elemHost, 0, 0);
+            System.Threading.Tasks.Task.Run(VersionChecker.CheckForPackageUpdateAsync);
         }
 
     }
