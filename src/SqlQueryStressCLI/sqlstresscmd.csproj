@@ -27,11 +27,15 @@
     <Compile Include="..\SQLQueryStress\JsonSerializer.cs" Link="JsonSerializer.cs" />
     <Compile Include="..\SQLQueryStress\LoadEngine.cs" Link="LoadEngine.cs" />
     <Compile Include="..\SQLQueryStress\QueryStressSettings.cs" Link="QueryStressSettings.cs" />
+    <Compile Include="..\SQLQueryStress\ConnectionSettingsHelper.cs" Link="ConnectionSettingsHelper.cs" />
   </ItemGroup>  
 
   <ItemGroup>
     <Content Include="script.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\..\querysettings.sql" Link="querysettings.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>  
 

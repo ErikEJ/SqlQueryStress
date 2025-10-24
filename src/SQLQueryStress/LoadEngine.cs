@@ -67,6 +67,7 @@ namespace SQLQueryStress
         public static bool ExecuteCommand(string connectionString, string sql)
         {
             using var conn = new SqlConnection(connectionString);
+            ConnectionSettingsHelper.AttachEventHandler(conn);
             conn.Open();
 #pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
             using var cmd = new SqlCommand(sql, conn);
@@ -109,6 +110,7 @@ namespace SQLQueryStress
 
             //Initialize the connection pool            
             var conn = new SqlConnection(_connectionString);
+            ConnectionSettingsHelper.AttachEventHandler(conn);
             //TODO: use this or not??
             SqlConnection.ClearPool(conn);
             conn.Open();
@@ -118,6 +120,7 @@ namespace SQLQueryStress
             for (var i = 0; i < _threads; i++)
             {
                 conn = new SqlConnection(_connectionString);
+                ConnectionSettingsHelper.AttachEventHandler(conn);
 
                 //TODO: Figure out how to make this option work (maybe)
                 //conn.FireInfoMessageEventOnUserErrors = true;
