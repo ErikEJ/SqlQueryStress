@@ -8,17 +8,8 @@ namespace SQLQueryStress
     /// <summary>
     /// Helper class to manage SQL connection settings from querysettings.sql file
     /// </summary>
-    public static class ConnectionSettingsHelper
+    internal static class ConnectionSettingsHelper
     {
-        private const string DefaultSettings = @"-- Default SQL Server Management Studio query execution settings
-SET QUOTED_IDENTIFIER ON;
-SET ANSI_NULL_DFLT_ON ON;
-SET ANSI_PADDING ON;
-SET ANSI_WARNINGS ON;
-SET ANSI_NULLS ON;
-SET ARITHABORT ON;
-SET CONCAT_NULL_YIELDS_NULL ON;";
-
         private static readonly Lazy<string> _querySettings = new Lazy<string>(LoadQuerySettings);
 
         /// <summary>
@@ -26,6 +17,7 @@ SET CONCAT_NULL_YIELDS_NULL ON;";
         /// </summary>
         public static void OnStateChange(object sender, StateChangeEventArgs args)
         {
+
             if (args.OriginalState == ConnectionState.Closed
                 && args.CurrentState == ConnectionState.Open)
             {
@@ -35,7 +27,9 @@ SET CONCAT_NULL_YIELDS_NULL ON;";
                     using (SqlCommand command = ((SqlConnection)sender).CreateCommand())
                     {
                         command.CommandType = CommandType.Text;
+#pragma warning disable CA2100 // Review SQL queries for security vulnerabilities
                         command.CommandText = settingsToApply;
+#pragma warning restore CA2100 // Review SQL queries for security vulnerabilities
                         command.ExecuteNonQuery();
                     }
                 }
@@ -55,52 +49,42 @@ SET CONCAT_NULL_YIELDS_NULL ON;";
         /// </summary>
         private static string LoadQuerySettings()
         {
-            try
-            {
-                // Try to find querysettings.sql in the application directory
-                var appPath = AppDomain.CurrentDomain.BaseDirectory;
-                var settingsFile = Path.Combine(appPath, "querysettings.sql");
+            // Try to find querysettings.sql in the application directory
+            var appPath = AppDomain.CurrentDomain.BaseDirectory;
+            var settingsFile = Path.Combine(appPath, "querysettings.sql");
 
+            if (File.Exists(settingsFile))
+            {
+                return File.ReadAllText(settingsFile);
+            }
+
+            // Try one level up (for development scenarios)
+            var parentPath = Directory.GetParent(appPath)?.FullName;
+            if (parentPath != null)
+            {
+                settingsFile = Path.Combine(parentPath, "querysettings.sql");
                 if (File.Exists(settingsFile))
                 {
                     return File.ReadAllText(settingsFile);
                 }
-
-                // Try one level up (for development scenarios)
-                var parentPath = Directory.GetParent(appPath)?.FullName;
-                if (parentPath != null)
-                {
-                    settingsFile = Path.Combine(parentPath, "querysettings.sql");
-                    if (File.Exists(settingsFile))
-                    {
-                        return File.ReadAllText(settingsFile);
-                    }
-                }
-
-                // Try several levels up to find the root directory
-                var currentDir = appPath;
-                for (int i = 0; i < 5; i++)
-                {
-                    var parentDir = Directory.GetParent(currentDir);
-                    if (parentDir == null) break;
-                    
-                    currentDir = parentDir.FullName;
-                    settingsFile = Path.Combine(currentDir, "querysettings.sql");
-                    if (File.Exists(settingsFile))
-                    {
-                        return File.ReadAllText(settingsFile);
-                    }
-                }
-
-                // If file not found, return default SSMS-like settings
-                return DefaultSettings;
             }
-            catch (Exception ex)
+
+            // Try several levels up to find the root directory
+            var currentDir = appPath;
+            for (int i = 0; i < 5; i++)
             {
-                // If any error occurs, log the exception and return default settings
-                Console.Error.WriteLine($"Error loading querysettings.sql: {ex}");
-                return DefaultSettings;
+                var parentDir = Directory.GetParent(currentDir);
+                if (parentDir == null) break;
+                    
+                currentDir = parentDir.FullName;
+                settingsFile = Path.Combine(currentDir, "querysettings.sql");
+                if (File.Exists(settingsFile))
+                {
+                    return File.ReadAllText(settingsFile);
+                }
             }
+
+            throw new FileNotFoundException("querysettings.sql file not found in application directory or parent directories.");
         }
 
         /// <summary>
