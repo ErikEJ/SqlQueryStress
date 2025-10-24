@@ -186,6 +186,7 @@ namespace SQLQueryStress
             {
                 try
                 {
+                    ConnectionSettingsHelper.AttachEventHandler(conn);
                     conn.Open(SqlConnectionOverrides.OpenWithoutRetry);
                 }
                 catch (Exception ex)

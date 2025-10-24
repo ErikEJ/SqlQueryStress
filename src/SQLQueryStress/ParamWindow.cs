@@ -113,6 +113,7 @@ namespace SQLQueryStress
             }
 
             using var conn = new SqlConnection(dbInfo.ConnectionString);
+            ConnectionSettingsHelper.AttachEventHandler(conn);
             try
             {
                 if (elementHost1.Child is SqlControl sqlControl)

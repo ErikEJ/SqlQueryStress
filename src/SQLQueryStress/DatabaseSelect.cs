@@ -168,6 +168,7 @@ namespace SQLQueryStress
             var sql = "SELECT databases.name FROM sys.databases WHERE databases.state = 0 ORDER BY databases.name";
 
             using var conn = new SqlConnection(connectionString);
+            ConnectionSettingsHelper.AttachEventHandler(conn);
             using var sqlCommand = new SqlCommand(sql, conn);
 
             var databases = new List<string>();
