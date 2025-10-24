@@ -10,8 +10,16 @@ namespace SQLQueryStress
     /// </summary>
     public static class ConnectionSettingsHelper
     {
-        private static string _querySettings;
-        private static readonly object _lock = new object();
+        private const string DefaultSettings = @"-- Default SQL Server Management Studio query execution settings
+SET QUOTED_IDENTIFIER ON;
+SET ANSI_NULL_DFLT_ON ON;
+SET ANSI_PADDING ON;
+SET ANSI_WARNINGS ON;
+SET ANSI_NULLS ON;
+SET ARITHABORT ON;
+SET CONCAT_NULL_YIELDS_NULL ON;";
+
+        private static readonly Lazy<string> _querySettings = new Lazy<string>(LoadQuerySettings);
 
         /// <summary>
         /// Event handler to apply query settings when a connection is opened
@@ -39,17 +47,7 @@ namespace SQLQueryStress
         /// </summary>
         private static string GetQuerySettings()
         {
-            if (_querySettings == null)
-            {
-                lock (_lock)
-                {
-                    if (_querySettings == null)
-                    {
-                        _querySettings = LoadQuerySettings();
-                    }
-                }
-            }
-            return _querySettings;
+            return _querySettings.Value;
         }
 
         /// <summary>
@@ -95,26 +93,13 @@ namespace SQLQueryStress
                 }
 
                 // If file not found, return default SSMS-like settings
-                return @"-- Default SQL Server Management Studio query execution settings
-SET QUOTED_IDENTIFIER ON
-SET ANSI_NULL_DFLT_ON ON
-SET ANSI_PADDING ON
-SET ANSI_WARNINGS ON
-SET ANSI_NULLS ON
-SET ARITHABORT ON
-SET CONCAT_NULL_YIELDS_NULL ON";
+                return DefaultSettings;
             }
-            catch
+            catch (Exception ex)
             {
-                // If any error occurs, return default settings
-                return @"-- Default SQL Server Management Studio query execution settings
-SET QUOTED_IDENTIFIER ON
-SET ANSI_NULL_DFLT_ON ON
-SET ANSI_PADDING ON
-SET ANSI_WARNINGS ON
-SET ANSI_NULLS ON
-SET ARITHABORT ON
-SET CONCAT_NULL_YIELDS_NULL ON";
+                // If any error occurs, log the exception and return default settings
+                Console.Error.WriteLine($"Error loading querysettings.sql: {ex}");
+                return DefaultSettings;
             }
         }
 

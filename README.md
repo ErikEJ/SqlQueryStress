@@ -28,13 +28,13 @@ SQL Query Stress automatically applies SQL Server connection settings similar to
 
 By default, the following SSMS-compatible settings are applied to every connection:
 
-- `SET QUOTED_IDENTIFIER ON`
-- `SET ANSI_NULL_DFLT_ON ON`
-- `SET ANSI_PADDING ON`
-- `SET ANSI_WARNINGS ON`
-- `SET ANSI_NULLS ON`
-- `SET ARITHABORT ON`
-- `SET CONCAT_NULL_YIELDS_NULL ON`
+- `SET QUOTED_IDENTIFIER ON;`
+- `SET ANSI_NULL_DFLT_ON ON;`
+- `SET ANSI_PADDING ON;`
+- `SET ANSI_WARNINGS ON;`
+- `SET ANSI_NULLS ON;`
+- `SET ARITHABORT ON;`
+- `SET CONCAT_NULL_YIELDS_NULL ON;`
 
 These settings match the default SSMS configuration and ensure that query execution behavior is consistent between SSMS and SQL Query Stress.
 
@@ -44,9 +44,9 @@ You can customize the connection settings by editing the `querysettings.sql` fil
 
 Example customizations:
 ```sql
-SET NOCOUNT ON
-SET STATISTICS IO ON
-SET STATISTICS TIME ON
+SET NOCOUNT ON;
+SET STATISTICS IO ON;
+SET STATISTICS TIME ON;
 ```
 
 **Note:** Settings are applied automatically when connections are opened, so there's no need to modify your test queries.
