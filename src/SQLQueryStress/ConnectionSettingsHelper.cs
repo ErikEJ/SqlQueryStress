@@ -70,9 +70,7 @@ SET CONCAT_NULL_YIELDS_NULL ON;";
                 return File.ReadAllText(settingsFile);
             }
 
-            throw new FileNotFoundException($"'{settingsFile}' not found in application directory.");
-
-            // return DefaultSettings;
+            return DefaultSettings;
         }
 
         /// <summary>
