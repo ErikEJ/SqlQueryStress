@@ -12,6 +12,16 @@ namespace SQLQueryStress
     {
         private static readonly Lazy<string> _querySettings = new Lazy<string>(LoadQuerySettings);
 
+        private const string DefaultSettings = @"
+-- Default SQL Server Management Studio query execution settings
+SET QUOTED_IDENTIFIER ON;
+SET ANSI_NULL_DFLT_ON ON;
+SET ANSI_PADDING ON;
+SET ANSI_WARNINGS ON;
+SET ANSI_NULLS ON;
+SET ARITHABORT ON;
+SET CONCAT_NULL_YIELDS_NULL ON;";
+
         /// <summary>
         /// Event handler to apply query settings when a connection is opened
         /// </summary>
@@ -49,8 +59,10 @@ namespace SQLQueryStress
         /// </summary>
         private static string LoadQuerySettings()
         {
+            var exepath = Environment.ProcessPath;
+
             // Try to find querysettings.sql in the application directory
-            var appPath = AppDomain.CurrentDomain.BaseDirectory;
+            var appPath = Path.GetDirectoryName(exepath);
             var settingsFile = Path.Combine(appPath, "querysettings.sql");
 
             if (File.Exists(settingsFile))
@@ -58,33 +70,9 @@ namespace SQLQueryStress
                 return File.ReadAllText(settingsFile);
             }
 
-            // Try one level up (for development scenarios)
-            var parentPath = Directory.GetParent(appPath)?.FullName;
-            if (parentPath != null)
-            {
-                settingsFile = Path.Combine(parentPath, "querysettings.sql");
-                if (File.Exists(settingsFile))
-                {
-                    return File.ReadAllText(settingsFile);
-                }
-            }
+            throw new FileNotFoundException($"'{settingsFile}' not found in application directory.");
 
-            // Try several levels up to find the root directory
-            var currentDir = appPath;
-            for (int i = 0; i < 5; i++)
-            {
-                var parentDir = Directory.GetParent(currentDir);
-                if (parentDir == null) break;
-                    
-                currentDir = parentDir.FullName;
-                settingsFile = Path.Combine(currentDir, "querysettings.sql");
-                if (File.Exists(settingsFile))
-                {
-                    return File.ReadAllText(settingsFile);
-                }
-            }
-
-            throw new FileNotFoundException("querysettings.sql file not found in application directory or parent directories.");
+            // return DefaultSettings;
         }
 
         /// <summary>
