@@ -93,7 +93,7 @@
     <Content Include="Resources\QueryStressIcon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\querysettings.sql" Link="querysettings.sql" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\..\querysettings.sql" Link="querysettings.sql" CopyToOutputDirectory="Always" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.3.1.120" />

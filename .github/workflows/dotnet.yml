@@ -58,7 +58,9 @@ jobs:
         --verbosity information 
 
     - name: zip app
-      run: 7z a SqlQueryStress-0.9.8.${{ github.run_number }}.zip .\src\SQLQueryStress\bin\Publish\net8.0-windows\*.exe  
+      run: | 
+          7z a SqlQueryStress-0.9.8.${{ github.run_number }}.zip .\src\SQLQueryStress\bin\Publish\net8.0-windows\*.exe
+          7z a SqlQueryStress-0.9.8.${{ github.run_number }}.zip .\querysettings.sql
 
     - name: Publish artifacts
       uses: actions/upload-artifact@v4
