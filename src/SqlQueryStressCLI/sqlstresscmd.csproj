@@ -5,8 +5,8 @@
     <PackAsTool>true</PackAsTool>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
-    <PackageVersion>0.9.20</PackageVersion>
-    <PackageReleaseNotes>Update M.D.S.</PackageReleaseNotes>
+    <PackageVersion>0.9.21</PackageVersion>
+    <PackageReleaseNotes>Support for default query settings</PackageReleaseNotes>
     <TargetFramework>net8.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -47,7 +47,7 @@
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.1" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.1.2" />
     <PackageReference Include="Spectre.Console" Version="0.51.1" />
   </ItemGroup>
   
