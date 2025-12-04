@@ -16,6 +16,10 @@ Get the latest version from [GitHub releases](https://github.com/ErikEJ/SqlQuery
 
 [Introduction to SQL Query Stress](https://github.com/ErikEJ/SqlQueryStress/wiki)
 
+## Articles
+
+[Tune SQL Server Databases, Stored Procedures, and Indexes with SqlQueryStress](https://www.mssqltips.com/sqlservertip/7396/tune-sql-server-databases-stored-procedures-indexes-sqlquerystress/)
+
 ## sqlstresscmd
 
 A cross platform command line tool using the same load engine is also available, [see dedicated readme](https://github.com/ErikEJ/SqlQueryStress/blob/master/src/SqlQueryStressCLI/README.md)
