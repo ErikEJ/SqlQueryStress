@@ -57,4 +57,4 @@ Any and all contributions are welcome! Please see the full [contributing guide](
 
 ## High DPI issue
 
-The font may look strange on high DPI screens, use [this tip](https://github.com/ErikEJ/SqlQueryStress/issues/143) to fix it.
+**Note:** High DPI scaling is natively supported in newer versions. If you are using an older version and the font looks strange, use [this tip](https://github.com/ErikEJ/SqlQueryStress/issues/143) to fix it.
