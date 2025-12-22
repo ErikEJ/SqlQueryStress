@@ -736,7 +736,7 @@ namespace SQLQueryStress
             AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoSize = true;
-            ClientSize = new System.Drawing.Size(989, 668);
+            ClientSize = new System.Drawing.Size(1300, 668);
             Controls.Add(tableLayoutPanel3);
             Controls.Add(db_label);
             Controls.Add(label1);
