@@ -13,6 +13,8 @@
 	  <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
     <AnalysisLevel>latest-all</AnalysisLevel>
+    <!-- Add default language to fix CA1824 -->
+    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
   
   <ItemGroup>
