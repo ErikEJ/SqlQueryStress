@@ -27,6 +27,7 @@ namespace SQLQueryStress
         private static void Run(CommandLineOptions options)
         {
             AppDomain.CurrentDomain.AssemblyResolve += OnResolveAssembly;
+            Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
