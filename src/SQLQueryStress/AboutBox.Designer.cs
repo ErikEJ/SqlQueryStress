@@ -1,5 +1,7 @@
 namespace SQLQueryStress
 {
+    using SQLQueryStress.Properties;
+    
     partial class AboutBox
     {
         /// <summary>
@@ -88,7 +90,7 @@ namespace SQLQueryStress
             labelProductName.Name = "labelProductName";
             labelProductName.Size = new System.Drawing.Size(361, 26);
             labelProductName.TabIndex = 19;
-            labelProductName.Text = "SQLQueryStress";
+            labelProductName.Text = Resources.ProductName;
             labelProductName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // labelVersion
@@ -100,7 +102,7 @@ namespace SQLQueryStress
             labelVersion.Name = "labelVersion";
             labelVersion.Size = new System.Drawing.Size(361, 26);
             labelVersion.TabIndex = 0;
-            labelVersion.Text = "Version 0.0.1";
+            labelVersion.Text = Resources.Version;
             labelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // labelCopyright
@@ -112,7 +114,7 @@ namespace SQLQueryStress
             labelCopyright.Name = "labelCopyright";
             labelCopyright.Size = new System.Drawing.Size(361, 26);
             labelCopyright.TabIndex = 21;
-            labelCopyright.Text = "Copyright Adam Machanic 2006";
+            labelCopyright.Text = Resources.Copyright;
             labelCopyright.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // labelCompanyName
@@ -124,7 +126,7 @@ namespace SQLQueryStress
             labelCompanyName.Name = "labelCompanyName";
             labelCompanyName.Size = new System.Drawing.Size(361, 26);
             labelCompanyName.TabIndex = 22;
-            labelCompanyName.Text = "Company Name";
+            labelCompanyName.Text = Resources.CompanyName;
             labelCompanyName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // textBoxDescription
@@ -142,7 +144,7 @@ namespace SQLQueryStress
             textBoxDescription.Size = new System.Drawing.Size(361, 193);
             textBoxDescription.TabIndex = 23;
             textBoxDescription.TabStop = false;
-            textBoxDescription.Text = "Please visit https://github.com/ErikEJ/SqlQueryStress for documentation and updates!";
+            textBoxDescription.Text = Resources.Description;
             textBoxDescription.Click += textBoxDescription_Click;
             // 
             // okButton
@@ -154,7 +156,7 @@ namespace SQLQueryStress
             okButton.Name = "okButton";
             okButton.Size = new System.Drawing.Size(100, 34);
             okButton.TabIndex = 24;
-            okButton.Text = "&OK";
+            okButton.Text = Resources.OKButton;
             okButton.Click += okButton_Click;
             // 
             // AboutBox
@@ -174,7 +176,7 @@ namespace SQLQueryStress
             ShowIcon = false;
             ShowInTaskbar = false;
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            Text = "AboutBox";
+            Text = Resources.AboutBoxTitle;
             tableLayoutPanel.ResumeLayout(false);
             tableLayoutPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)logoPictureBox).EndInit();

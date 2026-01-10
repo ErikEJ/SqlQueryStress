@@ -1,8 +1,10 @@
-using SQLQueryStress.Properties;
+﻿using SQLQueryStress.Properties;
 using System.Windows.Forms;
 
 namespace SQLQueryStress
 {
+    using SQLQueryStress.Properties;
+    
     partial class FormMain
     {
         /// <summary>
@@ -17,7 +19,7 @@ namespace SQLQueryStress
         protected override void Dispose(bool disposing)
         {
             if (backgroundWorker1.CancellationPending)
-                System.Windows.Forms.MessageBox.Show("Please wait while background threads are canceled.", Resources.AppTitle);
+                System.Windows.Forms.MessageBox.Show(Resources.PleaseWaitCancel, Resources.AppTitle);
             else if (backgroundWorker1.IsBusy)
             {
                 if (System.Windows.Forms.MessageBox.Show(
@@ -124,7 +126,7 @@ namespace SQLQueryStress
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(52, 17);
             label1.TabIndex = 3;
-            label1.Text = "Query";
+            label1.Text = Resources.QueryLabel;
             // 
             // menuStrip1
             // 
@@ -143,7 +145,7 @@ namespace SQLQueryStress
             fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { toolStripSeparator1, optionsToolStripMenuItem, saveSettingsToolStripMenuItem, loadSettingsToolStripMenuItem, saveBenchMarkToolStripMenuItem, exitToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
-            fileToolStripMenuItem.Text = "File";
+            fileToolStripMenuItem.Text = Resources.FileMenu;
             // 
             // toolStripSeparator1
             // 
@@ -154,21 +156,21 @@ namespace SQLQueryStress
             // 
             optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             optionsToolStripMenuItem.Size = new System.Drawing.Size(200, 26);
-            optionsToolStripMenuItem.Text = "Options";
+            optionsToolStripMenuItem.Text = Resources.OptionsMenu;
             optionsToolStripMenuItem.Click += optionsToolStripMenuItem_Click;
             // 
             // saveSettingsToolStripMenuItem
             // 
             saveSettingsToolStripMenuItem.Name = "saveSettingsToolStripMenuItem";
             saveSettingsToolStripMenuItem.Size = new System.Drawing.Size(200, 26);
-            saveSettingsToolStripMenuItem.Text = "Save Settings";
+            saveSettingsToolStripMenuItem.Text = Resources.SaveSettings;
             saveSettingsToolStripMenuItem.Click += saveSettingsToolStripMenuItem_Click;
             // 
             // loadSettingsToolStripMenuItem
             // 
             loadSettingsToolStripMenuItem.Name = "loadSettingsToolStripMenuItem";
             loadSettingsToolStripMenuItem.Size = new System.Drawing.Size(200, 26);
-            loadSettingsToolStripMenuItem.Text = "Load Settings";
+            loadSettingsToolStripMenuItem.Text = Resources.LoadSettings;
             loadSettingsToolStripMenuItem.Click += loadSettingsToolStripMenuItem_Click;
             // 
             // saveBenchMarkToolStripMenuItem
@@ -176,34 +178,34 @@ namespace SQLQueryStress
             saveBenchMarkToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { toCsvToolStripMenuItem, toTextToolStripMenuItem, toClipboardToolStripMenuItem });
             saveBenchMarkToolStripMenuItem.Name = "saveBenchMarkToolStripMenuItem";
             saveBenchMarkToolStripMenuItem.Size = new System.Drawing.Size(200, 26);
-            saveBenchMarkToolStripMenuItem.Text = "Save BenchMark";
+            saveBenchMarkToolStripMenuItem.Text = Resources.SaveBenchmark;
             // 
             // toCsvToolStripMenuItem
             // 
             toCsvToolStripMenuItem.Name = "toCsvToolStripMenuItem";
             toCsvToolStripMenuItem.Size = new System.Drawing.Size(178, 26);
-            toCsvToolStripMenuItem.Text = "To Csv";
+            toCsvToolStripMenuItem.Text = Resources.ToCsv;
             toCsvToolStripMenuItem.Click += toCsvToolStripMenuItem_Click;
             // 
             // toTextToolStripMenuItem
             // 
             toTextToolStripMenuItem.Name = "toTextToolStripMenuItem";
             toTextToolStripMenuItem.Size = new System.Drawing.Size(178, 26);
-            toTextToolStripMenuItem.Text = "To Text";
+            toTextToolStripMenuItem.Text = Resources.ToText;
             toTextToolStripMenuItem.Click += toTextToolStripMenuItem_Click;
             // 
             // toClipboardToolStripMenuItem
             // 
             toClipboardToolStripMenuItem.Name = "toClipboardToolStripMenuItem";
             toClipboardToolStripMenuItem.Size = new System.Drawing.Size(178, 26);
-            toClipboardToolStripMenuItem.Text = "To Clipboard";
+            toClipboardToolStripMenuItem.Text = Resources.ToClipboard;
             toClipboardToolStripMenuItem.Click += toClipboardToolStripMenuItem_Click;
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             exitToolStripMenuItem.Size = new System.Drawing.Size(200, 26);
-            exitToolStripMenuItem.Text = "Exit";
+            exitToolStripMenuItem.Text = Resources.Exit;
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
             // helpToolStripMenuItem
@@ -211,13 +213,13 @@ namespace SQLQueryStress
             helpToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { aboutToolStripMenuItem });
             helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             helpToolStripMenuItem.Size = new System.Drawing.Size(55, 24);
-            helpToolStripMenuItem.Text = "Help";
+            helpToolStripMenuItem.Text = Resources.HelpMenu;
             // 
             // aboutToolStripMenuItem
             // 
             aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             aboutToolStripMenuItem.Size = new System.Drawing.Size(133, 26);
-            aboutToolStripMenuItem.Text = "About";
+            aboutToolStripMenuItem.Text = Resources.About;
             aboutToolStripMenuItem.Click += aboutToolStripMenuItem_Click;
             // 
             // go_button
@@ -229,7 +231,7 @@ namespace SQLQueryStress
             go_button.Name = "go_button";
             go_button.Size = new System.Drawing.Size(126, 60);
             go_button.TabIndex = 0;
-            go_button.Text = "GO";
+            go_button.Text = Resources.GoButton;
             go_button.UseVisualStyleBackColor = true;
             go_button.Click += go_button_Click;
             // 
@@ -242,7 +244,7 @@ namespace SQLQueryStress
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(264, 21);
             label2.TabIndex = 5;
-            label2.Text = "Number of Iterations";
+            label2.Text = Resources.NumberOfIterations;
             // 
             // label3
             // 
@@ -253,7 +255,7 @@ namespace SQLQueryStress
             label3.Name = "label3";
             label3.Size = new System.Drawing.Size(264, 21);
             label3.TabIndex = 7;
-            label3.Text = "Number of Threads";
+            label3.Text = Resources.NumberOfThreads;
             // 
             // iterations_numericUpDown
             // 
@@ -289,7 +291,7 @@ namespace SQLQueryStress
             cancel_button.Name = "cancel_button";
             cancel_button.Size = new System.Drawing.Size(126, 60);
             cancel_button.TabIndex = 1;
-            cancel_button.Text = "Cancel";
+            cancel_button.Text = Resources.CancelButton;
             cancel_button.UseVisualStyleBackColor = true;
             cancel_button.Click += cancel_button_Click;
             // 
@@ -302,7 +304,7 @@ namespace SQLQueryStress
             label4.Name = "label4";
             label4.Size = new System.Drawing.Size(264, 21);
             label4.TabIndex = 12;
-            label4.Text = "Iterations Completed";
+            label4.Text = Resources.IterationsCompleted;
             // 
             // backgroundWorker1
             // 
@@ -321,7 +323,7 @@ namespace SQLQueryStress
             label5.Name = "label5";
             label5.Size = new System.Drawing.Size(264, 21);
             label5.TabIndex = 14;
-            label5.Text = "Client Seconds/Iteration (Avg)";
+            label5.Text = Resources.ClientSecondsIteration;
             // 
             // avgSeconds_textBox
             // 
@@ -356,7 +358,7 @@ namespace SQLQueryStress
             label6.Name = "label6";
             label6.Size = new System.Drawing.Size(264, 21);
             label6.TabIndex = 16;
-            label6.Text = "Progress";
+            label6.Text = Resources.Progress;
             // 
             // label7
             // 
@@ -367,7 +369,7 @@ namespace SQLQueryStress
             label7.Name = "label7";
             label7.Size = new System.Drawing.Size(264, 21);
             label7.TabIndex = 18;
-            label7.Text = "Total Exceptions";
+            label7.Text = Resources.TotalExceptions;
             // 
             // totalExceptions_textBox
             // 
@@ -395,7 +397,7 @@ namespace SQLQueryStress
             label8.Name = "label8";
             label8.Size = new System.Drawing.Size(264, 21);
             label8.TabIndex = 20;
-            label8.Text = "Elapsed Time";
+            label8.Text = Resources.ElapsedTime;
             // 
             // elapsedTime_textBox
             // 
@@ -423,7 +425,7 @@ namespace SQLQueryStress
             database_button.Name = "database_button";
             database_button.Size = new System.Drawing.Size(264, 45);
             database_button.TabIndex = 1;
-            database_button.Text = "Database";
+            database_button.Text = Resources.Database;
             database_button.UseVisualStyleBackColor = true;
             database_button.Click += database_button_Click;
             // 
@@ -464,7 +466,7 @@ namespace SQLQueryStress
             activeThreads_label.Name = "activeThreads_label";
             activeThreads_label.Size = new System.Drawing.Size(264, 21);
             activeThreads_label.TabIndex = 29;
-            activeThreads_label.Text = "Active Threads";
+            activeThreads_label.Text = Resources.ActiveThreads;
             // 
             // exceptions_button
             // 
@@ -487,7 +489,7 @@ namespace SQLQueryStress
             label9.Name = "label9";
             label9.Size = new System.Drawing.Size(264, 21);
             label9.TabIndex = 26;
-            label9.Text = "CPU Seconds/Iteration (Avg)";
+            label9.Text = Resources.CPUSecondsIteration;
             // 
             // cpuTime_textBox
             // 
@@ -511,7 +513,7 @@ namespace SQLQueryStress
             label12.Name = "label12";
             label12.Size = new System.Drawing.Size(264, 21);
             label12.TabIndex = 30;
-            label12.Text = "Logical Reads/Iteration (Avg)";
+            label12.Text = Resources.LogicalReadsIteration;
             // 
             // logicalReads_textBox
             // 
@@ -599,7 +601,7 @@ namespace SQLQueryStress
             label10.Name = "label10";
             label10.Size = new System.Drawing.Size(264, 21);
             label10.TabIndex = 28;
-            label10.Text = "Actual Seconds/Iteration (Avg)";
+            label10.Text = Resources.ActualSecondsIteration;
             // 
             // flowLayoutPanel1
             // 
@@ -650,7 +652,7 @@ namespace SQLQueryStress
             param_button.Name = "param_button";
             param_button.Size = new System.Drawing.Size(264, 45);
             param_button.TabIndex = 2;
-            param_button.Text = "Parameter Substitution";
+            param_button.Text = Resources.ParameterSubstitution;
             param_button.UseVisualStyleBackColor = true;
             param_button.Click += param_button_Click;
             // 
@@ -679,7 +681,7 @@ namespace SQLQueryStress
             btnFreeCache.Name = "btnFreeCache";
             btnFreeCache.Size = new System.Drawing.Size(128, 29);
             btnFreeCache.TabIndex = 1;
-            btnFreeCache.Text = "Free Cache";
+            btnFreeCache.Text = Resources.FreeCache;
             btnFreeCache.UseVisualStyleBackColor = true;
             btnFreeCache.Click += btnFreeCache_Click;
             // 
@@ -691,7 +693,7 @@ namespace SQLQueryStress
             btnCleanBuffer.Name = "btnCleanBuffer";
             btnCleanBuffer.Size = new System.Drawing.Size(128, 29);
             btnCleanBuffer.TabIndex = 0;
-            btnCleanBuffer.Text = "Clean Buffers";
+            btnCleanBuffer.Text = Resources.CleanBuffers;
             btnCleanBuffer.UseVisualStyleBackColor = true;
             btnCleanBuffer.Click += btnCleanBuffer_Click;
             // 
@@ -704,7 +706,7 @@ namespace SQLQueryStress
             label11.Name = "label11";
             label11.Size = new System.Drawing.Size(264, 21);
             label11.TabIndex = 34;
-            label11.Text = "Delay between queries (ms)";
+            label11.Text = Resources.DelayBetweenQueries;
             // 
             // queryDelay_numericUpDown
             // 

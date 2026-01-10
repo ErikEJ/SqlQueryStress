@@ -1,5 +1,7 @@
-namespace SQLQueryStress
+﻿namespace SQLQueryStress
 {
+    using SQLQueryStress.Properties;
+    
     partial class ParamWindow
     {
         /// <summary>
@@ -63,19 +65,19 @@ namespace SQLQueryStress
             // 
             // Column
             // 
-            this.Column.HeaderText = "Parameter";
+            this.Column.HeaderText = Resources.ParameterColumn;
             this.Column.Name = "Column";
             this.Column.Width = 130;
             // 
             // Datatype
             // 
-            this.Datatype.HeaderText = "Datatype";
+            this.Datatype.HeaderText = Resources.DatatypeColumn;
             this.Datatype.Name = "Datatype";
             this.Datatype.Width = 130;
             // 
             // Parameter
             // 
-            this.Parameter.HeaderText = "Column";
+            this.Parameter.HeaderText = Resources.ColumnColumn;
             this.Parameter.Name = "Parameter";
             this.Parameter.Width = 130;
             // 
@@ -87,7 +89,7 @@ namespace SQLQueryStress
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(101, 13);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Parameter Query";
+            this.label1.Text = Resources.ParameterQuery;
             // 
             // getColumnsButton
             // 
@@ -97,7 +99,7 @@ namespace SQLQueryStress
             this.getColumnsButton.Name = "getColumnsButton";
             this.getColumnsButton.Size = new System.Drawing.Size(98, 23);
             this.getColumnsButton.TabIndex = 1;
-            this.getColumnsButton.Text = "Get Columns";
+            this.getColumnsButton.Text = Resources.GetColumns;
             this.getColumnsButton.UseVisualStyleBackColor = true;
             this.getColumnsButton.Click += new System.EventHandler(this.getColumnsButton_Click);
             // 
@@ -109,7 +111,7 @@ namespace SQLQueryStress
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 4;
-            this.okButton.Text = "OK";
+            this.okButton.Text = Resources.ParamWindowOK;
             this.okButton.UseVisualStyleBackColor = true;
             this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
@@ -122,7 +124,7 @@ namespace SQLQueryStress
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 5;
-            this.cancelButton.Text = "Cancel";
+            this.cancelButton.Text = Resources.ParamWindowCancel;
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.cancelButton_Click);
             // 
@@ -135,7 +137,7 @@ namespace SQLQueryStress
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(122, 13);
             this.label2.TabIndex = 6;
-            this.label2.Text = "Parameter Mappings";
+            this.label2.Text = Resources.ParameterMappings;
             // 
             // database_button
             // 
@@ -145,7 +147,7 @@ namespace SQLQueryStress
             this.database_button.Name = "database_button";
             this.database_button.Size = new System.Drawing.Size(94, 23);
             this.database_button.TabIndex = 2;
-            this.database_button.Text = "Database";
+            this.database_button.Text = Resources.ParamWindowDatabase;
             this.database_button.UseVisualStyleBackColor = true;
             this.database_button.Click += new System.EventHandler(this.database_button_Click);
             // 
@@ -183,7 +185,7 @@ namespace SQLQueryStress
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
-            this.Text = "Parameter Substitution";
+            this.Text = Resources.ParamWindowTitle;
             ((System.ComponentModel.ISupportInitialize)(this.columnMapGrid)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

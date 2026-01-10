@@ -1,5 +1,7 @@
 # SqlQueryStress
 
+[English](README.md) | [繁體中文](README.zh-TW.md)
+
 ![screenshot](https://raw.githubusercontent.com/ErikEJ/SqlQueryStress/refs/heads/master/images/figure1.png)
 
 SQL query stress simulator [created by Adam Machanic](https://dataeducation.com/sqlquerystress-the-source-code/).
@@ -47,6 +49,7 @@ These settings match the default SSMS configuration and ensure that query execut
 You can customize the connection settings by editing the `querysettings.sql` file in the application directory. Any valid T-SQL `SET` commands can be added to this file, and they will be automatically executed when each connection is opened.
 
 Example customizations:
+
 ```sql
 SET NOCOUNT ON;
 SET STATISTICS IO ON;

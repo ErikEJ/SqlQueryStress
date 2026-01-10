@@ -160,4 +160,241 @@
   <data name="AppTitle" xml:space="preserve">
     <value>SqlQueryStress</value>
   </data>
+  <data name="ProductName" xml:space="preserve">
+    <value>SQLQueryStress</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Version 0.0.1</value>
+  </data>
+  <data name="Copyright" xml:space="preserve">
+    <value>Copyright Adam Machanic 2006</value>
+  </data>
+  <data name="CompanyName" xml:space="preserve">
+    <value>Company Name</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Please visit https://github.com/ErikEJ/SqlQueryStress for documentation and updates!</value>
+  </data>
+  <data name="OKButton" xml:space="preserve">
+    <value>&amp;OK</value>
+  </data>
+  <data name="AboutBoxTitle" xml:space="preserve">
+    <value>AboutBox</value>
+  </data>
+  <data name="CollectIOStatistics" xml:space="preserve">
+    <value>Collect I/O Statistics</value>
+  </data>
+  <data name="CollectTimeStatistics" xml:space="preserve">
+    <value>Collect Time Statistics</value>
+  </data>
+  <data name="ConnectionTimeout" xml:space="preserve">
+    <value>Connection Timeout</value>
+  </data>
+  <data name="CommandTimeout" xml:space="preserve">
+    <value>Command Timeout (0 = Unlimited)</value>
+  </data>
+  <data name="EnableConnectionPooling" xml:space="preserve">
+    <value>Enable Connection Pooling</value>
+  </data>
+  <data name="ForceClientRetrievalData" xml:space="preserve">
+    <value>Force Client Retrieval of Data</value>
+  </data>
+  <data name="KillQueriesOnCancel" xml:space="preserve">
+    <value>Kill Queries on Cancel</value>
+  </data>
+  <data name="ConnectionOptions" xml:space="preserve">
+    <value>Connection Options</value>
+  </data>
+  <data name="CommandOptions" xml:space="preserve">
+    <value>Command Options</value>
+  </data>
+  <data name="OptionsOK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="OptionsCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="QueryLabel" xml:space="preserve">
+    <value>Query</value>
+  </data>
+  <data name="FileMenu" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="OptionsMenu" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="SaveSettings" xml:space="preserve">
+    <value>Save Settings</value>
+  </data>
+  <data name="LoadSettings" xml:space="preserve">
+    <value>Load Settings</value>
+  </data>
+  <data name="SaveBenchmark" xml:space="preserve">
+    <value>Save BenchMark</value>
+  </data>
+  <data name="ToCsv" xml:space="preserve">
+    <value>To Csv</value>
+  </data>
+  <data name="ToText" xml:space="preserve">
+    <value>To Text</value>
+  </data>
+  <data name="ToClipboard" xml:space="preserve">
+    <value>To Clipboard</value>
+  </data>
+  <data name="Exit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="HelpMenu" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="GoButton" xml:space="preserve">
+    <value>GO</value>
+  </data>
+  <data name="NumberOfIterations" xml:space="preserve">
+    <value>Number of Iterations</value>
+  </data>
+  <data name="NumberOfThreads" xml:space="preserve">
+    <value>Number of Threads</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="IterationsCompleted" xml:space="preserve">
+    <value>Iterations Completed</value>
+  </data>
+  <data name="ClientSecondsIteration" xml:space="preserve">
+    <value>Client Seconds/Iteration (Avg)</value>
+  </data>
+  <data name="Progress" xml:space="preserve">
+    <value>Progress</value>
+  </data>
+  <data name="TotalExceptions" xml:space="preserve">
+    <value>Total Exceptions</value>
+  </data>
+  <data name="ElapsedTime" xml:space="preserve">
+    <value>Elapsed Time</value>
+  </data>
+  <data name="Database" xml:space="preserve">
+    <value>Database</value>
+  </data>
+  <data name="ActiveThreads" xml:space="preserve">
+    <value>Active Threads</value>
+  </data>
+  <data name="ExceptionsButton" xml:space="preserve">
+    <value>...</value>
+  </data>
+  <data name="CPUSecondsIteration" xml:space="preserve">
+    <value>CPU Seconds/Iteration (Avg)</value>
+  </data>
+  <data name="LogicalReadsIteration" xml:space="preserve">
+    <value>Logical Reads/Iteration (Avg)</value>
+  </data>
+  <data name="ActualSecondsIteration" xml:space="preserve">
+    <value>Actual Seconds/Iteration (Avg)</value>
+  </data>
+  <data name="ParameterSubstitution" xml:space="preserve">
+    <value>Parameter Substitution</value>
+  </data>
+  <data name="FreeCache" xml:space="preserve">
+    <value>Free Cache</value>
+  </data>
+  <data name="CleanBuffers" xml:space="preserve">
+    <value>Clean Buffers</value>
+  </data>
+  <data name="DelayBetweenQueries" xml:space="preserve">
+    <value>Delay between queries (ms)</value>
+  </data>
+  <data name="Server" xml:space="preserve">
+    <value>Server</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="Authentication" xml:space="preserve">
+    <value>Authentication</value>
+  </data>
+  <data name="DatabaseSelectCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="TestConnection" xml:space="preserve">
+    <value>Test Connection</value>
+  </data>
+  <data name="DatabaseSelectOK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="DefaultDatabase" xml:space="preserve">
+    <value>Default Database</value>
+  </data>
+  <data name="MainLoadSettings" xml:space="preserve">
+    <value>Main Load Settings</value>
+  </data>
+  <data name="AutoRefresh" xml:space="preserve">
+    <value>auto-refresh</value>
+  </data>
+  <data name="AdditionalParameters" xml:space="preserve">
+    <value>Additional Parameters</value>
+  </data>
+  <data name="Encrypt" xml:space="preserve">
+    <value>Encrypt</value>
+  </data>
+  <data name="ApplicationIntent" xml:space="preserve">
+    <value>Application Intent</value>
+  </data>
+  <data name="ParameterizationSettings" xml:space="preserve">
+    <value>Parameterization Settings</value>
+  </data>
+  <data name="ShareConnectionSettings" xml:space="preserve">
+    <value>Share Connection Settings</value>
+  </data>
+  <data name="TrustServerCertificate" xml:space="preserve">
+    <value>Trust Server Certificate</value>
+  </data>
+  <data name="ParameterQuery" xml:space="preserve">
+    <value>Parameter Query</value>
+  </data>
+  <data name="GetColumns" xml:space="preserve">
+    <value>Get Columns</value>
+  </data>
+  <data name="ParamWindowOK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="ParamWindowCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ParameterMappings" xml:space="preserve">
+    <value>Parameter Mappings</value>
+  </data>
+  <data name="ParamWindowDatabase" xml:space="preserve">
+    <value>Database</value>
+  </data>
+  <data name="ParamWindowTitle" xml:space="preserve">
+    <value>Parameter Substitution</value>
+  </data>
+  <data name="DataViewerTitle" xml:space="preserve">
+    <value>Form2</value>
+  </data>
+  <data name="PleaseWaitCancel" xml:space="preserve">
+    <value>Please wait while background threads are canceled.</value>
+  </data>
+  <data name="DatabaseSelectTitle" xml:space="preserve">
+    <value>Database Select</value>
+  </data>
+  <data name="OptionsTitle" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="ParameterColumn" xml:space="preserve">
+    <value>Parameter</value>
+  </data>
+  <data name="DatatypeColumn" xml:space="preserve">
+    <value>Datatype</value>
+  </data>
+  <data name="ColumnColumn" xml:space="preserve">
+    <value>Column</value>
+  </data>
 </root>

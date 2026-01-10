@@ -1,5 +1,7 @@
-namespace SQLQueryStress
+﻿namespace SQLQueryStress
 {
+    using SQLQueryStress.Properties;
+    
     partial class DatabaseSelect
     {
         /// <summary>
@@ -82,7 +84,7 @@ namespace SQLQueryStress
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(56, 17);
             label1.TabIndex = 0;
-            label1.Text = "Server";
+            label1.Text = Resources.Server;
             // 
             // server_textBox
             // 
@@ -127,7 +129,7 @@ namespace SQLQueryStress
             label2.Name = "label2";
             label2.Size = new System.Drawing.Size(77, 17);
             label2.TabIndex = 5;
-            label2.Text = "Password";
+            label2.Text = Resources.Password;
             // 
             // label3
             // 
@@ -137,7 +139,7 @@ namespace SQLQueryStress
             label3.Name = "label3";
             label3.Size = new System.Drawing.Size(48, 17);
             label3.TabIndex = 6;
-            label3.Text = "Login";
+            label3.Text = Resources.Login;
             // 
             // label4
             // 
@@ -147,7 +149,7 @@ namespace SQLQueryStress
             label4.Name = "label4";
             label4.Size = new System.Drawing.Size(112, 17);
             label4.TabIndex = 7;
-            label4.Text = "Authentication";
+            label4.Text = Resources.Authentication;
             // 
             // cancel_button
             // 
@@ -158,7 +160,7 @@ namespace SQLQueryStress
             cancel_button.Name = "cancel_button";
             cancel_button.Size = new System.Drawing.Size(106, 35);
             cancel_button.TabIndex = 3;
-            cancel_button.Text = "Cancel";
+            cancel_button.Text = Resources.DatabaseSelectCancel;
             cancel_button.UseVisualStyleBackColor = true;
             cancel_button.Click += cancel_button_Click;
             // 
@@ -170,7 +172,7 @@ namespace SQLQueryStress
             test_button.Name = "test_button";
             test_button.Size = new System.Drawing.Size(160, 35);
             test_button.TabIndex = 5;
-            test_button.Text = "Test Connection";
+            test_button.Text = Resources.TestConnection;
             test_button.UseVisualStyleBackColor = true;
             test_button.Click += test_button_Click;
             // 
@@ -182,7 +184,7 @@ namespace SQLQueryStress
             ok_button.Name = "ok_button";
             ok_button.Size = new System.Drawing.Size(106, 35);
             ok_button.TabIndex = 2;
-            ok_button.Text = "OK";
+            ok_button.Text = Resources.DatabaseSelectOK;
             ok_button.UseVisualStyleBackColor = true;
             ok_button.Click += ok_button_Click;
             // 
@@ -205,7 +207,7 @@ namespace SQLQueryStress
             label5.Name = "label5";
             label5.Size = new System.Drawing.Size(134, 17);
             label5.TabIndex = 12;
-            label5.Text = "Default Database";
+            label5.Text = Resources.DefaultDatabase;
             // 
             // groupBox1
             // 
@@ -235,7 +237,7 @@ namespace SQLQueryStress
             groupBox1.Size = new System.Drawing.Size(328, 657);
             groupBox1.TabIndex = 0;
             groupBox1.TabStop = false;
-            groupBox1.Text = "Main Load Settings";
+            groupBox1.Text = Resources.MainLoadSettings;
             // 
             // database_list_autorefresh
             // 
@@ -246,7 +248,7 @@ namespace SQLQueryStress
             database_list_autorefresh.Name = "database_list_autorefresh";
             database_list_autorefresh.Size = new System.Drawing.Size(112, 24);
             database_list_autorefresh.TabIndex = 21;
-            database_list_autorefresh.Text = "auto-refresh";
+            database_list_autorefresh.Text = Resources.AutoRefresh;
             database_list_autorefresh.UseVisualStyleBackColor = true;
             // 
             // additionalParameters_textBox
@@ -266,7 +268,7 @@ namespace SQLQueryStress
             label13.Name = "label13";
             label13.Size = new System.Drawing.Size(168, 17);
             label13.TabIndex = 18;
-            label13.Text = "Additional Parameters";
+            label13.Text = Resources.AdditionalParameters;
             // 
             // encrypt_Combo
             // 
@@ -286,7 +288,7 @@ namespace SQLQueryStress
             label11.Name = "label11";
             label11.Size = new System.Drawing.Size(63, 17);
             label11.TabIndex = 16;
-            label11.Text = "Encrypt";
+            label11.Text = Resources.Encrypt;
             // 
             // appintent_combo
             // 
@@ -308,7 +310,7 @@ namespace SQLQueryStress
             appintent_check.Name = "appintent_check";
             appintent_check.Size = new System.Drawing.Size(156, 21);
             appintent_check.TabIndex = 13;
-            appintent_check.Text = "Application Intent";
+            appintent_check.Text = Resources.ApplicationIntent;
             appintent_check.UseVisualStyleBackColor = true;
             appintent_check.CheckedChanged += appintent_check_CheckedChanged;
             // 
@@ -340,7 +342,7 @@ namespace SQLQueryStress
             groupBox2.Size = new System.Drawing.Size(328, 657);
             groupBox2.TabIndex = 1;
             groupBox2.TabStop = false;
-            groupBox2.Text = "Parameterization Settings";
+            groupBox2.Text = Resources.ParameterizationSettings;
             // 
             // pm_additionalParameters_textBox
             // 
@@ -369,7 +371,7 @@ namespace SQLQueryStress
             label14.Name = "label14";
             label14.Size = new System.Drawing.Size(168, 17);
             label14.TabIndex = 20;
-            label14.Text = "Additional Parameters";
+            label14.Text = Resources.AdditionalParameters;
             // 
             // label12
             // 
@@ -379,7 +381,7 @@ namespace SQLQueryStress
             label12.Name = "label12";
             label12.Size = new System.Drawing.Size(63, 17);
             label12.TabIndex = 18;
-            label12.Text = "Encrypt";
+            label12.Text = Resources.Encrypt;
             // 
             // pm_appintent_combo
             // 
@@ -401,7 +403,7 @@ namespace SQLQueryStress
             pm_appintent_check.Name = "pm_appintent_check";
             pm_appintent_check.Size = new System.Drawing.Size(156, 21);
             pm_appintent_check.TabIndex = 15;
-            pm_appintent_check.Text = "Application Intent";
+            pm_appintent_check.Text = Resources.ApplicationIntent;
             pm_appintent_check.UseVisualStyleBackColor = true;
             pm_appintent_check.CheckedChanged += appintent_check_CheckedChanged;
             // 
@@ -414,7 +416,7 @@ namespace SQLQueryStress
             pm_test_button.Name = "pm_test_button";
             pm_test_button.Size = new System.Drawing.Size(160, 35);
             pm_test_button.TabIndex = 5;
-            pm_test_button.Text = "Test Connection";
+            pm_test_button.Text = Resources.TestConnection;
             pm_test_button.UseVisualStyleBackColor = true;
             pm_test_button.Click += pm_test_button_Click;
             // 
@@ -429,7 +431,7 @@ namespace SQLQueryStress
             shareSettings_checkBox.Name = "shareSettings_checkBox";
             shareSettings_checkBox.Size = new System.Drawing.Size(223, 21);
             shareSettings_checkBox.TabIndex = 13;
-            shareSettings_checkBox.Text = "Share Connection Settings";
+            shareSettings_checkBox.Text = Resources.ShareConnectionSettings;
             shareSettings_checkBox.UseVisualStyleBackColor = true;
             shareSettings_checkBox.CheckedChanged += shareSettings_checkBox_CheckedChanged;
             // 
@@ -453,7 +455,7 @@ namespace SQLQueryStress
             label6.Name = "label6";
             label6.Size = new System.Drawing.Size(134, 17);
             label6.TabIndex = 12;
-            label6.Text = "Default Database";
+            label6.Text = Resources.DefaultDatabase;
             // 
             // pm_password_textBox
             // 
@@ -473,7 +475,7 @@ namespace SQLQueryStress
             label7.Name = "label7";
             label7.Size = new System.Drawing.Size(77, 17);
             label7.TabIndex = 5;
-            label7.Text = "Password";
+            label7.Text = Resources.Password;
             // 
             // pm_server_textBox
             // 
@@ -492,7 +494,7 @@ namespace SQLQueryStress
             label8.Name = "label8";
             label8.Size = new System.Drawing.Size(56, 17);
             label8.TabIndex = 0;
-            label8.Text = "Server";
+            label8.Text = Resources.Server;
             // 
             // label9
             // 
@@ -502,7 +504,7 @@ namespace SQLQueryStress
             label9.Name = "label9";
             label9.Size = new System.Drawing.Size(112, 17);
             label9.TabIndex = 7;
-            label9.Text = "Authentication";
+            label9.Text = Resources.Authentication;
             // 
             // pm_login_textBox
             // 
@@ -532,7 +534,7 @@ namespace SQLQueryStress
             label10.Name = "label10";
             label10.Size = new System.Drawing.Size(48, 17);
             label10.TabIndex = 6;
-            label10.Text = "Login";
+            label10.Text = Resources.Login;
             // 
             // trustcert_check
             // 
@@ -543,7 +545,7 @@ namespace SQLQueryStress
             trustcert_check.Name = "trustcert_check";
             trustcert_check.Size = new System.Drawing.Size(200, 21);
             trustcert_check.TabIndex = 20;
-            trustcert_check.Text = "Trust Server Certificate";
+            trustcert_check.Text = Resources.TrustServerCertificate;
             trustcert_check.UseVisualStyleBackColor = true;
             // 
             // pm_trustcert_check
@@ -555,7 +557,7 @@ namespace SQLQueryStress
             pm_trustcert_check.Name = "pm_trustcert_check";
             pm_trustcert_check.Size = new System.Drawing.Size(200, 21);
             pm_trustcert_check.TabIndex = 21;
-            pm_trustcert_check.Text = "Trust Server Certificate";
+            pm_trustcert_check.Text = Resources.TrustServerCertificate;
             pm_trustcert_check.UseVisualStyleBackColor = true;
             // 
             // DatabaseSelect
@@ -576,7 +578,7 @@ namespace SQLQueryStress
             Name = "DatabaseSelect";
             ShowIcon = false;
             ShowInTaskbar = false;
-            Text = "Database Select";
+            Text = Resources.DatabaseSelectTitle;
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             groupBox2.ResumeLayout(false);

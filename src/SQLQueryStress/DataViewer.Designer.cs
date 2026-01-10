@@ -1,5 +1,7 @@
-namespace SQLQueryStress
+﻿namespace SQLQueryStress
 {
+    using SQLQueryStress.Properties;
+    
     partial class DataViewer
     {
         /// <summary>
@@ -57,7 +59,7 @@ namespace SQLQueryStress
             this.Name = "DataViewer";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.Text = "Form2";
+            this.Text = Resources.DataViewerTitle;
             this.Load += new System.EventHandler(this.Form2_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
