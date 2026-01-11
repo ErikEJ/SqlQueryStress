@@ -17,7 +17,6 @@
     <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
   
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
     <Optimize>true</Optimize>
   </PropertyGroup>

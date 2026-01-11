@@ -195,5 +195,5 @@ FakesAssemblies/
 # Visual Studio 6 workspace options file
 *.opt
 
-# Translation scripts (temporary)
-scripts/*.ps1
+# Translation scripts (temporary) - Commented out to include scripts folder
+# scripts/*.ps1
