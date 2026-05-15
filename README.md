@@ -6,11 +6,9 @@ SQL query stress simulator [created by Adam Machanic](https://dataeducation.com/
 
 ## Installation
 
-The tool runs on any Windows machine with the .NET 8.0 runtime installed.
+The tool runs on any Windows machine with the .NET 10.0 runtime installed.
 
 Get the latest version from [GitHub releases](https://github.com/ErikEJ/SqlQueryStress/releases)
-
-[Release notes](https://github.com/ErikEJ/SqlQueryStress/wiki/Release-notes)
 
 ## Getting started guide
 
