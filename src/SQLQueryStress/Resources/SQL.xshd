@@ -5,29 +5,29 @@
                   xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
 
   <!-- T-SQL Reference: http://msdn.microsoft.com/de-de/library/ms189826%28v=sql.90%29.aspx -->
-  <Color name="Digits"     foreground="DarkBlue" exampleText="3.1415f"/>
-  <Color name="Comment" foreground="Green" exampleText="string text = &quot;Hello, World!&quot;"/>
-  <Color name="Punctuation" foreground="Red" exampleText="string text = &quot;Hello, World!&quot;"/>
+  <Color name="Digits"     foreground="#000000" exampleText="3.1415f"/>
+  <Color name="Comment" foreground="#008000" exampleText="string text = &quot;Hello, World!&quot;"/>
+  <Color name="Punctuation" foreground="#808080" exampleText="string text = &quot;Hello, World!&quot;"/>
 
-  <Color name="String" foreground="Olive" exampleText="string text = &quot;Hello, World!&quot;"/>
-  <Color name="String2" foreground="#993" exampleText="string text = &quot;Hello, World!&quot;"/>
+  <Color name="String" foreground="#FF0000" exampleText="string text = &quot;Hello, World!&quot;"/>
+  <Color name="String2" foreground="#FF0000" exampleText="string text = &quot;Hello, World!&quot;"/>
 
-  <Color name="Keyword" fontWeight="bold" foreground="Blue" exampleText="SELECT"/>
-  <Color name="Keyword1" fontWeight="normal" foreground="Blue" exampleText="NOCOUNT"/>
-  <Color name="GoKeyword" fontWeight="bold" foreground="Red" exampleText="GO"/>
+  <Color name="Keyword" fontWeight="bold" foreground="#0000FF" exampleText="SELECT"/>
+  <Color name="Keyword1" fontWeight="normal" foreground="#0000FF" exampleText="NOCOUNT"/>
+  <Color name="GoKeyword" fontWeight="bold" foreground="#FF0000" exampleText="GO"/>
 
-  <Color name="MethodCall" foreground="MidnightBlue" fontWeight="bold" />
+  <Color name="MethodCall" foreground="#795E26" fontWeight="bold" />
 
-  <Color name="Variable" foreground="Red"  exampleText="@Variable" />
-  <Color name="Variable1" foreground="Red" exampleText="@@Variable" />
+  <Color name="Variable" foreground="#FF0000"  exampleText="@Variable" />
+  <Color name="Variable1" foreground="#FF0000" exampleText="@@Variable" />
 
-  <Color name="ObjectReference" foreground="Teal" exampleText="Customer.Name" />
-  <Color name="ObjectReference1" foreground="Teal" exampleText="dbo.Customer.Name" />
+  <Color name="ObjectReference" foreground="#267F99" exampleText="Customer.Name" />
+  <Color name="ObjectReference1" foreground="#267F99" exampleText="dbo.Customer.Name" />
 
-  <Color name="ObjectReferenceInBrackets" foreground="Teal" exampleText="[Customer].[Name]" />
-  <Color name="ObjectReferenceInBrackets1" foreground="Teal" exampleText="[dbo].[Customer].[Name]" />
+  <Color name="ObjectReferenceInBrackets" foreground="#267F99" exampleText="[Customer].[Name]" />
+  <Color name="ObjectReferenceInBrackets1" foreground="#267F99" exampleText="[dbo].[Customer].[Name]" />
 
-  <Color name="CommentMarkerSetTodo"       foreground="Red"     fontWeight="bold" />
+  <Color name="CommentMarkerSetTodo"       foreground="#FF0000"     fontWeight="bold" />
   <Color name="CommentMarkerSetHackUndone" foreground="#E0E000" fontWeight="bold" />
 
   <RuleSet name="CommentMarkerSet">

@@ -11,7 +11,7 @@
                 xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"  
                 x:Name="AvalonEdit"
                 FontFamily="Consolas"
-                FontSize="10pt" 
+                FontSize="12pt" 
                 ShowLineNumbers="True" 
                 LineNumbersForeground="#FF2B91AF" />
 
