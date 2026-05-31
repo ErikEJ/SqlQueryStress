@@ -39,7 +39,7 @@ jobs:
 
     - name: Azure CLI login with federated credential
       if: github.event_name != 'pull_request'
-      uses: azure/login@v2
+      uses: azure/login@v3
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
@@ -63,7 +63,7 @@ jobs:
           7z a SqlQueryStress-0.9.8.${{ github.run_number }}.zip .\querysettings.sql
 
     - name: Publish artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         path: |
           *.zip
