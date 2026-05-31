@@ -77,36 +77,59 @@
       <Word>AT</Word>
       <Word>AUTHORIZATION</Word>
       <Word>AVG</Word>
+      <Word>BACKUP</Word>
       <Word>BASE_TABLE</Word>
       <Word>BEGIN</Word>
       <Word>BETWEEN</Word>
       <Word>BINARY_INTEGER</Word>
       <Word>BODY</Word>
       <Word>BOOLEAN</Word>
+      <Word>BREAK</Word>
+      <Word>BROWSE</Word>
+      <Word>BULK</Word>
       <Word>BY</Word>
+      <Word>CASCADE</Word>
       <Word>CASE</Word>
       <Word>CHAR_BASE</Word>
       <Word>CHAR</Word>
       <Word>CHECK</Word>
+      <Word>CHECKPOINT</Word>
       <Word>CLOSE</Word>
       <Word>CLUSTER</Word>
+      <Word>CLUSTERED</Word>
       <Word>CLUSTERS</Word>
+      <Word>COALESCE</Word>
       <Word>COLAUTH</Word>
+      <Word>COLLATE</Word>
+      <Word>COLUMN</Word>
       <Word>COLUMNS</Word>
       <Word>COMMIT</Word>
       <Word>COMPRESS</Word>
+      <Word>COMPUTE</Word>
       <Word>CONNECT</Word>
       <Word>CONSTANT</Word>
+      <Word>CONSTRAINT</Word>
+      <Word>CONTAINS</Word>
+      <Word>CONTAINSTABLE</Word>
+      <Word>CONTINUE</Word>
+      <Word>CONVERT</Word>
       <Word>COUNT</Word>
       <Word>CRASH</Word>
       <Word>CREATE</Word>
+      <Word>CROSS</Word>
       <Word>CURRENT</Word>
+      <Word>CURRENT_DATE</Word>
+      <Word>CURRENT_TIME</Word>
+      <Word>CURRENT_TIMESTAMP</Word>
+      <Word>CURRENT_USER</Word>
       <Word>CURRVAL</Word>
       <Word>CURSOR</Word>
       <Word>DATA_BASE</Word>
       <Word>DATABASE</Word>
       <Word>DATE</Word>
       <Word>DBA</Word>
+      <Word>DBCC</Word>
+      <Word>DEALLOCATE</Word>
       <Word>DEBUGOFF</Word>
       <Word>DEBUGON</Word>
       <Word>DECIMAL</Word>
@@ -116,246 +139,223 @@
       <Word>DELAY</Word>
       <Word>DELETE</Word>
       <Word>DELTA</Word>
+      <Word>DENY</Word>
       <Word>DESC</Word>
       <Word>DIGITS</Word>
+      <Word>DISK</Word>
       <Word>DISPOSE</Word>
       <Word>DISTINCT</Word>
+      <Word>DISTRIBUTED</Word>
       <Word>DO</Word>
+      <Word>DOUBLE</Word>
       <Word>DROP</Word>
+      <Word>DUMP</Word>
       <Word>ELSE</Word>
       <Word>ELSIF</Word>
       <Word>END</Word>
       <Word>ENTRY</Word>
+      <Word>ERRLVL</Word>
+      <Word>ESCAPE</Word>
+      <Word>EXCEPT</Word>
       <Word>EXCEPTION_INIT</Word>
       <Word>EXCEPTION</Word>
+      <Word>EXEC</Word>
+      <Word>EXECUTE</Word>
       <Word>EXISTS</Word>
       <Word>EXIT</Word>
+      <Word>EXTERNAL</Word>
       <Word>FALSE</Word>
       <Word>FETCH</Word>
+      <Word>FILE</Word>
+      <Word>FILLFACTOR</Word>
       <Word>FLOAT</Word>
       <Word>FOR</Word>
+      <Word>FOREIGN</Word>
       <Word>FORM</Word>
+      <Word>FREETEXT</Word>
+      <Word>FREETEXTTABLE</Word>
       <Word>FROM</Word>
+      <Word>FULL</Word>
       <Word>FUNCTION</Word>
       <Word>GENERIC</Word>
       <Word>GOTO</Word>
       <Word>GRANT</Word>
       <Word>GROUP</Word>
       <Word>HAVING</Word>
+      <Word>HOLDLOCK</Word>
       <Word>IDENTIFIED</Word>
+      <Word>IDENTITY</Word>
+      <Word>IDENTITYCOL</Word>
+      <Word>IDENTITY_INSERT</Word>
       <Word>IF</Word>
       <Word>IN</Word>
       <Word>INDEX</Word>
       <Word>INDEXES</Word>
       <Word>INDICATOR</Word>
+      <Word>INNER</Word>
       <Word>INSERT</Word>
       <Word>INTEGER</Word>
       <Word>INTERSECT</Word>
       <Word>INTO</Word>
       <Word>IS</Word>
+      <Word>JOIN</Word>
+      <Word>KEY</Word>
+      <Word>KILL</Word>
+      <Word>LEFT</Word>
       <Word>LEVEL</Word>
       <Word>LIKE</Word>
       <Word>LIMITED</Word>
+      <Word>LINENO</Word>
+      <Word>LOAD</Word>
       <Word>LOOP</Word>
       <Word>MAX</Word>
+      <Word>MERGE</Word>
       <Word>MIN</Word>
       <Word>MINUS</Word>
       <Word>MLSLABEL</Word>
       <Word>MOD</Word>
       <Word>MODE</Word>
+      <Word>NATIONAL</Word>
       <Word>NATURAL</Word>
       <Word>NEW</Word>
       <Word>NEXTVAL</Word>
+      <Word>NOCHECK</Word>
       <Word>NOCOMPRESS</Word>
+      <Word>NONCLUSTERED</Word>
       <Word>NOT</Word>
       <Word>NULL</Word>
+      <Word>NULLIF</Word>
       <Word>NUMBER_BASE</Word>
       <Word>NUMBER</Word>
       <Word>OF</Word>
+      <Word>OFF</Word>
+      <Word>OFFSETS</Word>
       <Word>ON</Word>
       <Word>OPEN</Word>
+      <Word>OPENDATASOURCE</Word>
+      <Word>OPENQUERY</Word>
+      <Word>OPENROWSET</Word>
+      <Word>OPENXML</Word>
       <Word>OPTION</Word>
       <Word>OR</Word>
       <Word>ORDER</Word>
       <Word>OTHERS</Word>
       <Word>OUT</Word>
+      <Word>OUTER</Word>
+      <Word>OVER</Word>
       <Word>PACKAGE</Word>
       <Word>PARTITION</Word>
       <Word>PCTFREE</Word>
+      <Word>PERCENT</Word>
+      <Word>PIVOT</Word>
+      <Word>PLAN</Word>
       <Word>POSITIVE</Word>
       <Word>PRAGMA</Word>
+      <Word>PRECISION</Word>
+      <Word>PRIMARY</Word>
+      <Word>PRINT</Word>
       <Word>PRIOR</Word>
       <Word>PRIVATE</Word>
+      <Word>PROC</Word>
       <Word>PROCEDURE</Word>
       <Word>PUBLIC</Word>
       <Word>RAISE</Word>
+      <Word>RAISERROR</Word>
       <Word>RANGE</Word>
+      <Word>READ</Word>
+      <Word>READTEXT</Word>
       <Word>REAL</Word>
+      <Word>RECONFIGURE</Word>
       <Word>RECORD</Word>
+      <Word>REFERENCES</Word>
       <Word>RELEASE</Word>
       <Word>REMR</Word>
       <Word>RENAME</Word>
+      <Word>REPLICATION</Word>
       <Word>RESOURCE</Word>
+      <Word>RESTORE</Word>
+      <Word>RESTRICT</Word>
       <Word>RETURN</Word>
       <Word>REVERSE</Word>
+      <Word>REVERT</Word>
       <Word>REVOKE</Word>
+      <Word>RIGHT</Word>
       <Word>ROLLBACK</Word>
+      <Word>ROWCOUNT</Word>
+      <Word>ROWGUIDCOL</Word>
       <Word>ROWID</Word>
       <Word>ROWLABEL</Word>
       <Word>ROWNUM</Word>
       <Word>ROWTYPE</Word>
+      <Word>RULE</Word>
       <Word>RUN</Word>
+      <Word>SAVE</Word>
       <Word>SAVEPOINT</Word>
       <Word>SCHEMA</Word>
+      <Word>SECURITYAUDIT</Word>
       <Word>SELECT</Word>
+      <Word>SEMANTICKEYPHRASETABLE</Word>
+      <Word>SEMANTICSIMILARITYDETAILSTABLE</Word>
+      <Word>SEMANTICSIMILARITYTABLE</Word>
       <Word>SEPARATE</Word>
+      <Word>SESSION_USER</Word>
       <Word>SET</Word>
+      <Word>SETUSER</Word>
+      <Word>SHUTDOWN</Word>
       <Word>SIZE</Word>
       <Word>SMALLINT</Word>
+      <Word>SOME</Word>
       <Word>SPACE</Word>
       <Word>SQL</Word>
       <Word>SQLCODE</Word>
       <Word>SQLERRM</Word>
       <Word>START</Word>
       <Word>STATEMENT</Word>
+      <Word>STATISTICS</Word>
       <Word>STDDEV</Word>
       <Word>SUBTYPE</Word>
       <Word>SUM</Word>
+      <Word>SYSTEM_USER</Word>
       <Word>TABAUTH</Word>
       <Word>TABLE</Word>
       <Word>TABLES</Word>
+      <Word>TABLESAMPLE</Word>
       <Word>TASK</Word>
       <Word>TERMINATE</Word>
+      <Word>TEXTSIZE</Word>
       <Word>THEN</Word>
       <Word>TO</Word>
+      <Word>TOP</Word>
+      <Word>TRAN</Word>
+      <Word>TRANSACTION</Word>
+      <Word>TRIGGER</Word>
       <Word>TRUE</Word>
       <Word>TRUNCATE</Word>
+      <Word>TRY_CONVERT</Word>
+      <Word>TSEQUAL</Word>
       <Word>TYPE</Word>
       <Word>UNION</Word>
       <Word>UNIQUE</Word>
+      <Word>UNPIVOT</Word>
       <Word>UPDATE</Word>
+      <Word>UPDATETEXT</Word>
       <Word>USE</Word>
+      <Word>USER</Word>
       <Word>VALUES</Word>
       <Word>VARCHAR</Word>
       <Word>VARCHAR2</Word>
       <Word>VARIANCE</Word>
+      <Word>VARYING</Word>
       <Word>VIEW</Word>
       <Word>VIEWS</Word>
+      <Word>WAITFOR</Word>
       <Word>WHEN</Word>
       <Word>WHERE</Word>
       <Word>WHILE</Word>
       <Word>WITH</Word>
       <Word>WORK</Word>
-      <Word>XOR</Word>
-      <Word>BACKUP</Word>
-      <Word>BREAK</Word>
-      <Word>BROWSE</Word>
-      <Word>BULK</Word>
-      <Word>CASCADE</Word>
-      <Word>CHECKPOINT</Word>
-      <Word>CLUSTERED</Word>
-      <Word>COALESCE</Word>
-      <Word>COLLATE</Word>
-      <Word>COLUMN</Word>
-      <Word>COMPUTE</Word>
-      <Word>CONSTRAINT</Word>
-      <Word>CONTAINS</Word>
-      <Word>CONTAINSTABLE</Word>
-      <Word>CONTINUE</Word>
-      <Word>CONVERT</Word>
-      <Word>CROSS</Word>
-      <Word>CURRENT_DATE</Word>
-      <Word>CURRENT_TIME</Word>
-      <Word>CURRENT_TIMESTAMP</Word>
-      <Word>CURRENT_USER</Word>
-      <Word>DBCC</Word>
-      <Word>DEALLOCATE</Word>
-      <Word>DENY</Word>
-      <Word>DISK</Word>
-      <Word>DISTRIBUTED</Word>
-      <Word>DOUBLE</Word>
-      <Word>DUMP</Word>
-      <Word>ERRLVL</Word>
-      <Word>ESCAPE</Word>
-      <Word>EXCEPT</Word>
-      <Word>EXEC</Word>
-      <Word>EXECUTE</Word>
-      <Word>EXTERNAL</Word>
-      <Word>FILE</Word>
-      <Word>FILLFACTOR</Word>
-      <Word>FOREIGN</Word>
-      <Word>FREETEXT</Word>
-      <Word>FREETEXTTABLE</Word>
-      <Word>FULL</Word>
-      <Word>HOLDLOCK</Word>
-      <Word>IDENTITY</Word>
-      <Word>IDENTITYCOL</Word>
-      <Word>IDENTITY_INSERT</Word>
-      <Word>INNER</Word>
-      <Word>JOIN</Word>
-      <Word>KEY</Word>
-      <Word>KILL</Word>
-      <Word>LEFT</Word>
-      <Word>LINENO</Word>
-      <Word>LOAD</Word>
-      <Word>MERGE</Word>
-      <Word>NATIONAL</Word>
-      <Word>NOCHECK</Word>
-      <Word>NONCLUSTERED</Word>
-      <Word>NULLIF</Word>
-      <Word>OFF</Word>
-      <Word>OFFSETS</Word>
-      <Word>OPENDATASOURCE</Word>
-      <Word>OPENQUERY</Word>
-      <Word>OPENROWSET</Word>
-      <Word>OPENXML</Word>
-      <Word>OUTER</Word>
-      <Word>OVER</Word>
-      <Word>PERCENT</Word>
-      <Word>PIVOT</Word>
-      <Word>PLAN</Word>
-      <Word>PRECISION</Word>
-      <Word>PRIMARY</Word>
-      <Word>PRINT</Word>
-      <Word>PROC</Word>
-      <Word>RAISERROR</Word>
-      <Word>READ</Word>
-      <Word>READTEXT</Word>
-      <Word>RECONFIGURE</Word>
-      <Word>REFERENCES</Word>
-      <Word>REPLICATION</Word>
-      <Word>RESTORE</Word>
-      <Word>RESTRICT</Word>
-      <Word>REVERT</Word>
-      <Word>RIGHT</Word>
-      <Word>ROWCOUNT</Word>
-      <Word>ROWGUIDCOL</Word>
-      <Word>RULE</Word>
-      <Word>SAVE</Word>
-      <Word>SECURITYAUDIT</Word>
-      <Word>SEMANTICKEYPHRASETABLE</Word>
-      <Word>SEMANTICSIMILARITYDETAILSTABLE</Word>
-      <Word>SEMANTICSIMILARITYTABLE</Word>
-      <Word>SESSION_USER</Word>
-      <Word>SETUSER</Word>
-      <Word>SHUTDOWN</Word>
-      <Word>SOME</Word>
-      <Word>STATISTICS</Word>
-      <Word>SYSTEM_USER</Word>
-      <Word>TABLESAMPLE</Word>
-      <Word>TEXTSIZE</Word>
-      <Word>TOP</Word>
-      <Word>TRAN</Word>
-      <Word>TRANSACTION</Word>
-      <Word>TRIGGER</Word>
-      <Word>TRY_CONVERT</Word>
-      <Word>TSEQUAL</Word>
-      <Word>UNPIVOT</Word>
-      <Word>UPDATETEXT</Word>
-      <Word>USER</Word>
-      <Word>VARYING</Word>
-      <Word>WAITFOR</Word>
       <Word>WRITETEXT</Word>
+      <Word>XOR</Word>
     </Keywords>
 
     <Keywords color="Keyword1">
