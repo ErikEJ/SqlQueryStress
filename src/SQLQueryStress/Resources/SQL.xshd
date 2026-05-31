@@ -61,192 +61,192 @@
 
     <Keywords color="Keyword" >
       <Word>ABORT</Word>
-      <Word>BETWEEN</Word>
-      <Word>CRASH</Word>
-      <Word>DIGITS</Word>
       <Word>ACCEPT</Word>
-      <Word>BINARY_INTEGER</Word>
-      <Word>CREATE</Word>
-      <Word>DISPOSE</Word>
       <Word>ACCESS</Word>
-      <Word>BODY</Word>
-      <Word>CURRENT</Word>
-      <Word>DISTINCT</Word>
       <Word>ADD</Word>
-      <Word>BOOLEAN</Word>
-      <Word>CURRVAL</Word>
-      <Word>DO</Word>
       <Word>ALL</Word>
-      <Word>BY</Word>
-      <Word>CURSOR</Word>
-      <Word>DROP</Word>
       <Word>ALTER</Word>
-      <Word>CASE</Word>
-      <Word>DATABASE</Word>
-      <Word>ELSE</Word>
       <Word>AND</Word>
-      <Word>CHAR</Word>
-      <Word>DATA_BASE</Word>
-      <Word>ELSIF</Word>
       <Word>ANY</Word>
-      <Word>CHAR_BASE</Word>
-      <Word>DATE</Word>
-      <Word>END</Word>
       <Word>ARRAY</Word>
-      <Word>CHECK</Word>
-      <Word>DBA</Word>
-      <Word>ENTRY</Word>
       <Word>ARRAYLEN</Word>
-      <Word>CLOSE</Word>
-      <Word>DEBUGOFF</Word>
-      <Word>EXCEPTION</Word>
       <Word>AS</Word>
-      <Word>CLUSTER</Word>
-      <Word>DEBUGON</Word>
-      <Word>EXCEPTION_INIT</Word>
       <Word>ASC</Word>
-      <Word>CLUSTERS</Word>
-      <Word>DECLARE</Word>
-      <Word>EXISTS</Word>
       <Word>ASSERT</Word>
-      <Word>COLAUTH</Word>
-      <Word>DECIMAL</Word>
-      <Word>EXIT</Word>
       <Word>ASSIGN</Word>
-      <Word>COLUMNS</Word>
-      <Word>DEFAULT</Word>
-      <Word>FALSE</Word>
       <Word>AT</Word>
-      <Word>COMMIT</Word>
-      <Word>DEFINITION</Word>
-      <Word>FETCH</Word>
       <Word>AUTHORIZATION</Word>
-      <Word>COMPRESS</Word>
-      <Word>DELAY</Word>
-      <Word>FLOAT</Word>
       <Word>AVG</Word>
-      <Word>CONNECT</Word>
-      <Word>DELETE</Word>
-      <Word>FOR</Word>
       <Word>BASE_TABLE</Word>
-      <Word>CONSTANT</Word>
-      <Word>DELTA</Word>
-      <Word>FORM</Word>
       <Word>BEGIN</Word>
+      <Word>BETWEEN</Word>
+      <Word>BINARY_INTEGER</Word>
+      <Word>BODY</Word>
+      <Word>BOOLEAN</Word>
+      <Word>BY</Word>
+      <Word>CASE</Word>
+      <Word>CHAR_BASE</Word>
+      <Word>CHAR</Word>
+      <Word>CHECK</Word>
+      <Word>CLOSE</Word>
+      <Word>CLUSTER</Word>
+      <Word>CLUSTERS</Word>
+      <Word>COLAUTH</Word>
+      <Word>COLUMNS</Word>
+      <Word>COMMIT</Word>
+      <Word>COMPRESS</Word>
+      <Word>CONNECT</Word>
+      <Word>CONSTANT</Word>
       <Word>COUNT</Word>
+      <Word>CRASH</Word>
+      <Word>CREATE</Word>
+      <Word>CURRENT</Word>
+      <Word>CURRVAL</Word>
+      <Word>CURSOR</Word>
+      <Word>DATA_BASE</Word>
+      <Word>DATABASE</Word>
+      <Word>DATE</Word>
+      <Word>DBA</Word>
+      <Word>DEBUGOFF</Word>
+      <Word>DEBUGON</Word>
+      <Word>DECIMAL</Word>
+      <Word>DECLARE</Word>
+      <Word>DEFAULT</Word>
+      <Word>DEFINITION</Word>
+      <Word>DELAY</Word>
+      <Word>DELETE</Word>
+      <Word>DELTA</Word>
       <Word>DESC</Word>
+      <Word>DIGITS</Word>
+      <Word>DISPOSE</Word>
+      <Word>DISTINCT</Word>
+      <Word>DO</Word>
+      <Word>DROP</Word>
+      <Word>ELSE</Word>
+      <Word>ELSIF</Word>
+      <Word>END</Word>
+      <Word>ENTRY</Word>
+      <Word>EXCEPTION_INIT</Word>
+      <Word>EXCEPTION</Word>
+      <Word>EXISTS</Word>
+      <Word>EXIT</Word>
+      <Word>FALSE</Word>
+      <Word>FETCH</Word>
+      <Word>FLOAT</Word>
+      <Word>FOR</Word>
+      <Word>FORM</Word>
       <Word>FROM</Word>
       <Word>FUNCTION</Word>
-      <Word>NEW</Word>
-      <Word>RELEASE</Word>
-      <Word>SUM</Word>
       <Word>GENERIC</Word>
-      <Word>NEXTVAL</Word>
-      <Word>REMR</Word>
-      <Word>TABAUTH</Word>
       <Word>GOTO</Word>
-      <Word>NOCOMPRESS</Word>
-      <Word>RENAME</Word>
-      <Word>TABLE</Word>
       <Word>GRANT</Word>
-      <Word>NOT</Word>
-      <Word>RESOURCE</Word>
-      <Word>TABLES</Word>
       <Word>GROUP</Word>
-      <Word>NULL</Word>
-      <Word>RETURN</Word>
-      <Word>TASK</Word>
       <Word>HAVING</Word>
-      <Word>NUMBER</Word>
-      <Word>REVERSE</Word>
-      <Word>TERMINATE</Word>
       <Word>IDENTIFIED</Word>
-      <Word>NUMBER_BASE</Word>
-      <Word>REVOKE</Word>
-      <Word>THEN</Word>
       <Word>IF</Word>
-      <Word>OF</Word>
-      <Word>ROLLBACK</Word>
-      <Word>TO</Word>
       <Word>IN</Word>
-      <Word>ON</Word>
-      <Word>ROWID</Word>
-      <Word>TRUE</Word>
       <Word>INDEX</Word>
-      <Word>OPEN</Word>
-      <Word>ROWLABEL</Word>
-      <Word>TYPE</Word>
       <Word>INDEXES</Word>
-      <Word>OPTION</Word>
-      <Word>ROWNUM</Word>
-      <Word>UNION</Word>
       <Word>INDICATOR</Word>
-      <Word>OR</Word>
-      <Word>ROWTYPE</Word>
-      <Word>UNIQUE</Word>
       <Word>INSERT</Word>
-      <Word>ORDER</Word>
-      <Word>RUN</Word>
-      <Word>UPDATE</Word>
       <Word>INTEGER</Word>
-      <Word>OTHERS</Word>
-      <Word>SAVEPOINT</Word>
-      <Word>USE</Word>
       <Word>INTERSECT</Word>
-      <Word>OUT</Word>
-      <Word>SCHEMA</Word>
-      <Word>VALUES</Word>
       <Word>INTO</Word>
-      <Word>PACKAGE</Word>
-      <Word>SELECT</Word>
-      <Word>VARCHAR</Word>
       <Word>IS</Word>
-      <Word>PARTITION</Word>
-      <Word>SEPARATE</Word>
-      <Word>VARCHAR2</Word>
       <Word>LEVEL</Word>
-      <Word>PCTFREE</Word>
-      <Word>SET</Word>
-      <Word>VARIANCE</Word>
       <Word>LIKE</Word>
-      <Word>POSITIVE</Word>
-      <Word>SIZE</Word>
-      <Word>VIEW</Word>
       <Word>LIMITED</Word>
-      <Word>PRAGMA</Word>
-      <Word>SMALLINT</Word>
-      <Word>VIEWS</Word>
       <Word>LOOP</Word>
-      <Word>PRIOR</Word>
-      <Word>SPACE</Word>
-      <Word>WHEN</Word>
       <Word>MAX</Word>
-      <Word>PRIVATE</Word>
-      <Word>SQL</Word>
-      <Word>WHERE</Word>
       <Word>MIN</Word>
-      <Word>PROCEDURE</Word>
-      <Word>SQLCODE</Word>
-      <Word>WHILE</Word>
       <Word>MINUS</Word>
-      <Word>PUBLIC</Word>
-      <Word>SQLERRM</Word>
-      <Word>WITH</Word>
       <Word>MLSLABEL</Word>
-      <Word>RAISE</Word>
-      <Word>START</Word>
-      <Word>WORK</Word>
       <Word>MOD</Word>
-      <Word>RANGE</Word>
-      <Word>STATEMENT</Word>
-      <Word>XOR</Word>
       <Word>MODE</Word>
-      <Word>REAL</Word>
-      <Word>STDDEV</Word>
       <Word>NATURAL</Word>
+      <Word>NEW</Word>
+      <Word>NEXTVAL</Word>
+      <Word>NOCOMPRESS</Word>
+      <Word>NOT</Word>
+      <Word>NULL</Word>
+      <Word>NUMBER_BASE</Word>
+      <Word>NUMBER</Word>
+      <Word>OF</Word>
+      <Word>ON</Word>
+      <Word>OPEN</Word>
+      <Word>OPTION</Word>
+      <Word>OR</Word>
+      <Word>ORDER</Word>
+      <Word>OTHERS</Word>
+      <Word>OUT</Word>
+      <Word>PACKAGE</Word>
+      <Word>PARTITION</Word>
+      <Word>PCTFREE</Word>
+      <Word>POSITIVE</Word>
+      <Word>PRAGMA</Word>
+      <Word>PRIOR</Word>
+      <Word>PRIVATE</Word>
+      <Word>PROCEDURE</Word>
+      <Word>PUBLIC</Word>
+      <Word>RAISE</Word>
+      <Word>RANGE</Word>
+      <Word>REAL</Word>
       <Word>RECORD</Word>
+      <Word>RELEASE</Word>
+      <Word>REMR</Word>
+      <Word>RENAME</Word>
+      <Word>RESOURCE</Word>
+      <Word>RETURN</Word>
+      <Word>REVERSE</Word>
+      <Word>REVOKE</Word>
+      <Word>ROLLBACK</Word>
+      <Word>ROWID</Word>
+      <Word>ROWLABEL</Word>
+      <Word>ROWNUM</Word>
+      <Word>ROWTYPE</Word>
+      <Word>RUN</Word>
+      <Word>SAVEPOINT</Word>
+      <Word>SCHEMA</Word>
+      <Word>SELECT</Word>
+      <Word>SEPARATE</Word>
+      <Word>SET</Word>
+      <Word>SIZE</Word>
+      <Word>SMALLINT</Word>
+      <Word>SPACE</Word>
+      <Word>SQL</Word>
+      <Word>SQLCODE</Word>
+      <Word>SQLERRM</Word>
+      <Word>START</Word>
+      <Word>STATEMENT</Word>
+      <Word>STDDEV</Word>
       <Word>SUBTYPE</Word>
+      <Word>SUM</Word>
+      <Word>TABAUTH</Word>
+      <Word>TABLE</Word>
+      <Word>TABLES</Word>
+      <Word>TASK</Word>
+      <Word>TERMINATE</Word>
+      <Word>THEN</Word>
+      <Word>TO</Word>
+      <Word>TRUE</Word>
       <Word>TRUNCATE</Word>
+      <Word>TYPE</Word>
+      <Word>UNION</Word>
+      <Word>UNIQUE</Word>
+      <Word>UPDATE</Word>
+      <Word>USE</Word>
+      <Word>VALUES</Word>
+      <Word>VARCHAR</Word>
+      <Word>VARCHAR2</Word>
+      <Word>VARIANCE</Word>
+      <Word>VIEW</Word>
+      <Word>VIEWS</Word>
+      <Word>WHEN</Word>
+      <Word>WHERE</Word>
+      <Word>WHILE</Word>
+      <Word>WITH</Word>
+      <Word>WORK</Word>
+      <Word>XOR</Word>
     </Keywords>
 
     <Keywords color="Keyword1">
