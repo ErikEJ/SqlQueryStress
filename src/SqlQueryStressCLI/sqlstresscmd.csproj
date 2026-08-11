@@ -8,6 +8,7 @@
     <PackageVersion>0.9.22</PackageVersion>
     <PackageReleaseNotes>.NET 10</PackageReleaseNotes>
     <TargetFramework>net10.0</TargetFramework>
+    <RollForward>Major</RollForward>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/ErikEJ/SqlQueryStress</RepositoryUrl>
