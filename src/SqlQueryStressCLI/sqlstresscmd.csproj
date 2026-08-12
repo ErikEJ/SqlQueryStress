@@ -5,7 +5,7 @@
     <PackAsTool>true</PackAsTool>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageVersion>0.9.22</PackageVersion>
+    <PackageVersion>0.9.23</PackageVersion>
     <PackageReleaseNotes>.NET 10</PackageReleaseNotes>
     <TargetFramework>net10.0</TargetFramework>
     <RollForward>Major</RollForward>
