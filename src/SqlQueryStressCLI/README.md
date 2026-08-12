@@ -14,6 +14,8 @@ dotnet tool install -g sqlstresscmd
 dotnet tool update -g sqlstresscmd
 ```
 
+The packaged tool enables .NET major-version roll-forward, so it can run on newer .NET runtimes when .NET 10 is not installed.
+
 You can also download directly from [NuGet](https://www.nuget.org/packages/sqlstresscmd) and unzip the package locally.
 
 2. Create a json config file similar to [this one](https://github.com/ErikEJ/SqlQueryStress/blob/master/src/SqlQueryStressCLI/sample.json)
