@@ -4,7 +4,7 @@
     <OutputType>Exe</OutputType>
     <PackAsTool>true</PackAsTool>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageReadmeFile>readme.md</PackageReadmeFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageVersion>0.9.22</PackageVersion>
     <PackageReleaseNotes>.NET 10</PackageReleaseNotes>
     <TargetFramework>net10.0</TargetFramework>
@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="readme.md" Pack="true" PackagePath="\" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
