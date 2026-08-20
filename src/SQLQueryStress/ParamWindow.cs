@@ -149,7 +149,6 @@ namespace SQLQueryStress
 
                     //placeholder for columntype
                     row.Cells[1].Value = string.Empty;
-                    row.Cells[1].ReadOnly = true;
 
                     var combo = new DataGridViewComboBoxCell();
 
@@ -168,7 +167,10 @@ namespace SQLQueryStress
                             if (_settings.ParamMappings[variable] == paramName)
                             {
                                 combo.Value = paramName;
-                                row.Cells[1].Value = _paramValues[paramName];
+                                // Restore saved type override, falling back to detected type
+                                row.Cells[1].Value = _settings.ParamTypeMappings.TryGetValue(variable, out var savedType)
+                                    ? savedType
+                                    : _paramValues[paramName];
                             }
                         }
                     }
@@ -211,13 +213,24 @@ namespace SQLQueryStress
             }
 
             var localParamMappings = new Dictionary<string, string>();
+            var localParamTypeMappings = new Dictionary<string, string>();
             foreach (DataGridViewRow row in columnMapGrid.Rows)
             {
-                if (!string.IsNullOrEmpty((string)row.Cells[2].Value))
-                    localParamMappings.Add((string)row.Cells[0].Value, (string)row.Cells[2].Value);
+                var paramName = (string)row.Cells[0].Value;
+                var columnName = (string)row.Cells[2].Value;
+                var dataType = (string)row.Cells[1].Value;
+
+                if (!string.IsNullOrEmpty(columnName))
+                {
+                    localParamMappings.Add(paramName, columnName);
+
+                    if (!string.IsNullOrEmpty(dataType))
+                        localParamTypeMappings.Add(paramName, dataType);
+                }
             }
 
             _settings.ParamMappings = localParamMappings;
+            _settings.ParamTypeMappings = localParamTypeMappings;
 
             Dispose();
         }

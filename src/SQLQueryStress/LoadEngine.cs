@@ -28,6 +28,7 @@ namespace SQLQueryStress
         private readonly int _iterations;
         private readonly string _paramConnectionString;
         private readonly Dictionary<string, string> _paramMappings;
+        private readonly Dictionary<string, string> _paramTypeMappings;
         //private readonly List<Queue<queryOutput>> queryOutInfoPool = new List<Queue<queryOutput>>();        
         private readonly string _paramQuery;
         private readonly string _query;
@@ -38,7 +39,8 @@ namespace SQLQueryStress
 
         public LoadEngine(string connectionString, string query, int threads, int iterations, string paramQuery,
             Dictionary<string, string> paramMappings, string paramConnectionString, int commandTimeout,
-            bool collectIoStats, bool collectTimeStats, bool forceDataRetrieval, bool killQueriesOnCancel, CancellationTokenSource cts)
+            bool collectIoStats, bool collectTimeStats, bool forceDataRetrieval, bool killQueriesOnCancel, CancellationTokenSource cts,
+            Dictionary<string, string> paramTypeMappings = null)
         {
             //Set the min pool size so that the pool does not have
             //to get allocated in real-time
@@ -55,6 +57,7 @@ namespace SQLQueryStress
             _iterations = iterations;
             _paramQuery = paramQuery;
             _paramMappings = paramMappings;
+            _paramTypeMappings = paramTypeMappings ?? new Dictionary<string, string>();
             _paramConnectionString = paramConnectionString;
             _commandTimeout = commandTimeout;
             _collectIoStats = collectIoStats;
@@ -104,7 +107,7 @@ namespace SQLQueryStress
             //Need some parameters?
             if (_paramMappings.Count > 0)
             {
-                ParamServer.Initialize(_paramQuery, _paramConnectionString, _paramMappings);
+                ParamServer.Initialize(_paramQuery, _paramConnectionString, _paramMappings, _paramTypeMappings);
                 useParams = true;
             }
 
@@ -210,6 +213,10 @@ namespace SQLQueryStress
         private static class ParamServer
         {
             private static int _currentRow;
+            private static readonly System.Text.RegularExpressions.Regex TypeNameRegex =
+                new System.Text.RegularExpressions.Regex(
+                    @"^(\w+)(?:\((\d+|-1|max)(?:,\d+)?\))?$",
+                    System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Compiled);
             private static int _numRows;
 
             //The actual params that will be filled
@@ -241,7 +248,7 @@ namespace SQLQueryStress
                 return newParam;
             }
 
-            public static void Initialize(string paramQuery, string connString, Dictionary<string, string> paramMappings)
+            public static void Initialize(string paramQuery, string connString, Dictionary<string, string> paramMappings, Dictionary<string, string> paramTypeMappings)
             {
 #pragma warning disable CA2100
                 using var sqlDataAdapter = new SqlDataAdapter(paramQuery, connString);
@@ -266,9 +273,114 @@ namespace SQLQueryStress
                     if (paramColumn != null)
                         _paramDtMappings[i] = _theParams.Columns[paramColumn].Ordinal;
 
+                    //apply explicit type override if provided
+                    if (paramTypeMappings != null && paramTypeMappings.TryGetValue(parameterName, out var typeName))
+                        ApplyTypeToParameter(_outputParams[i], typeName);
+
                     i++;
                 }
             }
+
+            private static void ApplyTypeToParameter(SqlParameter param, string typeName)
+            {
+                if (string.IsNullOrWhiteSpace(typeName))
+                    return;
+
+                // Parse optional length: "nvarchar(50)" → base="nvarchar", size=50
+                var match = TypeNameRegex.Match(typeName.Trim());
+
+                if (!match.Success)
+                    return;
+
+                var baseType = match.Groups[1].Value.ToUpperInvariant();
+                var sizeStr = match.Groups[2].Value;
+                int? size = null;
+                if (!string.IsNullOrEmpty(sizeStr))
+                {
+                    if (sizeStr.Equals("max", StringComparison.OrdinalIgnoreCase))
+                        size = -1;
+                    else if (int.TryParse(sizeStr, out var parsedSize))
+                        size = parsedSize;
+                }
+
+                switch (baseType)
+                {
+                    case "NVARCHAR":
+                        param.SqlDbType = SqlDbType.NVarChar;
+                        param.Size = size ?? -1;
+                        break;
+                    case "VARCHAR":
+                        param.SqlDbType = SqlDbType.VarChar;
+                        param.Size = size ?? -1;
+                        break;
+                    case "NCHAR":
+                        param.SqlDbType = SqlDbType.NChar;
+                        if (size.HasValue) param.Size = size.Value;
+                        break;
+                    case "CHAR":
+                        param.SqlDbType = SqlDbType.Char;
+                        if (size.HasValue) param.Size = size.Value;
+                        break;
+                    case "INT":
+                        param.SqlDbType = SqlDbType.Int;
+                        break;
+                    case "BIGINT":
+                        param.SqlDbType = SqlDbType.BigInt;
+                        break;
+                    case "SMALLINT":
+                        param.SqlDbType = SqlDbType.SmallInt;
+                        break;
+                    case "TINYINT":
+                        param.SqlDbType = SqlDbType.TinyInt;
+                        break;
+                    case "BIT":
+                        param.SqlDbType = SqlDbType.Bit;
+                        break;
+                    case "DECIMAL":
+                    case "NUMERIC":
+                        param.SqlDbType = SqlDbType.Decimal;
+                        break;
+                    case "FLOAT":
+                        param.SqlDbType = SqlDbType.Float;
+                        break;
+                    case "REAL":
+                        param.SqlDbType = SqlDbType.Real;
+                        break;
+                    case "DATETIME":
+                        param.SqlDbType = SqlDbType.DateTime;
+                        break;
+                    case "DATETIME2":
+                        param.SqlDbType = SqlDbType.DateTime2;
+                        break;
+                    case "DATE":
+                        param.SqlDbType = SqlDbType.Date;
+                        break;
+                    case "TIME":
+                        param.SqlDbType = SqlDbType.Time;
+                        break;
+                    case "UNIQUEIDENTIFIER":
+                        param.SqlDbType = SqlDbType.UniqueIdentifier;
+                        break;
+                    case "XML":
+                        param.SqlDbType = SqlDbType.Xml;
+                        break;
+                    case "MONEY":
+                        param.SqlDbType = SqlDbType.Money;
+                        break;
+                    case "SMALLMONEY":
+                        param.SqlDbType = SqlDbType.SmallMoney;
+                        break;
+                    case "VARBINARY":
+                        param.SqlDbType = SqlDbType.VarBinary;
+                        param.Size = size ?? -1;
+                        break;
+                    case "BINARY":
+                        param.SqlDbType = SqlDbType.Binary;
+                        if (size.HasValue) param.Size = size.Value;
+                        break;
+                }
+            }
+
         }
 
         private sealed class QueryInput : IDisposable
