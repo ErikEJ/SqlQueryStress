@@ -307,11 +307,11 @@ namespace SQLQueryStress
                 {
                     case "NVARCHAR":
                         param.SqlDbType = SqlDbType.NVarChar;
-                        param.Size = size ?? -1;
+                        if (size.HasValue) param.Size = size.Value;
                         break;
                     case "VARCHAR":
                         param.SqlDbType = SqlDbType.VarChar;
-                        param.Size = size ?? -1;
+                        if (size.HasValue) param.Size = size.Value;
                         break;
                     case "NCHAR":
                         param.SqlDbType = SqlDbType.NChar;
@@ -372,7 +372,7 @@ namespace SQLQueryStress
                         break;
                     case "VARBINARY":
                         param.SqlDbType = SqlDbType.VarBinary;
-                        param.Size = size ?? -1;
+                        if (size.HasValue) param.Size = size.Value;
                         break;
                     case "BINARY":
                         param.SqlDbType = SqlDbType.Binary;

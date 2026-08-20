@@ -224,7 +224,9 @@ namespace SQLQueryStress
                 {
                     localParamMappings.Add(paramName, columnName);
 
-                    if (!string.IsNullOrEmpty(dataType))
+                    var detectedType = _paramValues.TryGetValue(columnName, out var dt) ? dt : null;
+                    if (!string.IsNullOrEmpty(dataType) &&
+                        !string.Equals(dataType, detectedType, StringComparison.OrdinalIgnoreCase))
                         localParamTypeMappings.Add(paramName, dataType);
                 }
             }
