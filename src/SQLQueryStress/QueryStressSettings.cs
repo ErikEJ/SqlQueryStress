@@ -96,6 +96,12 @@ namespace SQLQueryStress
         public Dictionary<string, string> ParamMappings { get; set; }
 
         /// <summary>
+        ///     SQL type overrides for mapped parameters (e.g. "nvarchar(50)")
+        /// </summary>
+        [DataMember]
+        public Dictionary<string, string> ParamTypeMappings { get; set; }
+
+        /// <summary>
         ///     query from which to take parameters
         /// </summary>
         [DataMember]
@@ -116,6 +122,7 @@ namespace SQLQueryStress
             NumThreads = 1;
             NumIterations = 1;
             ParamMappings = new Dictionary<string, string>();
+            ParamTypeMappings = new Dictionary<string, string>();
             ConnectionTimeout = 15;
             CommandTimeout = 0;
             EnableConnectionPooling = true;
@@ -131,6 +138,7 @@ namespace SQLQueryStress
         private void FixSettings(StreamingContext context)
         {
             ConnectionTimeout = ConnectionTimeout == 0 ? 15 : ConnectionTimeout;
+            ParamTypeMappings ??= new Dictionary<string, string>();
         }
     }
 

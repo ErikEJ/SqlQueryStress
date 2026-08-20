@@ -122,7 +122,7 @@ namespace SqlQueryStressCLI
 
             var engine = new LoadEngine(_settings.MainDbConnectionInfo.ConnectionString, query, _numThreads, _settings.NumIterations,
                 _settings.ParamQuery, _settings.ParamMappings, paramConnectionInfo.ConnectionString, _settings.CommandTimeout, _settings.CollectIoStats,
-                _settings.CollectTimeStats, _settings.ForceDataRetrieval, _settings.KillQueriesOnCancel, _backgroundWorkerCTS);
+                _settings.CollectTimeStats, _settings.ForceDataRetrieval, _settings.KillQueriesOnCancel, _backgroundWorkerCTS, _settings.ParamTypeMappings);
 
             backgroundWorker1.WorkerReportsProgress = true;
             backgroundWorker1.WorkerSupportsCancellation = true;
