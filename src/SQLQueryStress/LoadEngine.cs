@@ -215,7 +215,7 @@ namespace SQLQueryStress
             private static int _currentRow;
             private static readonly System.Text.RegularExpressions.Regex TypeNameRegex =
                 new System.Text.RegularExpressions.Regex(
-                    @"^(\w+)(?:\((\d+|-1|max)(?:,\d+)?\))?$",
+                    @"^(\w+)(?:\((\d+|-1|max)(?:,(\d+))?\))?$",
                     System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Compiled);
             private static int _numRows;
 
@@ -294,6 +294,7 @@ namespace SQLQueryStress
 
                 var baseType = match.Groups[1].Value.ToUpperInvariant();
                 var sizeStr = match.Groups[2].Value;
+                var scaleStr = match.Groups[3].Value;
                 int? size = null;
                 if (!string.IsNullOrEmpty(sizeStr))
                 {
@@ -302,6 +303,9 @@ namespace SQLQueryStress
                     else if (int.TryParse(sizeStr, out var parsedSize))
                         size = parsedSize;
                 }
+                byte? scale = null;
+                if (!string.IsNullOrEmpty(scaleStr) && byte.TryParse(scaleStr, out var parsedScale))
+                    scale = parsedScale;
 
                 switch (baseType)
                 {
@@ -339,6 +343,8 @@ namespace SQLQueryStress
                     case "DECIMAL":
                     case "NUMERIC":
                         param.SqlDbType = SqlDbType.Decimal;
+                        if (size.HasValue) param.Precision = (byte)size.Value;
+                        if (scale.HasValue) param.Scale = scale.Value;
                         break;
                     case "FLOAT":
                         param.SqlDbType = SqlDbType.Float;
