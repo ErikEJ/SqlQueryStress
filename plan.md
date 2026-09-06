@@ -150,8 +150,8 @@ Manual verification scenarios to cover when implementing later:
 
 ## Build/test notes for a future implementation
 
-- CLI build verified locally with:
+- CLI build command:
   - `dotnet build ./src/SqlQueryStressCLI/sqlstresscmd.csproj -c Release`
-- Full solution build is defined in GitHub Actions on Windows:
+- Full solution build command used by GitHub Actions on Windows:
   - `dotnet build ./src/SQLQueryStress.sln --configuration Release`
 - No test project is currently referenced by `src/SQLQueryStress.sln`, so verification for this feature would likely be manual unless dedicated tests are added later.
