@@ -32,37 +32,45 @@ Proposed behavior:
 - If no database list is provided, run exactly as today using `MainDbConnectionInfo.Database`
 - If a database list is provided, ignore the single `Database` value for main-query execution and distribute workers across the listed databases
 
-### 2. Put multi-database intent in settings, not in the raw connection object
+### 2. Put multi-target intent in settings, not in the raw connection object
 
-Prefer a setting such as:
+For the original same-server scenario, a setting such as:
 
 - `MainDatabases: string[]` or `List<string>`
 
-on `QueryStressSettings`.
+on `QueryStressSettings` is sufficient.
+
+If support for multiple servers should be included, the more general shape is an optional target list such as:
+
+- `MainTargets: [{ Server, Database }]`
+
+with `MainDbConnectionInfo` supplying shared defaults like authentication, encryption, timeout, pooling, and additional parameters unless a target overrides them explicitly.
 
 Why:
 
 - The current `ConnectionInfo` maps cleanly to one `SqlConnectionStringBuilder.InitialCatalog`
+- A target list can represent either multiple databases on one server or databases across multiple servers
 - Parameter-fetch connections may still need to remain single-database
 - This reduces ripple effects in connection testing, cloning, and UI code
 
-### 3. Distribute threads deterministically across databases
+### 3. Distribute threads deterministically across targets
 
 Extend `LoadEngine` so it can accept either:
 
-- one connection string, or
-- a list of connection strings derived from one base `ConnectionInfo` plus multiple database names
+- one connection string,
+- a list of connection strings derived from one base `ConnectionInfo` plus multiple database names, or
+- a list of connection strings derived from a target list containing `Server` + `Database` pairs
 
 Recommended distribution rule:
 
-- Assign thread `i` to database `i % databaseCount`
+- Assign thread `i` to target `i % targetCount`
 
 This gives a predictable, even spread such as:
 
 - 8 threads across 4 databases => 2 threads per database
 - 5 threads across 2 databases => 3 threads on DB1, 2 threads on DB2
 
-Each worker thread should keep using one target database for its lifetime. That keeps connection pooling simple and avoids changing databases mid-thread.
+Each worker thread should keep using one resolved target connection for its lifetime. That keeps connection pooling simple and avoids changing databases or servers mid-thread.
 
 ### 4. Keep parameter sourcing independent
 
@@ -79,7 +87,9 @@ For the first version of the feature, parameter retrieval should still come from
 
 Because the CLI did not exist when the issue was opened, any new design should add CLI support explicitly.
 
-Recommended CLI-compatible configuration shape:
+Recommended CLI-compatible configuration shapes:
+
+Same server, multiple databases:
 
 ```json
 {
@@ -92,21 +102,39 @@ Recommended CLI-compatible configuration shape:
 }
 ```
 
+Multiple servers and databases:
+
+```json
+{
+  "MainDbConnectionInfo": {
+    "IntegratedAuth": true,
+    "EncryptOption": "Mandatory"
+  },
+  "MainTargets": [
+    { "Server": "server-a", "Database": "db1" },
+    { "Server": "server-b", "Database": "db2" }
+  ],
+  "NumThreads": 6
+}
+```
+
 Guidance:
 
 - Keep `Database` in sample/config docs for backward compatibility
 - Document that `MainDatabases` overrides the single database when supplied
+- If `MainTargets` is introduced, document that it overrides both the single `Database` value and any same-server `MainDatabases` list
 - Avoid adding a complex new command-line switch initially; JSON configuration is already the CLI’s primary input model
 
 ### 6. WinForms design
 
-Update the database selection dialog to optionally capture multiple databases.
+Update the database selection dialog to optionally capture multiple targets.
 
 Lowest-risk UI direction:
 
 - Keep the current single-database combo box behavior as the default
-- Add an advanced option for multiple database names, such as a multiline textbox or checked list
-- Reuse the current database discovery query (`sys.databases`) to help populate the list
+- Add an advanced option for multiple database names on the current server, such as a multiline textbox or checked list
+- If multi-server support is desired, allow one `server,database` pair per line in the advanced UI
+- Reuse the current database discovery query (`sys.databases`) to help populate same-server database lists
 
 A multiline textbox may be the smallest UI change because it avoids redesigning the dialog around multi-select controls.
 
@@ -116,7 +144,8 @@ Add validation before starting a run:
 
 - Reject an empty database list after trimming
 - Reject duplicate database names after normalization
-- Ensure every configured target database can produce a valid connection string
+- Reject duplicate `server + database` targets after normalization if multi-server support is enabled
+- Ensure every configured target can produce a valid connection string
 - Report clearly how threads will be distributed
 
 Manual verification scenarios to cover when implementing later:
@@ -126,6 +155,7 @@ Manual verification scenarios to cover when implementing later:
 3. More databases than threads => first `threadCount` databases are used once
 4. Blank/duplicate names in list => validation error
 5. CLI JSON without `MainDatabases` => legacy behavior unchanged
+6. Multiple `MainTargets` entries across different servers => work is distributed across server/database pairs
 
 ## Suggested implementation order
 
