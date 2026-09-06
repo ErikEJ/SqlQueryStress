@@ -12,10 +12,10 @@ Current workaround: run multiple WinForms or CLI instances concurrently, each po
 
 The original issue pre-dates the CLI, but the current repository now has two entry points that share the same runtime classes:
 
-- WinForms app selects one database in `/home/runner/work/SqlQueryStress/SqlQueryStress/src/SQLQueryStress/DatabaseSelect.cs`
-- CLI loads one database from JSON in `/home/runner/work/SqlQueryStress/SqlQueryStress/src/SqlQueryStressCLI/sample.json`
-- Shared connection model uses one `Database` property in `/home/runner/work/SqlQueryStress/SqlQueryStress/src/SQLQueryStress/ConnectionInfo.cs`
-- Shared execution engine uses one connection string in `/home/runner/work/SqlQueryStress/SqlQueryStress/src/SQLQueryStress/LoadEngine.cs`
+- WinForms app selects one database in `src/SQLQueryStress/DatabaseSelect.cs`
+- CLI loads one database from JSON in `src/SqlQueryStressCLI/sample.json`
+- Shared connection model uses one `Database` property in `src/SQLQueryStress/ConnectionInfo.cs`
+- Shared execution engine uses one connection string in `src/SQLQueryStress/LoadEngine.cs`
 
 Because the engine is shared, a good solution should be designed once in the shared model/runtime and then surfaced separately in WinForms and CLI.
 
@@ -138,15 +138,15 @@ Manual verification scenarios to cover when implementing later:
 
 ## Files most likely involved in a future implementation
 
-- `/home/runner/work/SqlQueryStress/SqlQueryStress/src/SQLQueryStress/QueryStressSettings.cs`
-- `/home/runner/work/SqlQueryStress/SqlQueryStress/src/SQLQueryStress/ConnectionInfo.cs`
-- `/home/runner/work/SqlQueryStress/SqlQueryStress/src/SQLQueryStress/LoadEngine.cs`
-- `/home/runner/work/SqlQueryStress/SqlQueryStress/src/SQLQueryStress/DatabaseSelect.cs`
-- `/home/runner/work/SqlQueryStress/SqlQueryStress/src/SQLQueryStress/FormMain.cs`
-- `/home/runner/work/SqlQueryStress/SqlQueryStress/src/SqlQueryStressCLI/Program.cs`
-- `/home/runner/work/SqlQueryStress/SqlQueryStress/src/SqlQueryStressCLI/LoadRunner.cs`
-- `/home/runner/work/SqlQueryStress/SqlQueryStress/src/SqlQueryStressCLI/sample.json`
-- `/home/runner/work/SqlQueryStress/SqlQueryStress/src/SqlQueryStressCLI/README.md`
+- `src/SQLQueryStress/QueryStressSettings.cs`
+- `src/SQLQueryStress/ConnectionInfo.cs`
+- `src/SQLQueryStress/LoadEngine.cs`
+- `src/SQLQueryStress/DatabaseSelect.cs`
+- `src/SQLQueryStress/FormMain.cs`
+- `src/SqlQueryStressCLI/Program.cs`
+- `src/SqlQueryStressCLI/LoadRunner.cs`
+- `src/SqlQueryStressCLI/sample.json`
+- `src/SqlQueryStressCLI/README.md`
 
 ## Build/test notes for a future implementation
 
