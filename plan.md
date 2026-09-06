@@ -154,4 +154,4 @@ Manual verification scenarios to cover when implementing later:
   - `dotnet build ./src/SqlQueryStressCLI/sqlstresscmd.csproj -c Release`
 - Full solution build is defined in GitHub Actions on Windows:
   - `dotnet build ./src/SQLQueryStress.sln --configuration Release`
-- No test project currently exists in the solution, so verification would likely be manual unless tests are introduced separately.
+- No test project is currently referenced by `src/SQLQueryStress.sln`, so verification for this feature would likely be manual unless dedicated tests are added later.
