@@ -87,6 +87,16 @@ namespace SqlQueryStressCLI
 
         public bool Run()
         {
+            if (!string.IsNullOrEmpty(_runParameters.ResultsAutoSaveFileName))
+            {
+                var format = GetResultFormat(_runParameters.ResultsAutoSaveFileName);
+                if (format != "csv" && format != "json")
+                {
+                    Console.Error.WriteLine($"Unsupported result format '{format}'. Use csv or json.");
+                    return false;
+                }
+            }
+
             if (!_settings.MainDbConnectionInfo.TestConnection())
             {
                 Console.Error.WriteLine("Invalid connection info");
