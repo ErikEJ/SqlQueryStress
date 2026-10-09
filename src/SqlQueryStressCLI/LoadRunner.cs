@@ -306,13 +306,7 @@ namespace SqlQueryStressCLI
                 return format.ToLowerInvariant();
             }
 
-            var extension = Path.GetExtension(fileName);
-            if (extension.Equals(".json", StringComparison.InvariantCultureIgnoreCase))
-            {
-                return "json";
-            }
-
-            return "csv";
+            return Path.GetExtension(fileName).TrimStart('.').ToLowerInvariant();
         }
 
         private bool ExportBenchmarkToJsonFile(string fileName)
