@@ -11,35 +11,43 @@ namespace SqlQueryStressCLI
 {
     class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
             var options = new CommandLineOptions();
             var parserResult = Parser.Default.ParseArguments<CommandLineOptions>(args);
 
-            parserResult
-                .WithParsed(options => Run(options))
-                .WithNotParsed(errors => DisplayHelp(parserResult, errors));
+            return parserResult.MapResult(
+                Run,
+                errors =>
+                {
+                    DisplayHelp(parserResult, errors);
+                    return errors.IsHelp() || errors.IsVersion() ? 0 : 1;
+                });
         }
 
-        private static void Run(CommandLineOptions options)
+        private static int Run(CommandLineOptions options)
         {
             if (options.ExtractSample)
             {
                 ExtractSample();
+                return 0;
             }
 
             if (File.Exists(options.SettingsFile))
             {
                 var settings = OpenConfigFile(options.SettingsFile);
 
-                var runner = new LoadRunner(settings, options);
+                if (settings == null)
+                {
+                    return 1;
+                }
 
-                runner.Run();
+                var runner = new LoadRunner(settings, options);
+                return runner.Run() ? 0 : 1;
             }
-            else
-            {
-                Console.Error.WriteLine($"Settings file could not be found, or not specified: {options.SettingsFile}");
-            }
+
+            Console.Error.WriteLine($"Settings file could not be found, or not specified: {options.SettingsFile}");
+            return 1;
         }
 
         private static void ExtractSample()

@@ -79,14 +79,14 @@ namespace SQLQueryStress
             return true;
         }
 
-        public void StartLoad(BackgroundWorker worker, int queryDelay)
+        public void StartLoad(BackgroundWorker worker, int queryDelay, Action<QueryOutput> outputCallback = null)
         {
             _queryDelay = queryDelay;
 
-            StartLoad(worker);
+            StartLoad(worker, outputCallback);
         }
 
-        private void StartLoad(BackgroundWorker worker)
+        private void StartLoad(BackgroundWorker worker, Action<QueryOutput> outputCallback)
         {
             var useParams = false;
 
@@ -203,7 +203,14 @@ namespace SQLQueryStress
                     //Report output to the UI
                     int finishedThreads = Interlocked.CompareExchange(ref _finishedThreads, 0, 0);
                     theOut.ActiveThreads = _threads - finishedThreads;
-                    worker.ReportProgress((int)(_finishedThreads / (decimal)_threads * 100), theOut);
+                    if (outputCallback == null)
+                    {
+                        worker.ReportProgress((int)(_finishedThreads / (decimal)_threads * 100), theOut);
+                    }
+                    else
+                    {
+                        outputCallback(theOut);
+                    }
                 }
             }
         }

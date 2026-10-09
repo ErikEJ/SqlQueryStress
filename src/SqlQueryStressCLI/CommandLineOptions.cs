@@ -27,9 +27,12 @@ namespace SQLQueryStress
 
 
 
-        //TODO Implement
         [Option('r', "results",
-        HelpText = "Autosave results to specified file")]
+                HelpText = "Autosave results to the specified file (CSV or JSON)")]
         public string ResultsAutoSaveFileName { get; set; } = string.Empty;
+
+        [Option('f', "format",
+                HelpText = "Result output format: csv or json (defaults to file extension)")]
+        public string ResultFormat { get; set; } = string.Empty;
     }
 }

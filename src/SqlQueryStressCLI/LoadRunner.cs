@@ -76,6 +76,8 @@ namespace SqlQueryStressCLI
         private System.Timers.Timer timer = new System.Timers.Timer(100);
 
         private readonly CommandLineOptions _runParameters;
+        private readonly ManualResetEventSlim _runCompleted = new ManualResetEventSlim();
+        private bool _runSucceeded = true;
 
         public LoadRunner(QueryStressSettings settings, CommandLineOptions options)
         {
@@ -83,12 +85,22 @@ namespace SqlQueryStressCLI
             _runParameters = options;
         }
 
-        public void Run()
+        public bool Run()
         {
+            if (!string.IsNullOrEmpty(_runParameters.ResultsAutoSaveFileName))
+            {
+                var format = GetResultFormat(_runParameters.ResultsAutoSaveFileName);
+                if (format != "csv" && format != "json")
+                {
+                    Console.Error.WriteLine($"Unsupported result format '{format}'. Use csv or json.");
+                    return false;
+                }
+            }
+
             if (!_settings.MainDbConnectionInfo.TestConnection())
             {
                 Console.Error.WriteLine("Invalid connection info");
-                return;
+                return false;
             }
 
             _testStartTime = DateTime.Now;
@@ -124,10 +136,8 @@ namespace SqlQueryStressCLI
                 _settings.ParamQuery, _settings.ParamMappings, paramConnectionInfo.ConnectionString, _settings.CommandTimeout, _settings.CollectIoStats,
                 _settings.CollectTimeStats, _settings.ForceDataRetrieval, _settings.KillQueriesOnCancel, _backgroundWorkerCTS, _settings.ParamTypeMappings);
 
-            backgroundWorker1.WorkerReportsProgress = true;
             backgroundWorker1.WorkerSupportsCancellation = true;
             backgroundWorker1.DoWork += new DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
             backgroundWorker1.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
 
             backgroundWorker1.RunWorkerAsync(engine);
@@ -137,13 +147,9 @@ namespace SqlQueryStressCLI
             //timer.Enabled = true;
 
             _start = new TimeSpan(DateTime.Now.Ticks);
-
-            while (backgroundWorker1.IsBusy)
-            {
-                Thread.Sleep(1000);
-            }
-
-            Thread.Sleep(2000);
+            _runCompleted.Wait();
+            var succeeded = _runSucceeded;
+            return succeeded;
         }
 
         private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -153,13 +159,11 @@ namespace SqlQueryStressCLI
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            ((LoadEngine)e.Argument).StartLoad(backgroundWorker1, _settings.DelayBetweenQueries);
+            ((LoadEngine)e.Argument).StartLoad(backgroundWorker1, _settings.DelayBetweenQueries, ProcessQueryOutput);
         }
 
-        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void ProcessQueryOutput(LoadEngine.QueryOutput output)
         {
-            var output = (LoadEngine.QueryOutput)e.UserState;
-
             _totalIterations++;
 
             if (output.LogicalReads > 0)
@@ -218,14 +222,29 @@ namespace SqlQueryStressCLI
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            UpdateUi();
-
-            ((BackgroundWorker)sender).Dispose();
-            _backgroundWorkerCTS?.Dispose();
-
-            if (!string.IsNullOrEmpty(_runParameters.ResultsAutoSaveFileName))
+            try
             {
-                AutoSaveResults(_runParameters.ResultsAutoSaveFileName);
+                UpdateUi();
+
+                if (e.Error != null)
+                {
+                    Console.Error.WriteLine($"Load failed: {e.Error.Message}");
+                    _runSucceeded = false;
+                    return;
+                }
+
+                _runSucceeded = _totalExceptions == 0;
+
+                if (!string.IsNullOrEmpty(_runParameters.ResultsAutoSaveFileName))
+                {
+                    _runSucceeded = AutoSaveResults(_runParameters.ResultsAutoSaveFileName) && _runSucceeded;
+                }
+            }
+            finally
+            {
+                ((BackgroundWorker)sender).Dispose();
+                _backgroundWorkerCTS?.Dispose();
+                _runCompleted.Set();
             }
         }
 
@@ -268,16 +287,75 @@ namespace SqlQueryStressCLI
             AnsiConsole.Write(table);
         }
 
-        private void AutoSaveResults(string resultsAutoSaveFileName)
+        private bool AutoSaveResults(string resultsAutoSaveFileName)
         {
-            string extension = Path.GetExtension(resultsAutoSaveFileName).ToUpperInvariant();
-            if (extension.Equals(".csv", StringComparison.InvariantCultureIgnoreCase))
+            var format = GetResultFormat(resultsAutoSaveFileName);
+
+            switch (format)
             {
-                ExportBenchMarkToCsvFile(resultsAutoSaveFileName);
+                case "csv":
+                    return ExportBenchMarkToCsvFile(resultsAutoSaveFileName);
+                case "json":
+                    return ExportBenchmarkToJsonFile(resultsAutoSaveFileName);
+                default:
+                    Console.Error.WriteLine($"Unsupported result format '{format}'. Use csv or json.");
+                    return false;
             }
         }
 
-        private void ExportBenchMarkToCsvFile(string fileName)
+        private string GetResultFormat(string fileName)
+        {
+            if (!string.IsNullOrWhiteSpace(_runParameters.ResultFormat))
+            {
+                var format = _runParameters.ResultFormat.Trim();
+                return format.ToLowerInvariant();
+            }
+
+            return Path.GetExtension(fileName).TrimStart('.').ToLowerInvariant();
+        }
+
+        private bool ExportBenchmarkToJsonFile(string fileName)
+        {
+            try
+            {
+                var result = BuildRunResult();
+                var json = JsonSerializer.WriteFromObject(result);
+                File.WriteAllText(fileName, json, Encoding.UTF8);
+                return true;
+            }
+            catch (Exception)
+            {
+                Console.Error.WriteLine($"There was an error saving the benchmark to '{fileName}', make sure you have write privileges to that path");
+                return false;
+            }
+        }
+
+        private RunResult BuildRunResult()
+        {
+            var elapsed = _testStartTime == default ? 0d : (DateTime.Now - _testStartTime).TotalSeconds;
+            var avgClientSeconds = _totalIterations == 0 ? 0d : _totalTime / _totalIterations / 1000d;
+            var avgCpuSeconds = _totalTimeMessages == 0 ? 0d : _totalCpuTime / _totalTimeMessages / 1000d;
+            var avgActualSeconds = _totalTimeMessages == 0 ? 0d : _totalElapsedTime / _totalTimeMessages / 1000d;
+            var avgLogicalReads = _totalReadMessages == 0 ? 0d : _totalLogicalReads / _totalReadMessages;
+
+            return new RunResult
+            {
+                TestId = _testGuid,
+                StartTime = _testStartTime.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture),
+                ElapsedTime = elapsed,
+                Threads = _numThreads,
+                Iterations = _settings.NumIterations,
+                CompletedIterations = _totalIterations,
+                Delay = _settings.DelayBetweenQueries,
+                AvgCpuSeconds = avgCpuSeconds,
+                AvgActualSeconds = avgActualSeconds,
+                AvgClientSeconds = avgClientSeconds,
+                AvgLogicalReads = avgLogicalReads,
+                ExceptionCount = _totalExceptions
+            };
+        }
+
+        private bool ExportBenchMarkToCsvFile(string fileName)
         {
             try
             {
@@ -289,11 +367,12 @@ namespace SqlQueryStressCLI
                     WriteBenchmarkCsvHeader(textWriter);
                 }
                 WriteBenchmarkCsvText(textWriter);
+                return true;
             }
             catch (Exception)
             {
-                Console.Error.WriteLine("Error While Saving BenchMark",
-                    $"There was an error saving the benchmark to '{fileName}', make sure you have write privileges to that path");
+                Console.Error.WriteLine($"There was an error saving the benchmark to '{fileName}', make sure you have write privileges to that path");
+                return false;
             }
         }
 
@@ -306,10 +385,10 @@ namespace SqlQueryStressCLI
         {
             tw.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}",
                 _testGuid,
-                _testStartTime,
+                _testStartTime.ToString("O", CultureInfo.InvariantCulture),
                 theTime,
                 _totalIterations,
-                _runParameters.NumberOfThreads,
+                _runParameters.NumberOfThreads ?? _numThreads,
                 _settings.DelayBetweenQueries,
                 _totalIterations,
                 cpuTime,
