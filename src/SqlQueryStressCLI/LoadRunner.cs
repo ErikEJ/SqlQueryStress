@@ -139,7 +139,6 @@ namespace SqlQueryStressCLI
             _start = new TimeSpan(DateTime.Now.Ticks);
             _runCompleted.Wait();
             var succeeded = _runSucceeded;
-            _runCompleted.Dispose();
             return succeeded;
         }
 
