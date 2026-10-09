@@ -32,6 +32,15 @@ sqlstresscmd -x
 sqlstresscmd -s sample.json -t 1
 ```
 
+To save a machine-readable result file, use `-r`/`--results` and optionally `-f`/`--format`:
+
+```bash
+sqlstresscmd -s sample.json -t 1 -r results.json -f json
+sqlstresscmd -s sample.json -t 1 -r results.csv
+```
+
+The CSV output keeps the existing append-friendly format, while JSON writes a single structured run summary with invariant culture formatting and ISO-8601 timestamps.
+
 ![Sample screenshot](https://raw.githubusercontent.com/ErikEJ/SqlQueryStress/refs/heads/master/src/SqlQueryStressCLI/sample.png)
 
 To get help, run

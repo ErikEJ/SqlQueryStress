@@ -270,11 +270,84 @@ namespace SqlQueryStressCLI
 
         private void AutoSaveResults(string resultsAutoSaveFileName)
         {
-            string extension = Path.GetExtension(resultsAutoSaveFileName).ToUpperInvariant();
-            if (extension.Equals(".csv", StringComparison.InvariantCultureIgnoreCase))
+            var format = GetResultFormat(resultsAutoSaveFileName);
+
+            switch (format)
             {
-                ExportBenchMarkToCsvFile(resultsAutoSaveFileName);
+                case "csv":
+                    ExportBenchMarkToCsvFile(resultsAutoSaveFileName);
+                    break;
+                case "json":
+                    ExportBenchmarkToJsonFile(resultsAutoSaveFileName);
+                    break;
+                default:
+                    Console.Error.WriteLine($"Unsupported result format '{format}'. Use csv or json.");
+                    break;
             }
+        }
+
+        private string GetResultFormat(string fileName)
+        {
+            if (!string.IsNullOrWhiteSpace(_runParameters.ResultFormat))
+            {
+                var format = _runParameters.ResultFormat.Trim();
+                if (format.Equals("csv", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return "csv";
+                }
+
+                if (format.Equals("json", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return "json";
+                }
+            }
+
+            var extension = Path.GetExtension(fileName);
+            if (extension.Equals(".json", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return "json";
+            }
+
+            return "csv";
+        }
+
+        private void ExportBenchmarkToJsonFile(string fileName)
+        {
+            try
+            {
+                var result = BuildRunResult();
+                var json = JsonSerializer.WriteFromObject(result);
+                File.WriteAllText(fileName, json, Encoding.UTF8);
+            }
+            catch (Exception)
+            {
+                Console.Error.WriteLine($"There was an error saving the benchmark to '{fileName}', make sure you have write privileges to that path");
+            }
+        }
+
+        private RunResult BuildRunResult()
+        {
+            var elapsed = _testStartTime == default ? 0d : (DateTime.Now - _testStartTime).TotalSeconds;
+            var avgClientSeconds = _totalIterations == 0 ? 0d : _totalTime / _totalIterations / 1000d;
+            var avgCpuSeconds = _totalTimeMessages == 0 ? 0d : _totalCpuTime / _totalTimeMessages / 1000d;
+            var avgActualSeconds = _totalTimeMessages == 0 ? 0d : _totalElapsedTime / _totalTimeMessages / 1000d;
+            var avgLogicalReads = _totalReadMessages == 0 ? 0d : _totalLogicalReads / _totalReadMessages;
+
+            return new RunResult
+            {
+                TestId = _testGuid,
+                StartTime = _testStartTime.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture),
+                ElapsedTime = elapsed,
+                Threads = _numThreads,
+                Iterations = _settings.NumIterations,
+                CompletedIterations = _totalIterations,
+                Delay = _settings.DelayBetweenQueries,
+                AvgCpuSeconds = avgCpuSeconds,
+                AvgActualSeconds = avgActualSeconds,
+                AvgClientSeconds = avgClientSeconds,
+                AvgLogicalReads = avgLogicalReads,
+                ExceptionCount = _totalExceptions
+            };
         }
 
         private void ExportBenchMarkToCsvFile(string fileName)
@@ -306,10 +379,10 @@ namespace SqlQueryStressCLI
         {
             tw.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}",
                 _testGuid,
-                _testStartTime,
+                _testStartTime.ToString("O", CultureInfo.InvariantCulture),
                 theTime,
                 _totalIterations,
-                _runParameters.NumberOfThreads,
+                _runParameters.NumberOfThreads ?? _numThreads,
                 _settings.DelayBetweenQueries,
                 _totalIterations,
                 cpuTime,

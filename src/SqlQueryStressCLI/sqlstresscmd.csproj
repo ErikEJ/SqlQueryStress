@@ -29,6 +29,7 @@
     <Compile Include="..\SQLQueryStress\LoadEngine.cs" Link="LoadEngine.cs" />
     <Compile Include="..\SQLQueryStress\QueryStressSettings.cs" Link="QueryStressSettings.cs" />
     <Compile Include="..\SQLQueryStress\ConnectionSettingsHelper.cs" Link="ConnectionSettingsHelper.cs" />
+    <Compile Include="..\SQLQueryStress\RunResult.cs" Link="RunResult.cs" />
   </ItemGroup>  
 
   <ItemGroup>
