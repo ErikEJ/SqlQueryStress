@@ -126,10 +126,8 @@ namespace SqlQueryStressCLI
                 _settings.ParamQuery, _settings.ParamMappings, paramConnectionInfo.ConnectionString, _settings.CommandTimeout, _settings.CollectIoStats,
                 _settings.CollectTimeStats, _settings.ForceDataRetrieval, _settings.KillQueriesOnCancel, _backgroundWorkerCTS, _settings.ParamTypeMappings);
 
-            backgroundWorker1.WorkerReportsProgress = true;
             backgroundWorker1.WorkerSupportsCancellation = true;
             backgroundWorker1.DoWork += new DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
             backgroundWorker1.RunWorkerCompleted += new RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
 
             backgroundWorker1.RunWorkerAsync(engine);
@@ -152,13 +150,11 @@ namespace SqlQueryStressCLI
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            ((LoadEngine)e.Argument).StartLoad(backgroundWorker1, _settings.DelayBetweenQueries);
+            ((LoadEngine)e.Argument).StartLoad(backgroundWorker1, _settings.DelayBetweenQueries, ProcessQueryOutput);
         }
 
-        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void ProcessQueryOutput(LoadEngine.QueryOutput output)
         {
-            var output = (LoadEngine.QueryOutput)e.UserState;
-
             _totalIterations++;
 
             if (output.LogicalReads > 0)
