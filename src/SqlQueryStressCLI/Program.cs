@@ -21,7 +21,7 @@ namespace SqlQueryStressCLI
                 errors =>
                 {
                     DisplayHelp(parserResult, errors);
-                    return 1;
+                    return errors.IsHelp() || errors.IsVersion() ? 0 : 1;
                 });
         }
 
@@ -43,8 +43,7 @@ namespace SqlQueryStressCLI
                 }
 
                 var runner = new LoadRunner(settings, options);
-                runner.Run();
-                return 0;
+                return runner.Run() ? 0 : 1;
             }
 
             Console.Error.WriteLine($"Settings file could not be found, or not specified: {options.SettingsFile}");
